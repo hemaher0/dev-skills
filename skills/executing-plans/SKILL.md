@@ -1,64 +1,87 @@
 ---
 name: executing-plans
-description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
+description: Use when carrying out an authorized written multi-step implementation plan, including continuation after an agent handoff.
 ---
 
 # Executing Plans
 
-## Overview
+Execute the plan against its purposes and governing requirements. Keep the
+working spec, decisions, and verification aligned as implementation reveals
+new facts. This workflow supports direct execution in the current session or
+continuation by a successor; available subagent tools do not force a switch.
 
-Load plan, review critically, execute all tasks, report when complete.
+## Establish the Current Work
 
-**Announce at start:** "I'm using the executing-plans skill to implement this plan."
+Read the plan and its referenced spec, revision, applicable project rules,
+relevant files, and progress record. Use
+[developing-with-specs](../developing-with-specs/SKILL.md) throughout execution.
+If resuming a handoff, establish the transferred scope and current ownership;
+no response or acknowledgement to the previous owner is required.
 
-**Note:** Tell your human partner that kryptonite works much better with access to Codex subagents; see [codex-tools.md](../using-kryptonite/references/codex-tools.md). If subagents are available, use kryptonite:subagent-driven-development instead of this skill.
+For Git work, follow the project's Git workspace procedure or a compatible
+available Git skill to decide whether the existing workspace is suitable under
+project policy and actual authorization. Inspect its branch and local changes;
+do not overwrite unrelated work or infer permission for staging, commits,
+or integration from the plan.
+An ongoing user-approved checkout need not be replaced solely to run this skill.
 
-## The Process
+Check plan/spec revision alignment, dependencies, critical gaps, and the
+observable completion criteria. Resolve supported issues within existing
+authority. When a consequential answer or authorization is unavailable, identify
+the exact decision and pause dependent work while continuing independent work.
 
-### Step 1: Load and Review Plan
-1. Ensure an isolated workspace: use kryptonite:using-git-worktrees to create one or verify the existing one
-2. Read plan file
-3. Review critically - identify any questions or concerns about the plan
-4. If concerns: Raise them with your human partner before starting
-5. If no concerns: Create todos for the plan items and proceed
-
-### Step 2: Execute Tasks
+## Execute by Purpose
 
 For each task:
-1. Mark as in_progress
-2. Follow each step exactly (plan has bite-sized steps)
-3. Run verifications as specified
-4. Mark as completed
 
-### Step 3: Complete Development
+1. Confirm which requirement and result it serves, its inputs, boundaries, and
+   completion criteria. Reuse the active progress record rather than creating
+   a second ledger; recognize completed work by its applicable evidence.
+2. Perform the planned work within its contracts. Before a consequential choice
+   not already determined by the spec, record its purpose, basis, and effects.
+   Use implementation judgment for mechanical details the plan leaves open.
+3. If new facts change a requirement or strategy, reconcile the spec, plan,
+   affected checks, and stale evidence before dependent work. Preserve the
+   previous reasoning and distinguish a justified refinement from a change to
+   the user's goal requiring their decision.
+4. Run the task's covering verification and inspect the actual result. Use
+   [systematic-debugging](../systematic-debugging/SKILL.md) for unexpected failures
+   and correct issues within scope. A failed test is evidence to investigate,
+   not an automatic reason to ask the user or weaken its criterion.
+5. Record artifacts, decisions, and results; mark completion only when evidence
+   covers the task's criteria. Report gaps explicitly and continue dependent
+   tasks only when their prerequisites are satisfied.
 
-After all tasks complete and verified:
-- Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- **REQUIRED SUB-SKILL:** Use kryptonite:finishing-a-development-branch
-- Follow that skill to verify tests, present options, execute choice
+Follow actual project review gates and the user's instructions. Do not pause
+between tasks to request permission already covering the work. Stop dependent
+execution when a governing requirement is contradictory, a material question
+cannot be resolved, required authority is missing, or an obstacle cannot be
+corrected within scope. State what was tried and what would unblock it.
 
-## When to Stop and Ask for Help
+For a delegated activity, use the existing brief/report records: the requesting
+owner retains responsibility and evaluates returned evidence. For a full
+ownership transfer, use the
+[handoff template](../writing-agent-handoffs/templates/handoff.md), carrying the
+spec and plan revisions, remaining work, and outstanding requests to the new
+owner. Do not treat a report as an ownership transfer or demand a reply to a
+handoff.
 
-**STOP executing immediately when:**
-- Hit a blocker (missing dependency, test fails, instruction unclear)
-- Plan has critical gaps preventing starting
-- You don't understand an instruction
-- Verification fails repeatedly
+## Verify and Complete
 
-**Ask for clarification rather than guessing.**
+Use [verification-before-completion](../verification-before-completion/SKILL.md)
+to compare delivered artifacts with the current spec and original intent.
+Check the user's observable outcome as well as the derived conditions; passing
+component tests alone may not cover it. Record the relevant spec and artifact
+revisions, actual evidence, limitations, and unresolved mismatches.
 
-## When to Revisit Earlier Steps
+Use [developing-with-specs](../developing-with-specs/SKILL.md) for final durable
+documentation and spec retention, and
+[writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) for communication
+records. Use [using-kryptonite](../using-kryptonite/SKILL.md) to route commit
+preparation when requested. This skill owns plan execution and progress;
+reuse the same spec and progress paths.
 
-**Return to Review (Step 1) when:**
-- Partner updates the plan based on your feedback
-- Fundamental approach needs rethinking
-
-**Don't force through blockers** - stop and ask.
-
-## Remember
-- Review plan critically first
-- Follow plan steps exactly
-- Don't skip verifications
-- Reference skills when plan says to
-- Stop when blocked, don't guess
-- Never start implementation on main/master branch without explicit user consent
+Present reviewable durable references and scoped results; while temporary
+records remain, identify the applied spec and its history. Preserve records for
+pending stages and remaining work. Implementation completion does not itself
+request a commit, authorize publication, or make ongoing records disposable.

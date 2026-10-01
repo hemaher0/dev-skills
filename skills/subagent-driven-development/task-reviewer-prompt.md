@@ -1,185 +1,115 @@
 # Task Reviewer Prompt Template
 
-Use this template when dispatching a task reviewer subagent. The reviewer
-reads the task's diff once and returns two verdicts: spec compliance and
-code quality.
+Use for the combined spec-compliance and quality review of one task. The
+reviewer is distinct from the producer; broad whole-branch review happens
+separately. Apply the role/model policy in [SKILL.md](SKILL.md).
 
-**Purpose:** Verify one task's implementation matches its requirements (nothing
-more, nothing less) and is well-built (clean, tested, maintainable)
-
-```
-Subagent (general-purpose):
-  description: "Review Task N (spec + quality)"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
+```text
+Subagent:
+  description: "Review Task N: spec and quality"
+  model: [MODEL — select or inherit according to project and host preferences]
   prompt: |
-    You are reviewing one task's implementation: first whether it matches its
-    requirements, then whether it is well-built. This is a task-scoped gate,
-    not a merge review — a broad whole-branch review happens separately after
-    all tasks are complete.
+    Review one task's actual implementation against its original purpose,
+    governing requirements, and quality criteria. Return both verdicts.
 
-    ## What Was Requested
+    ## Assignment and Inputs
 
-    Read the task brief: [BRIEF_FILE]
+    Review assignment: [REVIEW_ASSIGNMENT — request ID, brief revision,
+    requester/current owner, reviewer identity, producer identity, role,
+    work root, and permitted report destination or authorized recorder].
+    Task brief: [BRIEF_FILE]. Producer report: [REPORT_FILE].
+    Binding global constraints and spec references: [GLOBAL_CONSTRAINTS].
+    Baseline: [BASE_SHA]. Target: [HEAD_SHA]. Package: [DIFF_FILE].
+    Exact target state: [TARGET_STATE — commit or versioned working snapshot].
 
-    Global constraints from the spec/design that bind this task:
-    [GLOBAL_CONSTRAINTS]
+    Match the assignment, package, brief/spec revisions, and evidence to the
+    actual reviewed state. The producer's report contains claims and possible
+    evidence, not proof. Its rationale or the plan's authorship does not
+    suppress a finding or lower its severity.
 
-    ## What the Implementer Claims They Built
+    ## Review Method and Boundary
 
-    Read the implementer's report: [REPORT_FILE]
+    Read the supplied package with the full task range and context. A
+    multi-commit task must include all task changes, not just HEAD~1.
+    A commit-range package does not include uncommitted or new-file changes;
+    require a versioned equivalent if they are part of the target.
 
-    ## Diff Under Review
+    Inspect the changes and determine what behavior they actually implement.
+    Compare that behavior with the original requested outcome as well as
+    supporting requirements; agreement with the producer's story is not enough.
+    Reuse available context. Inspect another file or dependency for a concrete
+    named risk or criterion, and record the reason and evidence. Contract,
+    call-site, shared-state, and cross-task invariant checks can justify this.
+    Report a requirement you cannot verify as NOT_VERIFIED with the missing
+    evidence; do not convert an inspection limit into a pass.
 
-    **Base:** [BASE_SHA]
-    **Head:** [HEAD_SHA]
-    **Diff file:** [DIFF_FILE]
+    Keep reviewed implementation artifacts and Git state read-only. Do not
+    alter code, index, HEAD, or branch state. Write only to the assigned report
+    surface, or return content for an authorized recorder, preserving your
+    actual authorship. Do not fix the producer's code yourself.
 
-    Read the diff file once — it contains the commit list, a stat summary,
-    and the full diff with surrounding context, and it is your view of the
-    change. The diff's context lines ARE the changed files: do not Read a
-    changed file separately unless a hunk you must judge is cut off
-    mid-function — and say so in your report. Do not re-run git commands.
-    If the diff file is missing, fetch the diff yourself:
-    `git diff --stat [BASE_SHA]..[HEAD_SHA]` and `git diff [BASE_SHA]..[HEAD_SHA]`.
-    Do not crawl the broader codebase. Inspect code outside the diff only
-    to evaluate a concrete risk you can name — one focused check per named
-    risk, and name both the risk and what you checked in your report.
-    Cross-cutting changes are legitimate named risks: if the diff changes
-    lock ordering, a function or API contract, or shared mutable state,
-    checking the call sites is the right method.
+    ## Independent Verification
 
-    Your review is read-only on this checkout. Do not mutate the working
-    tree, the index, HEAD, or branch state in any way.
+    Reuse test evidence only when its target, environment, and checked behavior
+    cover the question. Obtain independent reproduction for missing,
+    mismatched, contradictory, or insufficient evidence, or a new code-specific
+    risk. Use the smallest adequate check; a broader suite or concurrency check
+    can be appropriate for a demonstrated cross-component risk or project rule.
+    Respect resource/authorization boundaries and keep the reviewed checkout
+    unchanged. If needed, use an authorized isolated verification environment
+    or request an owner-run check. Do not rerun suites by ritual.
 
-    ## Do Not Trust the Report
+    Report actual commands, target, results, and limitations. If validation
+    cannot run, state the gap and the check needed. Evaluate reported warnings
+    by their consequence and project requirements; noisy output alone does not
+    establish a blocking defect or justify claiming an unperformed check.
 
-    Treat the implementer's report as unverified claims about the code. It
-    may be incomplete, inaccurate, or optimistic. Verify the claims against
-    the diff. Design rationales in the report are claims too: "left it per
-    YAGNI," "kept it simple deliberately," or any other justification is the
-    implementer grading their own work. Judge the code on its merits — a
-    stated rationale never downgrades a finding's severity.
+    ## Spec Compliance and Quality
 
-    ## Tests
+    Identify missing requirements, unwanted scope, and misunderstood purpose.
+    Check required input assumptions, promised outputs, and preserved shared
+    invariants. Separate a supported violation from an uncertain criterion.
 
-    The implementer already ran the tests and reported results with TDD
-    evidence for exactly this code. Do not re-run the suite to confirm their
-    report. Run a test only when reading the code raises a specific doubt
-    that no existing run answers — and then a focused test, never a
-    package-wide suite, race detector run, or repeated/high-count loop. If
-    heavy validation seems warranted, recommend it in your report instead of
-    running it. If you cannot run commands in this environment, name the
-    test you would run.
+    Check real behavior, edge cases, error handling, meaningful tests, and
+    maintainability of the change. Follow the planned and established structure
+    without treating pre-existing file size or a stylistic alternative as a
+    defect introduced by this task.
 
-    Warnings or other noise in the implementer's reported test output are
-    findings — test output should be pristine.
+    Calibrate findings by evidence and consequence:
+    - Critical: a severe correctness, security, data, or operational failure.
+    - Important: a binding requirement failure or defect that prevents
+      trusting/proceeding with the task, including material maintainability harm.
+    - Minor: nonblocking polish or optional improvement.
 
-    ## Part 1: Spec Compliance
+    Label a genuine plan-mandated defect and cite the governing text; the owner
+    must resolve the conflict rather than treating the plan as self-approval.
+    Give stable finding IDs, location, evidence, affected criterion/consequence,
+    and recommended action. Distinguish known defects from verification gaps.
 
-    Compare the diff against What Was Requested:
+    ## Report
 
-    - **Missing:** requirements they skipped, missed, or claimed without
-      implementing
-    - **Extra:** features that weren't requested, over-engineering, unneeded
-      "nice to haves"
-    - **Misunderstood:** right feature built the wrong way, wrong problem
-      solved
+    Return report content using the shared report structure, linked to the
+    review request/revision and actual target. Include your author identity,
+    evidence, limits, and remaining owner action. The owner may record it.
 
-    If a requirement cannot be verified from this diff alone (it lives in
-    unchanged code or spans tasks), report it as a ⚠️ item instead of
-    broadening your search.
+    Required review sections:
+    - Spec compliance: compliant | issues found | incomplete verification;
+      criterion outcomes and evidence, including Cannot verify items.
+    - Strengths: specific supported observations, if any.
+    - Findings: stable IDs, Critical/Important/Minor severity, file:line or
+      artifact location, evidence, consequence, and recommended action.
+    - Task quality: Approved | Needs fixes | Incomplete verification.
+    - Verification performed/reused and gaps: actual target and commands/logs.
 
-    ## Part 2: Code Quality
-
-    **Code quality:**
-    - Clean separation of concerns?
-    - Proper error handling?
-    - DRY without premature abstraction?
-    - Edge cases handled?
-
-    **Tests:**
-    - Do the new and changed tests verify real behavior, not mocks?
-    - Are the task's edge cases covered?
-
-    **Structure:**
-    - Does each file have one clear responsibility with a well-defined interface?
-    - Are units decomposed so they can be understood and tested independently?
-    - Is the implementation following the file structure from the plan?
-    - Did this change create new files that are already large, or
-      significantly grow existing files? (Don't flag pre-existing file
-      sizes — focus on what this change contributed.)
-
-    Your report should point at evidence: file:line references for every
-    finding and for any check you would otherwise answer with a bare
-    "yes." A tight report that cites lines gives the controller everything
-    it needs.
-
-    Your final message is the report itself: begin directly with the
-    spec-compliance verdict. Every line is a verdict, a finding with
-    file:line, or a check you ran — no preamble, no process narration,
-    no closing summary.
-
-    ## Calibration
-
-    Categorize issues by actual severity. Not everything is Critical.
-    Important means this task cannot be trusted until it is fixed: incorrect
-    or fragile behavior, a missed requirement, or maintainability damage you
-    would block a merge over — verbatim duplication of a logic block,
-    swallowed errors, tests that assert nothing. "Coverage could be broader"
-    and polish suggestions are Minor.
-    If the plan or brief explicitly mandates something this rubric calls a
-    defect (a test that asserts nothing, verbatim duplication of a logic
-    block), that IS a finding — report it as Important, labeled
-    plan-mandated. The plan's authorship does not grade its own work; the
-    human decides.
-    Acknowledge what was done well before listing issues — accurate praise
-    helps the implementer trust the rest of the feedback.
-
-    ## Output Format
-
-    ### Spec Compliance
-
-    - ✅ Spec compliant | ❌ Issues found: [what's missing/extra/misunderstood,
-      with file:line references]
-    - ⚠️ Cannot verify from diff: [requirements you could not verify from the
-      diff alone, and what the controller should check — report alongside the
-      ✅/❌ verdict for everything you could verify]
-
-    ### Strengths
-    [What's well done? Be specific.]
-
-    ### Issues
-
-    #### Critical (Must Fix)
-    #### Important (Should Fix)
-    #### Minor (Nice to Have)
-
-    For each issue: file:line, what's wrong, why it matters, how to fix
-    (if not obvious).
-
-    ### Assessment
-
-    **Task quality:** [Approved | Needs fixes]
-
-    **Reasoning:** [1-2 sentence technical assessment]
+    A DONE review status means the review assignment is complete; the spec
+    and quality verdicts separately determine implementation approval. Do not
+    approve binding criteria that remain unverified or valid blocking issues.
 ```
 
-**Placeholders:**
-- `[MODEL]` — REQUIRED: reviewer model per SKILL.md Model Selection
-- `[BRIEF_FILE]` — REQUIRED: the task brief file (`scripts/task-brief PLAN N`
-  prints the path; same file the implementer worked from)
-- `[GLOBAL_CONSTRAINTS]` — the binding requirements copied verbatim from
-  the plan's Global Constraints section or the spec: exact values, formats,
-  and stated relationships between components (not process rules — those
-  are already in this template)
-- `[REPORT_FILE]` — REQUIRED: the file the implementer wrote its detailed
-  report to
-- `[BASE_SHA]` — commit before this task
-- `[HEAD_SHA]` — current commit
-- `[DIFF_FILE]` — REQUIRED: the path the controller wrote the review
-  package to (`scripts/review-package PLAN_FILE BASE HEAD` prints the unique
-  path it wrote; the package never enters the controller's context)
-
-**Reviewer returns:** Spec Compliance verdict (✅/❌/⚠️), Strengths, Issues
-(Critical/Important/Minor), Task quality verdict
+**Placeholder notes:** `[BRIEF_FILE]` remains the original task brief;
+`[REVIEW_ASSIGNMENT]` identifies the distinct review request and its permitted
+reporting surface. `[GLOBAL_CONSTRAINTS]` contains the project's binding values,
+formats, and relationships or precise references, not an extra process rubric.
+`[BASE_SHA]`/`[HEAD_SHA]` identify the recorded range; `[TARGET_STATE]` must also
+identify any working snapshot beyond that range. `[DIFF_FILE]` is the complete
+package supplied by the controller, and `[REPORT_FILE]` is the producer report.

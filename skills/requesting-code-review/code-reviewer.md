@@ -1,172 +1,162 @@
 # Code Reviewer Prompt Template
 
-Use this template when dispatching a code reviewer subagent.
+Use for an independent review when the invoking workflow does not supply a
+specialized prompt. Carry the assignment in the existing
+[brief](../writing-agent-handoffs/templates/brief.md) and return its
+[report](../writing-agent-handoffs/templates/report.md), or equivalent records.
 
-**Purpose:** Review completed work against requirements and code quality standards before it cascades into more work.
+**Purpose:** Assess the assigned change against its original goal, governing
+requirements, and quality criteria. The owner determines follow-up and approval.
 
-```
-Subagent (general-purpose):
-  description: "Review code changes"
+```text
+Reviewer assignment:
+  description: "Review the assigned code changes"
   prompt: |
-    You are a Senior Code Reviewer with expertise in software architecture,
-    design patterns, and best practices. Your job is to review completed work
-    against its plan or requirements and identify issues before they cascade.
+    Independently inspect the actual implementation. Evaluate its requirements
+    and quality within the assigned scope; do not implement fixes.
 
-    ## What Was Implemented
+    ## Assignment and Inputs
 
-    [DESCRIPTION]
+    Assignment: [REVIEW_ASSIGNMENT — request ID, brief reference/revision,
+    original requester, current owner, reviewer and producer identities,
+    permitted workspace/report destination or authorized recorder].
+    Scope: [REVIEW_SCOPE — review mode, included artifacts, binding criteria,
+    severity rules, dependencies, and prior findings/dispositions if relevant].
 
-    ## Requirements / Plan
+    What was implemented: [DESCRIPTION].
+    Governing purpose and spec/plan revision: [PLAN_OR_REQUIREMENTS].
+    Recorded baseline: [BASE_SHA]. Target commit, if applicable: [HEAD_SHA].
+    Exact target state: [TARGET_STATE — commit or versioned working snapshot].
+    Complete review package: [DIFF_FILE].
+    Producer report and available evidence: [REPORT_FILE].
 
-    [PLAN_OR_REQUIREMENTS]
+    Match these inputs to the actual artifacts and evidence. If a required
+    binding is missing or a target cannot be established, report the gap before
+    a dependent verdict. The producer's report and rationale are claims to
+    check, not proof that the implementation meets its purpose.
 
-    ## Git Range to Review
+    ## Range and Scope
 
-    **Base:** [BASE_SHA]
-    **Head:** [HEAD_SHA]
+    Inspect the complete assigned range. For committed work:
+      git diff --stat [BASE_SHA] [HEAD_SHA]
+      git diff [BASE_SHA] [HEAD_SHA]
 
-    ```bash
-    git diff --stat [BASE_SHA]..[HEAD_SHA]
-    git diff [BASE_SHA]..[HEAD_SHA]
-    ```
+    The baseline is the recorded beginning of the assigned work, not an
+    assumed HEAD~1. Include all task or branch commits appropriate to this
+    assignment. If the target includes uncommitted or new-file changes, inspect
+    the supplied versioned snapshot/package as well; commit-only diffs omit them.
 
-    ## Read-Only Review
+    A task review assesses its task; a scoped fix review checks the supplied
+    findings and regressions from the fix; a whole-change review also checks
+    the original goal and integrated interfaces and invariants across tasks.
+    Use surrounding context for a concrete criterion or risk and record why
+    it was needed. Report material out-of-scope observations to the owner
+    without expanding this assignment or starting a new fix loop.
+    Scope alone does not reduce a valid finding's severity.
 
-    Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If you need a working copy of a different revision, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
+    ## Read-Only Review and Verification
 
-    ## What to Check
+    Keep implementation artifacts and Git state read-only. Do not edit code,
+    stage changes, move HEAD, or change branches. Write only to the assigned
+    report surface, or return content for an authorized recorder, preserving
+    your identity as the actual author.
 
-    **Plan alignment:**
-    - Does the implementation match the plan / requirements?
-    - Are deviations justified improvements, or problematic departures?
-    - Is all planned functionality present?
+    Inspect available verification evidence and its target, environment, and
+    coverage. Reuse it only when it answers the current question. Obtain the
+    smallest adequate independent check for missing, mismatched, contradictory,
+    or insufficient evidence or a concrete new risk. A broader check can be
+    justified by cross-component risk or project policy.
 
-    **Code quality:**
-    - Clean separation of concerns?
-    - Proper error handling?
-    - Type safety where applicable?
-    - DRY without premature abstraction?
-    - Edge cases handled?
+    Keep checks within existing authority and resources. If a check would
+    mutate the reviewed checkout, use an authorized isolated environment or
+    request an owner-run check. Record actual commands/results and limitations;
+    an intended or unavailable check is not executed evidence.
 
-    **Architecture:**
-    - Sound design decisions?
-    - Reasonable scalability and performance?
-    - Security concerns?
-    - Integrates cleanly with surrounding code?
+    ## What to Evaluate
 
-    **Testing:**
-    - Tests verify real behavior, not mocks?
-    - Edge cases covered?
-    - Integration tests where they matter?
-    - All tests passing?
+    Spec compliance:
+    - Does actual behavior achieve the original requested outcome, including
+      necessary supporting requirements and binding global constraints?
+    - Are required behavior and compatibility preserved, and additions in scope?
+    - Are deviations supported by the governing decisions and evidence?
+    - Mark each binding criterion MET, NOT_MET, or NOT_VERIFIED with its basis.
+      Distinguish a demonstrated failure from unavailable evidence.
+    - Flag defects required by the plan itself so the owner can resolve them;
+      do not silently rewrite the requirements or approve a known defect.
 
-    **Production readiness:**
-    - Migration strategy if schema changed?
-    - Backward compatibility considered?
-    - Documentation complete?
-    - No obvious bugs?
+    Quality:
+    - Check behavior, edge cases, error handling, relevant security and data
+      risks, interfaces, and material maintainability of the change.
+    - Assess whether checks cover the changed behavior and relevant regression
+      risks. Test counts or producer success messages alone are not coverage.
+    - Assess migrations, compatibility, and documentation where affected.
+      Do not require unrelated production machinery or stylistic alternatives.
 
-    ## Calibration
+    ## Findings and Verdicts
 
-    Categorize issues by actual severity. Not everything is Critical.
-    Acknowledge what was done well before listing issues — accurate praise
-    helps the implementer trust the rest of the feedback.
+    Apply the brief's severity and blocking policy. Without an override:
+    - Critical: severe correctness, security, data, or operational failure.
+    - Important: binding requirement failure or a material defect that prevents
+      trusting or proceeding with the assigned work.
+    - Minor: nonblocking polish or optional improvement.
 
-    If you find significant deviations from the plan, flag them specifically
-    so the implementer can confirm whether the deviation was intentional.
-    If you find issues with the plan itself rather than the implementation,
-    say so.
+    Give stable finding IDs, location, observed evidence, affected criterion
+    or consequence, and recommended action. Separate required fixes, optional
+    suggestions, questions, and verification gaps. Preserve earlier finding
+    IDs and record addressed, still-open, or not-rechecked items.
 
-    ## Output Format
+    ## Report
 
-    ### Strengths
-    [What's well done? Be specific.]
+    Return the shared report linked to this request/brief revision, actual
+    reviewed target, original requester, author, and current owner. Include:
 
-    ### Issues
+    - Assignment status: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED,
+      according to the brief's completion criteria and shared status definitions.
+    - Spec compliance: compliant | issues found | incomplete verification,
+      with criterion outcomes and evidence.
+    - Quality: Approved | Needs fixes | Incomplete verification.
+    - Strengths: specific supported observations, if any.
+    - Findings: IDs, severity, location, evidence, criterion/consequence, action.
+    - Verification performed/reused, actual target/environment, results, gaps.
+    - Recommendations: clearly nonbinding suggestions.
+    - Assessment: readiness within the assigned scope and remaining owner action.
 
-    #### Critical (Must Fix)
-    [Bugs, security issues, data loss risks, broken functionality]
-
-    #### Important (Should Fix)
-    [Architecture problems, missing features, poor error handling, test gaps]
-
-    #### Minor (Nice to Have)
-    [Code style, optimization opportunities, documentation polish]
-
-    For each issue:
-    - File:line reference
-    - What's wrong
-    - Why it matters
-    - How to fix (if not obvious)
-
-    ### Recommendations
-    [Improvements for code quality, architecture, or process]
-
-    ### Assessment
-
-    **Ready to merge?** [Yes | No | With fixes]
-
-    **Reasoning:** [1-2 sentence technical assessment]
-
-    ## Critical Rules
-
-    **DO:**
-    - Categorize by actual severity
-    - Be specific (file:line, not vague)
-    - Explain WHY each issue matters
-    - Acknowledge strengths
-    - Give a clear verdict
-
-    **DON'T:**
-    - Say "looks good" without checking
-    - Mark nitpicks as Critical
-    - Give feedback on code you didn't actually read
-    - Be vague ("improve error handling")
-    - Avoid giving a clear verdict
+    Completing the review assignment is distinct from the implementation
+    passing. Do not approve valid blocking issues or unverified binding criteria.
+    A scoped review does not approve the whole change; no verdict grants
+    permission to commit, merge, release, or change the workflow's fix limit.
 ```
 
-**Placeholders:**
-- `[DESCRIPTION]` — brief summary of what was built
-- `[PLAN_OR_REQUIREMENTS]` — what it should do (plan file path, task text, or requirements)
-- `[BASE_SHA]` — starting commit
-- `[HEAD_SHA]` — ending commit
+## Placeholder Notes
 
-**Reviewer returns:** Strengths, Issues (Critical / Important / Minor), Recommendations, Assessment
+- `[DESCRIPTION]`: Brief summary of the change.
+- `[PLAN_OR_REQUIREMENTS]`: Original goal, governing spec/plan revision,
+  criterion IDs, constraints, and necessary supporting requirements.
+- `[BASE_SHA]` / `[HEAD_SHA]`: Full immutable commit IDs for the recorded
+  assigned range. Mark a commit-only target as inapplicable when necessary.
+- `[TARGET_STATE]`: The exact reviewed commit or versioned working snapshot,
+  including material uncommitted changes.
+- `[DIFF_FILE]`: Complete supplied package, or `none` when the commit range
+  and accessible artifacts fully represent the assigned target.
+- `[REPORT_FILE]`: Producer report and applicable evidence, or explicit gaps.
+- `[REVIEW_ASSIGNMENT]` / `[REVIEW_SCOPE]`: Filled brief or precise equivalent
+  context, including the permitted reporting surface, mode, and boundaries.
 
-## Example Output
+Do not invent unavailable facts or results. Use the shared template conventions
+for identities, status, ownership, and report routing.
 
-```
-### Strengths
-- Clean database schema with proper migrations (db.ts:15-42)
-- Comprehensive test coverage (18 tests, all edge cases)
-- Good error handling with fallbacks (summarizer.ts:85-92)
+## Example Assessment
 
-### Issues
+```text
+Assignment status: DONE — assigned inspection and report completed.
+Spec compliance: issues found.
+Quality: Needs fixes.
 
-#### Important
-1. **Missing help text in CLI wrapper**
-   - File: index-conversations:1-31
-   - Issue: No --help flag, users won't discover --concurrency
-   - Fix: Add --help case with usage examples
+F-01 | Important | api.ts:42
+Evidence: an invalid date is passed to the storage query without validation.
+Criterion C-03 requires invalid dates to return a validation error.
+Recommended action: reject invalid dates before querying and verify that behavior.
 
-2. **Date validation missing**
-   - File: search.ts:25-27
-   - Issue: Invalid dates silently return no results
-   - Fix: Validate ISO format, throw error with example
-
-#### Minor
-1. **Progress indicators**
-   - File: indexer.ts:130
-   - Issue: No "X of Y" counter for long operations
-   - Impact: Users don't know how long to wait
-
-### Recommendations
-- Add progress reporting for user experience
-- Consider config file for excluded projects (portability)
-
-### Assessment
-
-**Ready to merge: With fixes**
-
-**Reasoning:** Core implementation is solid with good architecture and tests. Important issues (help text, date validation) are easily fixed and don't affect core functionality.
+Readiness: Not ready within this scope; F-01 remains blocking.
+The owner evaluates the finding and schedules follow-up under the invoking workflow.
 ```

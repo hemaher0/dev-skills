@@ -1,205 +1,121 @@
 ---
 name: receiving-code-review
-description: Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation
+description: Use when evaluating review feedback before changing code, especially when a suggestion is unclear or conflicts with requirements or project evidence
 ---
 
-# Code Review Reception
+# Receiving Code Review
 
-## Overview
+Evaluate feedback against the intended outcome and actual project evidence
+before accepting, rejecting, or implementing it.
 
-Code review requires technical evaluation, not emotional performance.
+**Core principle:** Verify before implementing. Clarify what affects the decision.
 
-**Core principle:** Verify before implementing. Ask before assuming. Technical correctness over social comfort.
+## Evaluate Each Finding
 
-## The Response Pattern
+1. Read the full review and identify its request, scope, governing requirements,
+   and reviewed revision or snapshot. Check whether later changes affect it.
+2. Understand the claimed defect or suggestion and its consequence. Distinguish
+   a binding requirement, technical defect, optional improvement, and question.
+3. Check the relevant code, interfaces, compatibility constraints, and evidence.
+   Judge the claim against the original goal and necessary supporting
+   requirements, not merely the producer's rationale.
+4. Record the disposition and basis in the existing review report or work record.
+   Preserve finding IDs and prior evidence when the decision changes.
+5. Implement accepted changes within the owning workflow, then verify the
+   affected behavior. Return actual changes, target, covering evidence, and
+   unresolved findings through its report.
 
-```
-WHEN receiving code review feedback:
+Use existing records from
+[writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) where applicable.
+The current owner retains responsibility for disposition and follow-up;
+receiving feedback does not transfer ownership or grant additional authority.
 
-1. READ: Complete feedback without reacting
-2. UNDERSTAND: Restate requirement in own words (or ask)
-3. VERIFY: Check against codebase reality
-4. EVALUATE: Technically sound for THIS codebase?
-5. RESPOND: Technical acknowledgment or reasoned pushback
-6. IMPLEMENT: One item at a time, test each
-```
+## Handle Unclear or Conflicting Feedback
 
-## Forbidden Responses
+Pause the unclear item and any work that depends on its resolution. Determine
+dependencies from shared code, interfaces, assumptions, and requirements.
+Continue clear items only when their independence is established and the owning
+workflow permits it. If the relationship is unknown, pause the affected scope
+until it is resolved.
 
-**NEVER:**
-- "You're absolutely right!" (explicit instruction-file violation)
-- "Great point!" / "Excellent feedback!" (performative)
-- "Let me implement that now" (before verification)
+Ask a specific question or obtain the missing evidence. Do not treat ambiguity
+as rejection, successful verification, or permission to guess. Unresolved
+binding feedback prevents approval or completion of the affected scope.
 
-**INSTEAD:**
-- Restate the technical requirement
-- Ask clarifying questions
-- Push back with technical reasoning if wrong
-- Just start working (actions > words)
+Use existing project instructions, governing decisions, and technical evidence
+to resolve conflicts. The user controls intended scope; factual technical
+claims still require verification regardless of who made them. Escalate an
+unresolved material intent or authority conflict to the current owner or user
+before dependent changes, rather than requesting confirmation for every finding.
 
-## Handling Unclear Feedback
+## Check Purpose Before Adding or Removing Functionality
 
-```
-IF any item is unclear:
-  STOP - do not implement anything yet
-  ASK for clarification on unclear items
+An absence of internal call sites is evidence about internal usage, not proof
+that behavior is unnecessary. Before proposing removal, check:
 
-WHY: Items may be related. Partial understanding = wrong implementation.
-```
+- Public or external consumers, configuration, jobs, dynamic invocation, and
+  documented contracts.
+- Compatibility commitments and supported platforms or versions.
+- Whether the behavior is necessary to achieve the original requested outcome,
+  including supporting requirements the user did not explicitly name.
 
-**Example:**
-```
-your human partner: "Fix 1-6"
-You understand 1,2,3,6. Unclear on 4,5.
+Use relevant searches such as `rg` alongside those sources. If the necessity
+or consumer contract remains unknown, record that gap before a removal decision.
+Conversely, a suggestion for a more elaborate implementation needs a concrete
+requirement, defect, or constraint; convention alone does not justify new scope.
 
-❌ WRONG: Implement 1,2,3,6 now, ask about 4,5 later
-✅ RIGHT: "I understand items 1,2,3,6. Need clarification on 4 and 5 before proceeding."
-```
+## Record the Decision
 
-## Source-Specific Handling
+| Disposition | Basis and next action |
+| --- | --- |
+| Accepted | Record the demonstrated issue and required outcome; fix within the existing scope and authority. |
+| Rejected | Record contrary evidence or the governing decision; preserve the finding for later review. |
+| Needs context or evidence | Record the precise gap, affected work, and needed input or investigation. |
+| Deferred | Record a nonblocking suggestion and rationale under the owning workflow's policy. |
 
-### From your human partner
-- **Trusted** - implement after understanding
-- **Still ask** if scope unclear
-- **No performative agreement**
-- **Skip to action** or technical acknowledgment
+Apply the project's severity and blocking rules. Do not silently drop feedback,
+downgrade a valid blocker to finish, or defer a binding failure as optional work.
+A reasoned rejection is different from postponing an accepted defect.
 
-### From External Reviewers
-```
-BEFORE implementing:
-  1. Check: Technically correct for THIS codebase?
-  2. Check: Breaks existing functionality?
-  3. Check: Reason for current implementation?
-  4. Check: Works on all platforms/versions?
-  5. Check: Does reviewer understand full context?
+## Fix and Verify
 
-IF suggestion seems wrong:
-  Push back with technical reasoning
+Prioritize valid blockers and dependencies. Group coherent fixes where the
+owning workflow permits; do not invent a competing scheduler or retry policy.
+Use focused checks that cover the changed behavior and relevant regressions,
+or valid existing evidence when its target and assumptions still apply.
 
-IF can't easily verify:
-  Say so: "I can't verify this without [X]. Should I [investigate/ask/proceed]?"
+The fix report identifies addressed finding IDs, actual artifact revisions,
+checks and results, and remaining limits. A statement that a fix was made
+does not itself close the finding. The owning workflow determines confirmation,
+required re-review, and completion gates.
 
-IF conflicts with your human partner's prior decisions:
-  Stop and discuss with your human partner first
-```
+When a fix changes a commit-preparation candidate, return its actual target and
+affected evidence to the owner. Renew affected checks and technical review
+under the invoking workflow's gates and limits. Keep unaffected findings and
+checks; do not treat the earlier verdict as approval of materially changed
+artifacts.
 
-**your human partner's rule:** "External feedback - be skeptical, but check carefully"
+## Communicate the Technical Basis
 
-## YAGNI Check for "Professional" Features
+Follow actual user and project communication rules. State the requirement,
+evidence, decision, or fix respectfully and concretely. Courtesy is compatible
+with technical rigor; agreement or gratitude does not replace evaluation.
 
-```
-IF reviewer suggests "implementing properly":
-  grep codebase for actual usage
+When pushing back, explain the conflicting contract or observed behavior and
+what evidence would change the decision. If later evidence disproves the
+pushback, correct the recorded basis and proceed with the supported change.
 
-  IF unused: "This endpoint isn't called. Remove it (YAGNI)?"
-  IF used: Then implement properly
-```
+When external replies are already authorized, use the relevant review thread
+and preserve the finding's context. This skill does not authorize sending
+messages to other people.
 
-**your human partner's rule:** "You and reviewer both report to me. If we don't need this feature, don't add it."
+## Examples
 
-## Implementation Order
-
-```
-FOR multi-item feedback:
-  1. Clarify anything unclear FIRST
-  2. Then implement in this order:
-     - Blocking issues (breaks, security)
-     - Simple fixes (typos, imports)
-     - Complex fixes (refactoring, logic)
-  3. Test each fix individually
-  4. Verify no regressions
-```
-
-## When To Push Back
-
-Push back when:
-- Suggestion breaks existing functionality
-- Reviewer lacks full context
-- Violates YAGNI (unused feature)
-- Technically incorrect for this stack
-- Legacy/compatibility reasons exist
-- Conflicts with your human partner's architectural decisions
-
-**How to push back:**
-- Use technical reasoning, not defensiveness
-- Ask specific questions
-- Reference working tests/code
-- Involve your human partner if architectural
-
-**If you're uncomfortable pushing back out loud:** Name that tension, then tell your partner about the issue you've seen. They'll appreciate your honesty.
-
-## Acknowledging Correct Feedback
-
-When feedback IS correct:
-```
-✅ "Fixed. [Brief description of what changed]"
-✅ "Good catch - [specific issue]. Fixed in [location]."
-✅ [Just fix it and show in the code]
-
-❌ "You're absolutely right!"
-❌ "Great point!"
-❌ "Thanks for catching that!"
-❌ "Thanks for [anything]"
-❌ ANY gratitude expression
-```
-
-**Why no thanks:** Actions speak. Just fix it. The code itself shows you heard the feedback.
-
-**If you catch yourself about to write "Thanks":** DELETE IT. State the fix instead.
-
-## Gracefully Correcting Your Pushback
-
-If you pushed back and were wrong:
-```
-✅ "You were right - I checked [X] and it does [Y]. Implementing now."
-✅ "Verified this and you're correct. My initial understanding was wrong because [reason]. Fixing."
-
-❌ Long apology
-❌ Defending why you pushed back
-❌ Over-explaining
-```
-
-State the correction factually and move on.
-
-## Common Mistakes
-
-| Mistake | Fix |
-|---------|-----|
-| Performative agreement | State requirement or just act |
-| Blind implementation | Verify against codebase first |
-| Batch without testing | One at a time, test each |
-| Assuming reviewer is right | Check if breaks things |
-| Avoiding pushback | Technical correctness > comfort |
-| Partial implementation | Clarify all items first |
-| Can't verify, proceed anyway | State limitation, ask for direction |
-
-## Real Examples
-
-**Performative Agreement (Bad):**
-```
-Reviewer: "Remove legacy code"
-❌ "You're absolutely right! Let me remove that..."
-```
-
-**Technical Verification (Good):**
-```
-Reviewer: "Remove legacy code"
-✅ "Checking... build target is 10.15+, this API needs 13+. Need legacy for backward compat. Current impl has wrong bundle ID - fix it or drop pre-13 support?"
-```
-
-**YAGNI (Good):**
-```
-Reviewer: "Implement proper metrics tracking with database, date filters, CSV export"
-✅ "Grepped codebase - nothing calls this endpoint. Remove it (YAGNI)? Or is there usage I'm missing?"
-```
-
-**Unclear Item (Good):**
-```
-your human partner: "Fix items 1-6"
-You understand 1,2,3,6. Unclear on 4,5.
-✅ "Understand 1,2,3,6. Need clarification on 4 and 5 before implementing."
-```
-
-## GitHub Thread Replies
-
-When replying to inline review comments on GitHub, reply in the comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a top-level PR comment.
+- One finding concerns an isolated documentation typo; another is unclear about
+  a shared API contract. Fix the typo if independence is established and the
+  workflow permits it; pause the API change and its dependent work.
+- A public endpoint has no internal callers but is covered by an external
+  integration contract. Do not remove it based on the local search result.
+- A review marked `DONE` identifies an unverified binding criterion. Record
+  the evidence gap and obtain the required check; do not infer approval from
+  the assignment status.

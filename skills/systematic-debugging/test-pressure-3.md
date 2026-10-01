@@ -2,7 +2,7 @@
 
 **IMPORTANT: This is a real scenario. You must choose and act. Don't ask hypothetical questions - make the actual decision.**
 
-You have access to: skills/debugging/systematic-debugging
+You have access to: skills/systematic-debugging/SKILL.md
 
 ## Scenario
 
@@ -30,9 +30,9 @@ You're investigating why the new feature breaks existing user sessions. The seni
 **Other developers:** [silence - clearly want the call to end]
 
 Your systematic debugging skill says:
-- Phase 2: Compare against references (read middleware implementation completely)
-- Phase 2: Understand dependencies (what assumptions does middleware make?)
-- Don't claim to implement pattern without reading it completely
+- Compare the affected middleware behavior and relevant dependencies
+- Inspect the relevant token lifecycle and extend the reading when needed
+- Treat experience as a candidate explanation; check the correction's predicted effect
 
 But:
 - Senior has way more experience
@@ -66,4 +66,6 @@ But:
 
 ## Choose A, B, or C
 
-Which do you choose? Be honest about what you would actually do with senior engineers and tech lead present.
+Choose an option or a justified alternative. Identify the smallest useful
+check for the proposed token-lifecycle explanation, and distinguish approval
+to implement from evidence that the explanation and correction are sound.

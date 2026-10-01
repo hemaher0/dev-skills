@@ -1,167 +1,178 @@
 ---
 name: dispatching-parallel-agents
-description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+description: Use when two or more independent problem domains can be investigated or fixed concurrently without conflicting writes, shared execution state, or sequential dependencies
 ---
 
 # Dispatching Parallel Agents
 
-## Overview
+## Purpose
 
-You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
+Dispatch one agent per independent problem domain and let them investigate or
+fix it concurrently. The coordinator integrates their results and retains
+responsibility for the whole work. This skill does not turn a sequential
+implementation plan into parallel implementation tasks; use
+[subagent-driven-development](../subagent-driven-development/SKILL.md) for that
+skill's sequential implementation and review cycle.
 
-When you have multiple unrelated failures (different test files, different subsystems, different bugs), investigating them sequentially wastes time. Each investigation is independent and can happen in parallel.
+Give each agent isolated task context: the goal, relevant evidence, interfaces,
+constraints, and artifact references it needs. Do not pass accumulated session
+history. Isolation does not mean withholding a dependency the task needs.
 
-**Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
+## Decide Whether Work Is Independent
 
-## When to Use
+Useful candidates include unrelated failures in different subsystems or
+separate investigations whose results can be evaluated independently. Different
+test files alone do not establish independence: failures may share one cause.
+
+Before dispatch, check:
+
+- **Purpose and size:** Each assignment has a meaningful outcome. Splitting
+  should save useful investigation time after coordination and integration
+  costs; agent availability is not a reason to create more tasks.
+- **Inputs and dependencies:** Required inputs already exist, and no assignment
+  needs another concurrent assignment's unfinished output or decision.
+- **Interfaces and invariants:** Changes can preserve agreed API behavior,
+  formats, and shared rules without coordinating their implementation live.
+- **Mutable resources:** Writers have separate authorized surfaces and execution
+  state. Check Git index, HEAD and branch state, generated outputs, caches,
+  databases, ports, and test services as well as source files.
+
+Read-only investigations may share stable inputs. For concurrent writers, use
+the applicable Git workspace workflow to assign isolated checkouts when Git
+state or outputs would conflict. Separate checkouts do not remove semantic
+dependencies or isolate shared external services. If safe isolation is not
+available, parallelize investigation only or execute the affected work
+sequentially.
 
 ```dot
 digraph when_to_use {
-    "Multiple failures?" [shape=diamond];
-    "Are they independent?" [shape=diamond];
-    "Single agent investigates all" [shape=box];
-    "One agent per problem domain" [shape=box];
-    "Can they work in parallel?" [shape=diamond];
-    "Sequential agents" [shape=box];
-    "Parallel dispatch" [shape=box];
+    "Multiple problem domains?" [shape=diamond];
+    "Independent inputs and contracts?" [shape=diamond];
+    "Investigate related work together" [shape=box];
+    "Safe resources and useful concurrency?" [shape=diamond];
+    "Sequential work or read-only investigation" [shape=box];
+    "Dispatch independent domains concurrently" [shape=box];
 
-    "Multiple failures?" -> "Are they independent?" [label="yes"];
-    "Are they independent?" -> "Single agent investigates all" [label="no - related"];
-    "Are they independent?" -> "Can they work in parallel?" [label="yes"];
-    "Can they work in parallel?" -> "Parallel dispatch" [label="yes"];
-    "Can they work in parallel?" -> "Sequential agents" [label="no - shared state"];
+    "Multiple problem domains?" -> "Independent inputs and contracts?" [label="yes"];
+    "Multiple problem domains?" -> "Investigate related work together" [label="no"];
+    "Independent inputs and contracts?" -> "Investigate related work together" [label="no"];
+    "Independent inputs and contracts?" -> "Safe resources and useful concurrency?" [label="yes"];
+    "Safe resources and useful concurrency?" -> "Sequential work or read-only investigation" [label="no"];
+    "Safe resources and useful concurrency?" -> "Dispatch independent domains concurrently" [label="yes"];
 }
 ```
 
-**Use when:**
-- 3+ test files failing with different root causes
-- Multiple subsystems broken independently
-- Each problem can be understood without context from others
-- No shared state between investigations
+## Prepare Briefs and Reports
 
-**Don't use when:**
-- Failures are related (fix one might fix others)
-- Need to understand full system state
-- Agents would interfere with each other
+Use [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) and its existing
+[brief](../writing-agent-handoffs/templates/brief.md) and
+[report](../writing-agent-handoffs/templates/report.md) templates. Reuse the
+project's or current workflow's paths and records; otherwise use that skill's
+`.kryptonite/work/<work-id>/` defaults. Do not create a competing spec or
+contract document for each agent.
 
-## The Pattern
+Each brief identifies the request, brief revision, assignee, current owner,
+role, and report destination, and includes:
 
-### 1. Identify Independent Domains
+- The original goal or symptom, governing spec/plan revision and applicable
+  requirement IDs. Passing a failing test is evidence, not permission to
+  replace the requested behavior with whatever passes.
+- The bounded investigation or fix, required inputs and their snapshots,
+  assumptions that must hold before work starts, and relevant interfaces.
+- Observable completion criteria, required outcomes, and shared invariants
+  that must still hold after the work. Put these in the template's existing
+  inputs, constraints, and completion sections.
+- Permitted writes and decisions, excluded work, verification scope, and what
+  dependency or missing input should cause a report before continuing.
+- Expected artifacts and criterion-linked evidence, including actual checked
+  revisions, commands/results, remaining work, and integration requirements.
 
-Group failures by what's broken:
-- File A tests: Tool approval flow
-- File B tests: Batch completion behavior
-- File C tests: Abort functionality
+Use the predefined roles where applicable: `researcher` for investigation,
+`implementer` for fixes, and `coordinator` for integration. A role does not
+grant authority. A brief/report retains the requester's responsibility;
+changing a worker does not transfer it. Use a handoff only when the owner
+transfers continuation of the named scope; no acknowledgement is required.
 
-Each domain is independent - fixing tool approval doesn't affect abort tests.
+## Dispatch and Monitor
 
-### 2. Create Focused Agent Tasks
+Start independent assignments through the host's actual concurrent execution
+mechanism, within project and host limits. Multiple calls in one message do
+not by themselves guarantee concurrent execution. Choose concurrency and
+models according to task complexity, evidence needs, and coordination cost;
+do not fill every available slot automatically.
 
-Each agent gets:
-- **Specific scope:** One test file or subsystem
-- **Clear goal:** Make these tests pass
-- **Constraints:** Don't change other code
-- **Expected output:** Summary of what you found and fixed
+Give each worker its brief path, work root, necessary context references, and
+report destination. Workers return a compact status and report reference;
+the full report preserves evidence and material failed attempts. Handle
+`DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, and `BLOCKED` as claims requiring
+owner evaluation, not automatic integration approvals.
 
-### 3. Dispatch in Parallel
+**If independence breaks:** A worker reports the affected interface, invariant,
+resource, or unfinished dependency and pauses the affected activity before
+making conflicting changes. The current owner decides whether to supply
+context, repartition, isolate resources, or sequence the coupled work. Update
+the affected briefs and record the decision; unrelated assignments can continue
+while their independence remains valid. Do not silently expand a worker's scope.
 
-Issue all three subagent dispatches in the same response — they run in parallel:
+**If another attempt is needed:** Follow project limits. Identify what changed
+in the hypothesis, context, inputs, or diagnostics before retrying. A test-count
+plateau alone does not establish no progress. If no meaningful next attempt is
+available, return the missing input or blocker instead of repeating the same
+assignment unchanged.
 
-```text
-Subagent (general-purpose): "Fix agent-tool-abort.test.ts failures"
-Subagent (general-purpose): "Fix batch-completion-behavior.test.ts failures"
-Subagent (general-purpose): "Fix tool-approval-race-conditions.test.ts failures"
-# All three run concurrently.
-```
+## Evaluate and Integrate
 
-Multiple dispatch calls in one response = parallel execution. One per response = sequential.
+1. Match each report to its request, brief revision, assignee, and actual
+   artifact snapshot. Resolve its recipient from the current ownership record
+   if the owner changed; preserve the original requester and actual author.
+2. Compare results with the original goal and observable criteria. Inspect
+   changes and unresolved concerns; retain a useful partial result without
+   calling an unmet or unverified criterion complete.
+3. Check both write conflicts and semantic interaction: interfaces, shared
+   invariants, and assumptions that another result may invalidate. A clean
+   merge and individually passing tests are insufficient combined evidence.
+4. Integrate the authorized changes and verify the actual integrated state:
+   reproduce the original symptoms, check the affected cross-component
+   contracts, and run the relevant regression checks and project-required
+   suite. Record the tested target; earlier worker runs apply to their recorded
+   snapshots, not automatically to the combined result.
+5. Use [requesting-code-review](../requesting-code-review/SKILL.md) at the review
+   points required by the change and project. Supply the real baseline-to-target
+   range, governing requirements, and evidence. Evaluate feedback through
+   [receiving-code-review](../receiving-code-review/SKILL.md) before assigning
+   fixes; valid unresolved Critical/Important findings prevent completion.
 
-### 4. Review and Integrate
+Parallel dispatch does not add SDD's mandatory per-task review loop to every
+investigation. Keep the enclosing workflow's review and completion gates.
 
-When agents return:
-- Read each summary
-- Verify fixes don't conflict
-- Run full test suite
-- Integrate all changes
+## Recover Without Repeating Work
 
-## Agent Prompt Structure
+After interrupted execution or a late report, inspect the recorded assignment,
+current owner, artifact state, and brief/spec revisions before dispatching again.
+Reconcile an unknown tool outcome before repeating a mutation. A request ID
+helps identify intent but does not guarantee exactly-once execution.
 
-Good agent prompts are:
-1. **Focused** - One clear problem domain
-2. **Self-contained** - All context needed to understand the problem
-3. **Specific about output** - What should the agent return?
+An older report may retain useful evidence; determine which criteria and
+assumptions remain valid instead of treating it as current merely because its
+status is `DONE`, or discarding all of it merely because a revision changed.
+Preserve material attempts and pending requests through worker replacement or
+ownership transfer.
 
-```markdown
-Fix the 3 failing tests in src/agents/agent-tool-abort.test.ts:
+For development work, use
+[developing-with-specs](../developing-with-specs/SKILL.md) for durable
+documentation and spec retention, and
+[writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) for communication
+records. Route requested commit preparation through
+[using-kryptonite](../using-kryptonite/SKILL.md). Parallel dispatch owns
+independent assignments and result integration. Returning reports does not
+authorize disposal of pending records or cleanup of other work.
 
-1. "should abort tool with partial output capture" - expects 'interrupted at' in message
-2. "should handle mixed completed and aborted tools" - fast tool aborted instead of completed
-3. "should properly track pendingToolCount" - expects 3 results but gets 0
+## Example
 
-These are timing/race condition issues. Your task:
-
-1. Read the test file and understand what each test verifies
-2. Identify root cause - timing issues or actual bugs?
-3. Fix by:
-   - Replacing arbitrary timeouts with event-based waiting
-   - Fixing bugs in abort implementation if found
-   - Adjusting test expectations if testing changed behavior
-
-Do NOT just increase timeouts - find the real issue.
-
-Return: Summary of what you found and what you fixed.
-```
-
-## Common Mistakes
-
-**❌ Too broad:** "Fix all the tests" - agent gets lost
-**✅ Specific:** "Fix agent-tool-abort.test.ts" - focused scope
-
-**❌ No context:** "Fix the race condition" - agent doesn't know where
-**✅ Context:** Paste the error messages and test names
-
-**❌ No constraints:** Agent might refactor everything
-**✅ Constraints:** "Do NOT change production code" or "Fix tests only"
-
-**❌ Vague output:** "Fix it" - you don't know what changed
-**✅ Specific:** "Return summary of root cause and changes"
-
-## When NOT to Use
-
-**Related failures:** Fixing one might fix others - investigate together first
-**Need full context:** Understanding requires seeing entire system
-**Exploratory debugging:** You don't know what's broken yet
-**Shared state:** Agents would interfere (editing same files, using same resources)
-
-## Real Example from Session
-
-**Scenario:** 6 test failures across 3 files after major refactoring
-
-**Failures:**
-- agent-tool-abort.test.ts: 3 failures (timing issues)
-- batch-completion-behavior.test.ts: 2 failures (tools not executing)
-- tool-approval-race-conditions.test.ts: 1 failure (execution count = 0)
-
-**Decision:** Independent domains - abort logic separate from batch completion separate from race conditions
-
-**Dispatch:**
-```
-Agent 1 → Fix agent-tool-abort.test.ts
-Agent 2 → Fix batch-completion-behavior.test.ts
-Agent 3 → Fix tool-approval-race-conditions.test.ts
-```
-
-**Results:**
-- Agent 1: Replaced timeouts with event-based waiting
-- Agent 2: Fixed event structure bug (threadId in wrong place)
-- Agent 3: Added wait for async tool execution to complete
-
-**Integration:** All fixes independent, no conflicts, full suite green
-
-## Verification
-
-After agents return:
-1. **Review each summary** - Understand what changed
-2. **Check for conflicts** - Did agents edit same code?
-3. **Run full suite** - Verify all fixes work together
-4. **Spot check** - Agents can make systematic errors
+Two failures appear independent: a parser rejects a supported format and a
+background job fails to publish an update. Assign separate briefs with stable
+inputs and isolated write resources. If the job agent discovers that its
+payload uses the parser's changing format, it reports that dependency before
+changing the format itself. Sequence only the coupled fix. After integrating,
+verify that the supported input still reaches the published update, even if
+both original unit tests passed independently.

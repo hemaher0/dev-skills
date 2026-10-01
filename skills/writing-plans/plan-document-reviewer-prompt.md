@@ -1,49 +1,48 @@
 # Plan Document Reviewer Prompt Template
 
-Use this template when dispatching a plan document reviewer subagent.
+Use this prompt for an independent plan review when needed and delegation is
+authorized. Otherwise apply its checks directly. Review is read-only for the
+artifacts under review.
 
-**Purpose:** Verify the plan is complete, matches the spec, and has proper task decomposition.
+**Purpose:** Check that tasks preserve the spec's purposes and produce evidence
+covering the original requested outcome.
 
-**Dispatch after:** The complete plan is written.
+```text
+You are reviewing an implementation plan before dependent execution.
 
-```
-Subagent (general-purpose):
-  description: "Review plan document"
-  prompt: |
-    You are a plan document reviewer. Verify this plan is complete and ready for implementation.
+Plan and revision: [PLAN_FILE_PATH_AND_REVISION]
+Current spec and revision: [SPEC_FILE_PATH_AND_REVISION]
+Governing requirements and original request: [SOURCE_REFERENCES]
+Execution workflow and existing authorization: [EXECUTION_CONTEXT]
 
-    **Plan to review:** [PLAN_FILE_PATH]
-    **Spec for reference:** [SPEC_FILE_PATH]
+Check:
+- Alignment: Does the plan use the current spec and preserve the original goal?
+- Coverage: Does every material requirement have implementing work and an
+  appropriate check? Do final checks cover the requested outcome, not only parts?
+- Purpose: Does each task explain the result it serves and its requirement IDs?
+- Scope: Are additions justified rather than invented habits or unrelated work?
+- Dependencies: Are task inputs, outputs, necessary interfaces, and relevant
+  exact constraints consistent and available before dependent work?
+- Actionability: Can a capable implementer act without making a blocking guess?
+  An explicit discovery step can resolve an unknown before dependent work;
+  full implementation code is not required for every action.
+- Extraction: For SDD, do numbered Task N sections and checkboxes remain usable,
+  and does each extracted task retain its purpose, spec reference, constraints,
+  dependencies, and completion criteria? Is the active plan basename unique?
+- Authority: Are delegation and any needed commit checkpoints supported by the
+  selected workflow and existing instructions rather than assumed from tools?
 
-    ## What to Check
+Flag consequential omissions, contradictions, unsupported scope, or unusable
+dependency contracts. Do not block on stylistic preferences, task duration,
+missing optional code samples, or nonblocking unknowns with resolution points.
 
-    | Category | What to Look For |
-    |----------|------------------|
-    | Completeness | TODOs, placeholders, incomplete tasks, missing steps |
-    | Spec Alignment | Plan covers spec requirements, no major scope creep |
-    | Task Decomposition | Tasks have clear boundaries, steps are actionable |
-    | Buildability | Could an engineer follow this plan without getting stuck? |
-
-    ## Calibration
-
-    **Only flag issues that would cause real problems during implementation.**
-    An implementer building the wrong thing or getting stuck is an issue.
-    Minor wording, stylistic preferences, and "nice to have" suggestions are not.
-
-    Approve unless there are serious gaps — missing requirements from the spec,
-    contradictory steps, placeholder content, or tasks so vague they can't be acted on.
-
-    ## Output Format
-
-    ## Plan Review
-
-    **Status:** Approved | Issues Found
-
-    **Issues (if any):**
-    - [Task X, Step Y]: [specific issue] - [why it matters for implementation]
-
-    **Recommendations (advisory, do not block approval):**
-    - [suggestions for improvement]
+Return:
+Status: Approved | Issues Found
+Reviewed plan/spec revisions and source references
+Issues: task/requirement, evidence, why it matters, affected dependent work
+Verification limits or unresolved source questions
+Advisory recommendations, if useful
 ```
 
-**Reviewer returns:** Status, Issues (if any), Recommendations
+Approval is a scoped review verdict. It does not authorize execution, commits,
+ownership transfer, or publication. The current owner evaluates the findings.

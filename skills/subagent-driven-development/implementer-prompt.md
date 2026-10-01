@@ -1,142 +1,117 @@
 # Implementer Subagent Prompt Template
 
-Use this template when dispatching an implementer subagent.
+Use for a new plan task or an evaluated fix assignment. Keep the task's full
+requirements in its brief; supply the current assignment identity and bounded
+context without copying session history. Apply the role/model policy in
+[SKILL.md](SKILL.md).
 
-```
-Subagent (general-purpose):
-  description: "Implement Task N: [task name]"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
+```text
+Subagent:
+  description: "Implement Task N: [TASK_NAME]"
+  model: [MODEL — select or inherit according to project and host preferences]
   prompt: |
-    You are implementing Task N: [task name]
+    You are implementing Task N: [TASK_NAME].
 
-    ## Task Description
+    ## Assignment and Context
 
-    Read your task brief first: [BRIEF_FILE]
-    It contains the full task text from the plan.
+    Read the task brief first: [BRIEF_FILE]. It contains the extracted plan
+    task, purpose, governing spec/plan revisions, applicable requirement IDs,
+    completion criteria, interfaces, and permitted decisions/write surfaces.
 
-    ## Context
+    Current assignment: [ASSIGNMENT_REFERENCE — request ID, brief revision,
+    requester/current owner, assignee, and any fix-round reference].
+    Relevant context references: [CONTEXT_REFERENCES].
+    Work from: [WORK_ROOT]. Full report destination: [REPORT_FILE].
 
-    [Scene-setting: where this fits, dependencies, architectural context]
+    The requester/current owner retains responsibility. This brief and your
+    report do not transfer it. If a separate handoff changes the owner, follow
+    the recorded successor and report routing while preserving this request's
+    identity and original requester.
 
-    ## Before You Begin
+    ## Before and During Implementation
 
-    If you have questions about:
-    - The requirements or acceptance criteria
-    - The approach or implementation strategy
-    - Dependencies or assumptions
-    - Anything unclear in the task description
+    Confirm required inputs and their snapshots, completed prerequisites,
+    and the shared invariants your work must preserve. Read referenced spec
+    or dependency sections when needed; do not infer missing material choices
+    from habit. Resolve routine decisions within the brief's authority.
+    Report NEEDS_CONTEXT for a missing input or material unresolved decision.
 
-    **Ask them now.** Raise any concerns before starting work.
+    Implement the requested behavior and necessary supporting requirements
+    for their stated purpose. Do not change expectations merely to make a
+    test pass or add unrelated improvements. Follow the planned structure
+    and established project patterns; report an unanticipated scope or
+    architectural change before undertaking it.
 
-    ## Your Job
+    If a new interface, shared-resource, or unfinished dependency invalidates
+    the brief, pause the affected activity and report the dependency, evidence,
+    and decision needed. Do not silently expand the assignment.
 
-    Once you're clear on requirements:
-    1. Implement exactly what the task specifies
-    2. Write tests (following TDD if task says to)
-    3. Verify implementation works
-    4. Commit your work
-    5. Self-review (see below)
-    6. Report back
+    Use meaningful checks appropriate to the change and project. Follow TDD
+    when required or applicable; record actual RED/GREEN evidence when the
+    task requires it. Use focused checks while iterating and run broader
+    required validation at the appropriate boundary, without repeating it
+    after every edit. Commit only when authorized by the plan/user/project.
 
-    Work from: [directory]
+    ## Recovery and Stopping
 
-    **While you work:** If you encounter something unexpected or unclear, **ask questions**.
-    It's always OK to pause and clarify. Don't guess or make assumptions.
+    Before resuming or repeating a mutation with an unknown outcome, inspect
+    actual artifacts, commits, uncommitted changes, and earlier reports.
+    Preserve completed work and material attempt history. If your assignment
+    was superseded, report the existing result with its original revision;
+    do not apply it to a different brief or continue conflicting writes.
 
-    While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    If stuck, identify what you tried, what the observations established,
+    and which input, hypothesis, diagnosis, or decision could change the next
+    attempt. A test-count plateau alone does not prove lack of progress.
+    If no useful next attempt is available, report BLOCKED or NEEDS_CONTEXT
+    rather than retrying unchanged. Do not reset recorded fix-round counts
+    when resumed or replaced.
 
-    ## Code Organization
+    ## Self-Review
 
-    You reason best about code you can hold in context at once, and your edits are more
-    reliable when files are focused. Keep this in mind:
-    - Follow the file structure defined in the plan
-    - Each file should have one clear responsibility with a well-defined interface
-    - If a file you're creating is growing beyond the plan's intent, stop and report
-      it as DONE_WITH_CONCERNS — don't split files on your own without plan guidance
-    - If an existing file you're modifying is already large or tangled, work carefully
-      and note it as a concern in your report
-    - In existing codebases, follow established patterns. Improve code you're touching
-      the way a good developer would, but don't restructure things outside your task.
+    Compare actual work with the original goal, every binding criterion,
+    permitted scope, interfaces, and invariants. Check real behavior and
+    relevant edge cases, error handling, maintainability, and verification
+    evidence for the actual target. Resolve issues within the assignment;
+    self-review does not replace the independent task review.
 
-    ## When You're in Over Your Head
+    ## After Evaluated Review Findings
 
-    It is always OK to stop and say "this is too hard for me." Bad work is worse than
-    no work. You will not be penalized for escalating.
+    Fix assignment: [EVALUATED_FINDINGS — none for an initial implementation;
+    otherwise finding IDs, evidence, permitted fix scope, and attempt number].
 
-    **STOP and escalate when:**
-    - The task requires architectural decisions with multiple valid approaches
-    - You need to understand code beyond what was provided and can't find clarity
-    - You feel uncertain about whether your approach is correct
-    - The task involves restructuring existing code in ways the plan didn't anticipate
-    - You've been reading file after file trying to understand the system without progress
+    For fixes, verify the findings against the current code and governing
+    requirements before changing it. Report a concrete contradiction or
+    missing context instead of blindly applying a suggestion. Implement the
+    accepted fixes, run checks covering the amended code, and append a new
+    separately identified report. State each finding's outcome and basis;
+    reviewer verification still determines whether it is closed.
 
-    **How to escalate:** Report back with status BLOCKED or NEEDS_CONTEXT. Describe
-    specifically what you're stuck on, what you've tried, and what kind of help you need.
-    The controller can provide more context, re-dispatch with a more capable model,
-    or break the task into smaller pieces.
+    ## Report Contract
 
-    ## Before Reporting Back: Self-Review
+    Use the shared report template's structure in [REPORT_FILE]. Preserve
+    earlier returns in this file and append a report with a distinct report
+    ID, current request ID and brief revision, actual author/recorder,
+    original requester, current owner, and target revision or snapshot.
 
-    Review your work with fresh eyes. Ask yourself:
+    Include:
+    - Understood goal and work actually performed, with artifact paths.
+    - Criterion IDs and MET, NOT_MET, or NOT_VERIFIED outcomes, each tied to
+      evidence and its checked revision/environment.
+    - Actual check commands, results, relevant logs, and any verification gaps.
+    - RED/GREEN observations if TDD evidence was required; do not invent runs.
+    - Decisions/deviations, material prior attempts, unresolved findings,
+      dependencies, and exact input or action needed from the current owner.
 
-    **Completeness:**
-    - Did I fully implement everything in the spec?
-    - Did I miss any requirements?
-    - Are there edge cases I didn't handle?
+    Return a compact message with:
+    - Status: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED.
+    - Actual target and commits, if any.
+    - Check summary, unresolved concern or blocker, and report path/report ID.
 
-    **Quality:**
-    - Is this my best work?
-    - Are names clear and accurate (match what things do, not how they work)?
-    - Is the code clean and maintainable?
-
-    **Discipline:**
-    - Did I avoid overbuilding (YAGNI)?
-    - Did I only build what was requested?
-    - Did I follow existing patterns in the codebase?
-
-    **Testing:**
-    - Do tests actually verify behavior (not just mock behavior)?
-    - Did I follow TDD if required?
-    - Are tests comprehensive?
-    - Is the test output pristine (no stray warnings or noise)?
-
-    If you find issues during self-review, fix them now before reporting.
-
-    ## After Review Findings
-
-    If the task review finds issues, you will be resumed with the findings.
-    Fix them, re-run the tests that cover the amended code, and append a fix
-    report to your report file: what you changed, the covering tests you
-    ran, the command, and the output. Reviewers will not re-run tests for
-    you — your report is the test evidence. Then reply with the same short
-    status contract as your first report.
-
-    ## Report Format
-
-    Write your full report to [REPORT_FILE]:
-    - What you implemented (or what you attempted, if blocked)
-    - What you tested and test results
-    - **TDD Evidence** (if TDD was required for this task):
-      - RED: command run, relevant failing output before implementation, and why the failure was expected
-      - GREEN: command run and relevant passing output after implementation
-    - Files changed
-    - Self-review findings (if any)
-    - Any issues or concerns
-
-    Then report back with ONLY (under 15 lines — the detail lives in the
-    report file):
-    - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
-    - Commits created (short SHA + subject)
-    - One-line test summary (e.g. "14/14 passing, output pristine")
-    - Your concerns, if any
-    - The report file path
-
-    If BLOCKED or NEEDS_CONTEXT, put the specifics in the final message
-    itself — the controller acts on it directly.
-
-    Use DONE_WITH_CONCERNS if you completed the work but have doubts about correctness.
-    Use BLOCKED if you cannot complete the task. Use NEEDS_CONTEXT if you need
-    information that wasn't provided. Never silently produce work you're unsure about.
+    DONE claims the assigned work is complete; it is not review approval.
+    Use DONE_WITH_CONCERNS for completed work with explicit remaining concerns.
+    An unmet required criterion or blocking input is incomplete: report
+    BLOCKED, or NEEDS_CONTEXT when the missing information prevents completion.
+    Put the exact blocker or needed input in the return message as well as
+    the report so the owner can act.
 ```

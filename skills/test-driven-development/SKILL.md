@@ -1,320 +1,160 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: Use when implementing features, fixing bugs, or refactoring and deciding whether test-first development or a new regression test adds useful coverage
 ---
 
-# Test-Driven Development (TDD)
-
-## Overview
-
-Write the test first. Watch it fail. Write minimal code to pass.
-
-**Core principle:** If you didn't watch the test fail, you don't know if it tests the right thing.
-
-**Violating the letter of the rules is violating the spirit of the rules.**
-
-## When to Use
-
-**Always:**
-- New features
-- Bug fixes
-- Refactoring
-- Behavior changes
-
-**Exceptions (ask your human partner):**
-- Throwaway prototypes
-- Generated code
-- Configuration files
-
-Thinking "skip TDD just this once"? Stop. That's rationalization.
-
-## The Iron Law
-
-```
-NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
-```
-
-Write code before the test? Delete it. Start over.
-
-**No exceptions:**
-- Don't keep it as "reference"
-- Don't "adapt" it while writing tests
-- Don't look at it
-- Delete means delete
-
-Implement fresh from tests. Period.
-
-## Red-Green-Refactor
-
-```dot
-digraph tdd_cycle {
-    rankdir=LR;
-    red [label="RED\nWrite failing test", shape=box, style=filled, fillcolor="#ffcccc"];
-    verify_red [label="Verify fails\ncorrectly", shape=diamond];
-    green [label="GREEN\nMinimal code", shape=box, style=filled, fillcolor="#ccffcc"];
-    verify_green [label="Verify passes\nAll green", shape=diamond];
-    refactor [label="REFACTOR\nClean up", shape=box, style=filled, fillcolor="#ccccff"];
-    next [label="Next", shape=ellipse];
-
-    red -> verify_red;
-    verify_red -> green [label="yes"];
-    verify_red -> red [label="wrong\nfailure"];
-    green -> verify_green;
-    verify_green -> refactor [label="yes"];
-    verify_green -> green [label="no"];
-    refactor -> verify_green [label="stay\ngreen"];
-    verify_green -> next;
-    next -> red;
-}
-```
-
-### RED - Write Failing Test
-
-Write one minimal test showing what should happen.
-
-<Good>
-```typescript
-test('retries failed operations 3 times', async () => {
-  let attempts = 0;
-  const operation = () => {
-    attempts++;
-    if (attempts < 3) throw new Error('fail');
-    return 'success';
-  };
-
-  const result = await retryOperation(operation);
-
-  expect(result).toBe('success');
-  expect(attempts).toBe(3);
-});
-```
-Clear name, tests real behavior, one thing
-</Good>
-
-<Bad>
-```typescript
-test('retry works', async () => {
-  const mock = jest.fn()
-    .mockRejectedValueOnce(new Error())
-    .mockRejectedValueOnce(new Error())
-    .mockResolvedValueOnce('success');
-  await retryOperation(mock);
-  expect(mock).toHaveBeenCalledTimes(3);
-});
-```
-Vague name, tests mock not code
-</Bad>
-
-**Requirements:**
-- One behavior
-- Clear name
-- Real code (no mocks unless unavoidable)
-
-### Verify RED - Watch It Fail
-
-**MANDATORY. Never skip.**
-
-```bash
-npm test path/to/test.test.ts
-```
-
-Confirm:
-- Test fails (not errors)
-- Failure message is expected
-- Fails because feature missing (not typos)
-
-**Test passes?** You're testing existing behavior. Fix test.
-
-**Test errors?** Fix error, re-run until it fails correctly.
-
-### GREEN - Minimal Code
-
-Write simplest code to pass the test.
-
-<Good>
-```typescript
-async function retryOperation<T>(fn: () => Promise<T>): Promise<T> {
-  for (let i = 0; i < 3; i++) {
-    try {
-      return await fn();
-    } catch (e) {
-      if (i === 2) throw e;
-    }
-  }
-  throw new Error('unreachable');
-}
-```
-Just enough to pass
-</Good>
-
-<Bad>
-```typescript
-async function retryOperation<T>(
-  fn: () => Promise<T>,
-  options?: {
-    maxRetries?: number;
-    backoff?: 'linear' | 'exponential';
-    onRetry?: (attempt: number) => void;
-  }
-): Promise<T> {
-  // YAGNI
-}
-```
-Over-engineered
-</Bad>
-
-Don't add features, refactor other code, or "improve" beyond the test.
-
-### Verify GREEN - Watch It Pass
-
-**MANDATORY.**
-
-```bash
-npm test path/to/test.test.ts
-```
-
-Confirm:
-- Test passes
-- Other tests still pass
-- Output pristine (no errors, warnings)
-
-**Test fails?** Fix code, not test.
-
-**Other tests fail?** Fix now.
-
-### REFACTOR - Clean Up
-
-After green only:
-- Remove duplication
-- Improve names
-- Extract helpers
-
-Keep tests green. Don't add behavior.
-
-### Repeat
-
-Next failing test for next feature.
-
-## Good Tests
-
-| Quality | Good | Bad |
-|---------|------|-----|
-| **Minimal** | One thing. "and" in name? Split it. | `test('validates email and domain and whitespace')` |
-| **Clear** | Name describes behavior | `test('test1')` |
-| **Shows intent** | Demonstrates desired API | Obscures what code should do |
-
-When writing or changing any test, read [writing-good-tests.md](writing-good-tests.md) for the rules that keep tests honest:
-- Name the production change that would make the test fail — before writing it
-- Assert on real behavior, never on mock behavior
-- Keep test-only code in test utilities, out of production classes
-- Understand a dependency's side effects before mocking it
-
-## Common Rationalizations
-
-| Excuse | Reality |
-|--------|---------|
-| "Too simple to test" | Simple code breaks. Test takes 30 seconds. |
-| "I'll test after" | Tests written after pass immediately — which proves nothing. They may test the wrong thing, test the implementation instead of the behavior, or miss the edge case you forgot. You never watched it fail, so you never proved it can catch the bug. Test-first forces that failure. |
-| "Tests after achieve same goals (spirit not ritual)" | Tests-after answer "what does this do?"; tests-first answer "what should this do?" Tests written after are biased by the code you already wrote — you verify the cases you remembered, not the ones you'd have discovered. Coverage without proof the tests work. |
-| "Already manually tested" | Manual testing is ad-hoc: no record of what you covered, no way to re-run it when the code changes, easy to forget cases under pressure. "Worked when I tried it" ≠ comprehensive. Automated tests run the same way every time. |
-| "Deleting X hours is wasteful" | Sunk cost fallacy — that time is already spent either way. The real choice: rewrite with TDD (high confidence) vs. keep it and bolt tests on after (low confidence, likely bugs). Keeping code you can't trust is the waste. |
-| "Keep as reference, write tests first" | You'll adapt it. That's testing after. Delete means delete. |
-| "Need to explore first" | Fine. Throw away exploration, start with TDD. |
-| "Test hard = design unclear" | Listen to test. Hard to test = hard to use. |
-| "TDD will slow me down" | TDD IS the pragmatic path: catches bugs before commit, prevents regressions, lets you refactor without fear. "Pragmatic" shortcuts mean debugging in production — slower, not faster. |
-| "Manual test faster" | Manual doesn't prove edge cases. You'll re-test every change. |
-| "Existing code has no tests" | You're improving it. Add tests for existing code. |
-
-## Red Flags - STOP and Start Over
-
-- Code before test
-- Test after implementation
-- Test passes immediately
-- Can't explain why test failed
-- Tests added "later"
-- Rationalizing "just this once"
-- "I already manually tested it"
-- "Tests after achieve the same purpose"
-- "It's about spirit not ritual"
-- "Keep as reference" or "adapt existing code"
-- "Already spent X hours, deleting is wasteful"
-- "TDD is dogmatic, I'm being pragmatic"
-- "This is different because..."
-
-**All of these mean: Delete code. Start over with TDD.**
-
-## Example: Bug Fix
-
-**Bug:** Empty email accepted
-
-**RED**
-```typescript
-test('rejects empty email', async () => {
-  const result = await submitForm({ email: '' });
-  expect(result.error).toBe('Email required');
-});
-```
-
-**Verify RED**
-```bash
-$ npm test
-FAIL: expected 'Email required', got undefined
-```
-
-**GREEN**
-```typescript
-function submitForm(data: FormData) {
-  if (!data.email?.trim()) {
-    return { error: 'Email required' };
-  }
-  // ...
-}
-```
-
-**Verify GREEN**
-```bash
-$ npm test
-PASS
-```
-
-**REFACTOR**
-Extract validation for multiple fields if needed.
-
-## Verification Checklist
-
-Before marking work complete:
-
-- [ ] Every new function/method has a test
-- [ ] Watched each test fail before implementing
-- [ ] Each test failed for expected reason (feature missing, not typo)
-- [ ] Wrote minimal code to pass each test
-- [ ] All tests pass
-- [ ] Output pristine (no errors, warnings)
-- [ ] Tests use real code (mocks only if unavoidable)
-- [ ] Edge cases and errors covered
-
-Can't check all boxes? You skipped TDD. Start over.
-
-## When Stuck
-
-| Problem | Solution |
-|---------|----------|
-| Don't know how to test | Write wished-for API. Write assertion first. Ask your human partner. |
-| Test too complicated | Design too complicated. Simplify interface. |
-| Must mock everything | Code too coupled. Use dependency injection. |
-| Test setup huge | Extract helpers. Still complex? Simplify design. |
-
-## Debugging Integration
-
-Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.
-
-Never fix bugs without a test.
-
-## Final Rule
-
-```
-Production code → test exists and failed first
-Otherwise → not TDD
-```
-
-No exceptions without your human partner's permission.
+# Test-Driven Development
+
+Use test-first development when a meaningful test can guide a behavior change.
+Choose verification from the intended outcome, likely failures, and existing
+coverage. A new test must protect an observable contract rather than merely
+record that a file or function changed.
+
+**Core principle:** Keep feedback useful and early. Do not manufacture failure
+to satisfy a sequence.
+
+Classify work by its intended effect on behavior, not by new files or functions.
+A feature added to an existing system and a bug correction change behavior;
+extracting a helper into a new file can preserve it. Compatibility changes need
+explicit criteria even when described as cleanup.
+
+## Choose the Check Before the Change
+
+Follow explicit user and project testing requirements. Otherwise identify the
+governing behavior or criterion, a plausible wrong result, and what already
+checks it. Consider failure likelihood and consequence as well as the cost and
+reliability of the proposed check.
+
+| Situation | Useful approach |
+| --- | --- |
+| Low-impact copy, formatting, or an obvious mechanical change whose result can be established directly | Inspect the diff or actual artifact, including rendered output when relevant. Add no new persistent test. |
+| Behavior-preserving refactoring with adequate coverage | Establish a passing baseline and preserve it through the change using relevant existing checks. Extend coverage only for a demonstrated gap; do not add a test per new helper. |
+| A reproduced bug or new binding behavior with a useful, repeatable test and a coverage gap | Add or extend a focused behavioral test. Prefer test-first when the current behavior genuinely fails the intended criterion. |
+| An important existing behavior needs protection before a change | Add useful contract or characterization coverage for the affected boundary. It can pass immediately; label observed behavior separately from desired requirements. |
+| An automated check would be brittle, duplicate existing coverage, or only mirror implementation | Use an adequate existing check, direct exercise, or inspection. State remaining uncertainty rather than inventing a ceremonial test. |
+
+Direct inspection is enough only when it establishes the relevant outcome.
+File type, line count, and how obvious an edit looks do not establish its risk:
+a one-character authorization-boundary change can need a focused regression
+test, while changing ordinary display copy can be checked in the rendered UI.
+Configuration changes can also alter significant behavior.
+
+A new test is unnecessary when it adds no meaningful protection. This is an
+ordinary implementation decision within existing authority, not a recurring
+request for permission. Resolve missing requirements or evidence when they
+prevent the decision; preserve any binding project checks.
+
+## Implement New or Changed Behavior
+
+Derive desired results and necessary supporting conditions from the governing
+criteria, not from a candidate implementation. Choose a small set of relevant
+cases and boundaries; reuse existing tests and harnesses rather than writing
+speculative tests for every prospective helper. For test guidance, use
+[writing-good-tests.md](writing-good-tests.md).
+
+1. **RED:** For a real defect or unmet behavior, run the focused test against
+   the current implementation and check the failure's cause. A broken harness
+   or unrelated environment failure does not demonstrate the intended defect.
+2. **GREEN:** Implement the smallest complete change that satisfies the
+   governing behavior, including its necessary supporting requirements. Run
+   the focused check and checks for directly affected behavior.
+3. **REFACTOR:** Improve a concrete design or maintainability problem while
+   preserving the verified behavior. Avoid mixing unrelated behavior changes
+   into the cleanup.
+
+If a test passes immediately, check whether the criterion is already satisfied,
+an existing test already covers it, or the assertion misses the intended risk.
+Keep useful passing coverage; repair a weak test's oracle or scope when needed.
+Do not distort the expected result or damage correct implementation to make it
+fail. RED is evidence of a genuine gap, not a separate deliverable.
+
+Test observable behavior at a useful consumer boundary. Exact values or calls
+are appropriate when they are contractual; private helper structure and source
+text are usually poor substitutes for behavior. Prefer real components and
+appropriate maintained fakes; use bounded mocks when needed for the checked
+contract or a difficult external/error boundary.
+
+## Refactor While Preserving Behavior
+
+Identify the concrete structural problem to improve and the observable behavior
+to preserve: relevant results, errors, state changes, and external effects.
+Fewer lines or more helpers alone do not establish an improvement.
+
+1. Establish the baseline using the check selected above. Reuse relevant passing
+   tests when adequate; direct inspection or static checks can suffice for a
+   low-impact mechanical change. Characterize unprotected behavior when useful.
+2. Make bounded structural changes while preserving those behavioral criteria.
+   The normal flow is passing before and after; no new failure or helper-level
+   test is required solely because structure changes.
+3. Check preservation and whether the named structural problem improved. Broaden
+   checks for an uncovered boundary, consequential semantic risk, or substantial
+   rewrite; a focused old/new comparison can help when existing tests are weak.
+
+Investigate unexpected failures rather than updating expectations merely to
+match the refactored output. Test imports, fixtures, or wiring may need changes;
+preserve their behavioral obligations using the guidance in writing-good-tests.md.
+Passing selected cases is preservation evidence within their scope, not proof
+of universal equivalence or an observed RED/GREEN cycle.
+
+When a task mixes refactoring and behavior changes, keep their criteria and
+verification steps distinct. Necessary structural preparation may precede the
+new behavior; this separation does not require extra branches or commits.
+
+## When Code Already Exists
+
+Preserve correct implementation. Do not delete it or restart solely because
+the test was written later. Add or extend meaningful coverage when warranted,
+or use the adequate existing/direct check selected above.
+
+For a bug regression, reproduce the actual previous defect in an isolated
+old revision or supplied reproduction when available and useful. Do not disturb
+shared Git state or introduce an artificial fault merely to reconstruct RED.
+If only a passing check is available, describe that evidence honestly; do not
+claim an observed test-first or failing-baseline cycle.
+
+For poorly understood or undertested code, characterize the affected boundary
+when useful before a substantial transformation. Record selected inputs and
+observed pre-change outcomes with their source revision or snapshot. Such a
+test can pass on its first execution; complete knowledge of the intended
+behavior is not a prerequisite for recording what currently happens.
+
+Label that baseline as observed behavior. Investigate whether it is intended
+without treating an existing defect as an accepted requirement. An intentional
+correction needs its own desired-behavior criterion; do not silently update
+the preservation baseline to bless the correction or its implementation.
+
+## Verify and Record Proportionately
+
+During development, run the smallest adequate checks for the changed behavior
+and its dependencies. Broaden for a concrete integration/regression risk or
+project requirement. Reuse evidence only when its target, environment, and
+assumptions remain applicable. Assess warnings by their consequence and project
+rules; pristine output is not a substitute for correct behavior.
+
+In the existing work record or report, retain the material criterion, chosen
+check and rationale, actual target, commands or observations, results, and gaps.
+Record RED/GREEN only when observed. A low-impact edit needs no separate TDD
+document, duplicate checklist, new harness, or suite solely to satisfy this skill.
+
+[systematic-debugging](../systematic-debugging/SKILL.md) owns investigation of
+unexpected failures. This skill owns the test-selection and implementation
+feedback approach; it does not add a retry policy.
+[verification-before-completion](../verification-before-completion/SKILL.md)
+owns evidence for final claims. Passing one test does not establish every
+requirement or authorize completion beyond its coverage.
+
+## Basis
+
+The selection rules are a local adaptation of
+[ISTQB risk-based testing guidance](https://astqb.org/5-2-risk-management/).
+The test-first cycle follows
+[Canon TDD](https://newsletter.kentbeck.com/p/canon-tdd).
+The separate preservation workflow follows
+[Fowler's refactoring workflows](https://martinfowler.com/articles/workflowsOfRefactoring/fallback.html);
+observed baselines follow
+[Feathers's characterization testing](https://michaelfeathers.silvrback.com/characterization-testing).
+Empirical work on
+[TDD process characteristics](https://arxiv.org/abs/1611.05994) supports examining
+iteration properties alongside test/code order; its limited observational
+results do not establish universal superiority of either order or measure this
+agent workflow's effectiveness.

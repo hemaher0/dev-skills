@@ -4,20 +4,28 @@
 
 When you fix a bug caused by invalid data, adding validation at one place feels sufficient. But that single check can be bypassed by different code paths, refactoring, or mocks.
 
-**Core principle:** Validate at EVERY layer data passes through. Make the bug structurally impossible.
+**Core principle:** Validate independently exposed boundaries when invalid data
+can bypass the primary correction. Select checks by the boundary's contract
+and the identified failure path; every internal layer does not need a duplicate
+check.
 
 ## Why Multiple Layers
 
-Single validation: "We fixed the bug"
-Multiple layers: "We made the bug impossible"
+One boundary check may be sufficient when all affected paths must pass through
+it. Additional checks help when another entry path, trust boundary, or dangerous
+operation can bypass that protection. Their presence alone does not establish
+that the bug is impossible.
 
-Different layers catch different cases:
-- Entry validation catches most bugs
-- Business logic catches edge cases
-- Environment guards prevent context-specific dangers
-- Debug logging helps when other layers fail
+Different layers can address different cases:
+- Entry validation rejects invalid input at an exposed API boundary
+- Business logic enforces the operation's invariants
+- Environment guards enforce context-specific constraints
+- Debug logging supplies diagnostic evidence; it does not itself prevent failure
 
-## The Four Layers
+## Example Layers
+
+Choose only the layers needed by the actual contract and failure paths. The
+following examples illustrate different responsibilities, not a required stack.
 
 ### Layer 1: Entry Point Validation
 **Purpose:** Reject obviously invalid input at API boundary
@@ -86,12 +94,12 @@ async function gitInit(directory: string) {
 
 ## Applying the Pattern
 
-When you find a bug:
+When independently exposed paths justify this technique:
 
 1. **Trace the data flow** - Where does bad value originate? Where used?
-2. **Map all checkpoints** - List every point data passes through
-3. **Add validation at each layer** - Entry, business, environment, debug
-4. **Test each layer** - Try to bypass layer 1, verify layer 2 catches it
+2. **Identify exposed checkpoints** - Determine which paths can bypass the primary check
+3. **Add justified checks** - Enforce each affected boundary's contract; add diagnostics when evidence is missing
+4. **Verify the protected paths** - Exercise relevant bypass paths and valid inputs using the existing TDD and verification workflows
 
 ## Example from Session
 
@@ -109,14 +117,16 @@ Bug: Empty `projectDir` caused `git init` in source code
 - Layer 3: `WorktreeManager` refuses git init outside tmpdir in tests
 - Layer 4: Stack trace logging before git init
 
-**Result:** All 1847 tests passed, bug impossible to reproduce
+**Reported example result:** All 1847 tests passed and the original pollution
+was not reproduced in those checks. This does not establish universal prevention.
 
 ## Key Insight
 
-All four layers were necessary. During testing, each layer caught bugs the others missed:
+The session example reports reasons for using several layers:
 - Different code paths bypassed entry validation
 - Mocks bypassed business logic checks
 - Edge cases on different platforms needed environment guards
 - Debug logging identified structural misuse
 
-**Don't stop at one validation point.** Add checks at every layer.
+Choose additional checks for demonstrated exposure or a governing boundary
+contract. Avoid duplicating a guarantee already enforced for all affected paths.

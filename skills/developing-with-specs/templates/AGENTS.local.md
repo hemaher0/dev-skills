@@ -1,20 +1,12 @@
 # Local Development Configuration
 
-<!--
-Merge this section into the target project's root AGENTS.local.md, preserving
-existing configuration. Replace the placeholder to choose a scratchpad root.
-Leaving it unresolved, leaving the value empty, or omitting the setting uses
-the default <project-root>/.kryptonite/scratchpad/ directory. Relative paths
-resolve from the target project's root; absolute paths are used as configured.
-Ensure the project's AGENTS.md instructs agents to read AGENTS.local.md when
-it exists. This file configures locations; it does not grant permissions.
--->
+<!-- Optional personal/checkout-specific path override. Shared project choices
+belong in effective project instructions or an existing referenced policy.
+Omit this section when the configured project path or skill default suffices.
+Preserve existing values and other sections; fill only the selected override.
+Ensure effective instructions read AGENTS.local.md when this file is used.
+This example does not grant permissions or broaden shared project policy. -->
 
 ## Development Scratchpad
 
-- Scratchpad root: `<repository-relative or absolute directory path>`
-
-Keep the working spec and decision history in a task-specific document under
-the resolved scratchpad root. Create the directory and document when needed,
-and reuse the same task record as work continues. At completion, link the
-applied spec and its decision history for the user's review.
+- Scratchpad root: `<repository-relative or absolute local override>`

@@ -4,24 +4,17 @@
 
 Bugs often manifest deep in the call stack (git init in wrong directory, file created in wrong location, database opened with wrong path). Your instinct is to fix where the error appears, but that's treating a symptom.
 
-**Core principle:** Trace backward through the call chain until you find the original trigger, then fix at the source.
+**Core principle:** Trace backward through the relevant call chain to locate the
+original trigger, then choose a correction supported by that evidence.
 
 ## When to Use
 
-```dot
-digraph when_to_use {
-    "Bug appears deep in stack?" [shape=diamond];
-    "Can trace backwards?" [shape=diamond];
-    "Fix at symptom point" [shape=box];
-    "Trace to original trigger" [shape=box];
-    "BETTER: Also add defense-in-depth" [shape=box];
-
-    "Bug appears deep in stack?" -> "Can trace backwards?" [label="yes"];
-    "Can trace backwards?" -> "Trace to original trigger" [label="yes"];
-    "Can trace backwards?" -> "Fix at symptom point" [label="no - dead end"];
-    "Trace to original trigger" -> "BETTER: Also add defense-in-depth";
-}
-```
+Trace callers when the observed failure does not explain where an invalid
+value or operation originated. If the trace is unavailable, identify the
+missing evidence instead of assuming a correction at the symptom establishes
+the cause. Use the [debugging workflow](SKILL.md) for bounded mitigation and
+unresolved diagnosis. Consider [defense-in-depth](defense-in-depth.md) when
+independent paths could bypass the supported correction.
 
 **Use when:**
 - Error happens deep in execution (not at entry point)
@@ -129,29 +122,12 @@ Runs tests one-by-one, stops at first polluter. See script for usage.
 
 ## Key Principle
 
-```dot
-digraph principle {
-    "Found immediate cause" [shape=ellipse];
-    "Can trace one level up?" [shape=diamond];
-    "Trace backwards" [shape=box];
-    "Is this the source?" [shape=diamond];
-    "Fix at source" [shape=box];
-    "Add validation at each layer" [shape=box];
-    "Bug impossible" [shape=doublecircle];
-    "NEVER fix just the symptom" [shape=octagon, style=filled, fillcolor=red, fontcolor=white];
-
-    "Found immediate cause" -> "Can trace one level up?";
-    "Can trace one level up?" -> "Trace backwards" [label="yes"];
-    "Can trace one level up?" -> "NEVER fix just the symptom" [label="no"];
-    "Trace backwards" -> "Is this the source?";
-    "Is this the source?" -> "Trace backwards" [label="no - keeps going"];
-    "Is this the source?" -> "Fix at source" [label="yes"];
-    "Fix at source" -> "Add validation at each layer";
-    "Add validation at each layer" -> "Bug impossible";
-}
-```
-
-**NEVER fix just where the error appears.** Trace back to find the original trigger.
+An immediate failure location is not necessarily the original trigger. Trace
+far enough to distinguish the suspected origin from plausible alternatives,
+then check the correction against the original symptom. Additional validation
+needs an identified bypass path or boundary responsibility; passing checks do
+not establish that a bug is impossible. Report an evidence gap when the trace
+cannot establish the cause.
 
 ## Stack Trace Tips
 

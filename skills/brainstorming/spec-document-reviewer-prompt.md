@@ -1,49 +1,47 @@
 # Spec Document Reviewer Prompt Template
 
-Use this template when dispatching a spec document reviewer subagent.
+Use this prompt for an independent spec review when needed and delegation is
+authorized. Otherwise apply its checks directly. Review is read-only for the
+artifacts under review.
 
-**Purpose:** Verify the spec is complete, consistent, and ready for implementation planning.
+**Purpose:** Check that the spec represents the requested result, justified
+necessary conditions, and a usable basis for planning.
 
-**Dispatch after:** Spec document is written to docs/superpowers/specs/
+**Inputs:** Actual spec path and revision, original request reference, governing
+contracts, and relevant project evidence. Do not substitute the spec's own
+assertions for checking their sources.
 
-```
-Subagent (general-purpose):
-  description: "Review spec document"
-  prompt: |
-    You are a spec document reviewer. Verify this spec is complete and ready for planning.
+```text
+You are reviewing a working spec before dependent planning or implementation.
 
-    **Spec to review:** [SPEC_FILE_PATH]
+Spec and revision: [SPEC_FILE_PATH_AND_REVISION]
+Original request: [REQUEST_REFERENCE]
+Governing contracts and project evidence: [SOURCE_REFERENCES]
+Assigned review scope: [REVIEW_SCOPE]
 
-    ## What to Check
+Check:
+- Intent: Is the original observable result preserved?
+- Derivation: Are necessary conditions missing? Are added requirements linked
+  to a goal or governing constraint with supporting evidence?
+- Distinctions: Are facts, derived requirements, selected means, and assumptions
+  kept distinct, rather than presenting a habitual solution as necessary?
+- Consistency and scope: Are there contradictions or unsupported additions?
+- Verifiability: Do criteria cover the original result as well as its parts?
+- Readiness: Can downstream work proceed without a material guess? Open questions
+  are acceptable if their impact, resolution, and dependency boundary are clear.
 
-    | Category | What to Look For |
-    |----------|------------------|
-    | Completeness | TODOs, placeholders, "TBD", incomplete sections |
-    | Consistency | Internal contradictions, conflicting requirements |
-    | Clarity | Requirements ambiguous enough to cause someone to build the wrong thing |
-    | Scope | Focused enough for a single plan — not covering multiple independent subsystems |
-    | YAGNI | Unrequested features, over-engineering |
+Flag issues with a concrete effect on correctness, scope, or downstream work.
+Do not block for style, section length, a missing optional section, or an
+explicit nonblocking unknown. A proposed necessity is not scope creep merely
+because the user did not name it; inspect its actual derivation.
 
-    ## Calibration
-
-    **Only flag issues that would cause real problems during implementation planning.**
-    A missing section, a contradiction, or a requirement so ambiguous it could be
-    interpreted two different ways — those are issues. Minor wording improvements,
-    stylistic preferences, and "sections less detailed than others" are not.
-
-    Approve unless there are serious gaps that would lead to a flawed plan.
-
-    ## Output Format
-
-    ## Spec Review
-
-    **Status:** Approved | Issues Found
-
-    **Issues (if any):**
-    - [Section X]: [specific issue] - [why it matters for planning]
-
-    **Recommendations (advisory, do not block approval):**
-    - [suggestions for improvement]
+Return:
+Status: Approved | Issues Found
+Reviewed spec revision and source references
+Issues: requirement/section, evidence, why it matters, affected work
+Verification limits or unresolved source questions
+Advisory recommendations, if useful
 ```
 
-**Reviewer returns:** Status, Issues (if any), Recommendations
+Approval is a scoped review verdict. It does not replace required user decisions,
+transfer responsibility, or authorize implementation or external actions.

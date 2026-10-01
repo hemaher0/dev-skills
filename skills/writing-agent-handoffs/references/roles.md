@@ -94,9 +94,8 @@ them. A failed review criterion or an unresolved blocking issue prevents a
 
 ## Document Locations
 
-Use project settings and existing workflow paths first. Do not move existing
-SDD artifacts or change helper-script paths to adopt these templates. When no
-location is established, use a common directory for the same work:
+Use project settings and existing owning workflow paths first. Otherwise,
+use these communication paths relative to the target project's established root:
 
 ```text
 .kryptonite/work/{{work_id}}/
@@ -106,18 +105,20 @@ location is established, use a common directory for the same work:
   handoffs/{{handoff_id}}.md
 ```
 
+Preserve existing SDD artifacts and explicit helper-script output paths rather
+than move them to adopt these templates. The owner supplies actual reporting
+paths and the shared spec/plan paths separately from each assignee's code
+checkout. A worker must not derive another shared record root from its own
+checkout. Spec and plan locations follow their responsible skills.
+
 Use the existing progress or ownership record when available; do not create a
 second registry. `ownership_record` can refer to a handoff when no separate
 record exists. `reply_to` identifies the report destination within that work;
 the current ownership record determines the recipient if an owner changes.
 
-Final documentation follows project settings, then the applicable documentation
-skill for unspecified details. If neither supplies a location, update relevant
-existing documentation or use `docs/{{topic}}.md` for a necessary new document,
-outside `.kryptonite`. For development work, finish implementation and
-verification, write final documentation, generalize code and final documents,
-then discard the task's temporary artifacts after retaining needed information
-in durable documents. These templates do not authorize cleanup of other work.
+Follow [writing-agent-handoffs](../SKILL.md) for communication-record retention.
+These templates record assignments or transfers; they do not initiate commit
+preparation or authorize disposal of pending records or other work.
 
 ## Research Basis
 

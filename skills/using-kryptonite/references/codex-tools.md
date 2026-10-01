@@ -1,39 +1,65 @@
-## Subagent dispatch requires multi-agent support
+# Codex Tools and Workspace Context
 
-Add to your Codex config (`~/.codex/config.toml`):
+Read this reference when skill execution depends on the current delegation
+tools, Git workspace, or environment restrictions.
 
-```toml
-[features]
-multi_agent = true
-```
+## Available Tools
 
-This enables `spawn_agent`, `wait_agent`, and `close_agent` for skills like `dispatching-parallel-agents` and `subagent-driven-development`. When using subagent-driven-development, close reviewer subagents when their review returns. Keep each implementer subagent open until its task's review passes — the fix loop resumes the implementer — then close it. If your harness cannot send another message to a spawned agent, dispatch each fix round as a fresh implementer carrying the brief, the report file, and the findings.
+Inspect the tools and instructions exposed by the current harness. Use agent
+delegation when it serves the task, the relevant workflow calls for it, and
+the current instructions and authorization permit it. Tool availability alone
+does not authorize parallel work.
 
-## Environment Detection
+Use [dispatching-parallel-agents](../../dispatching-parallel-agents/SKILL.md)
+for independent concurrent tasks and
+[subagent-driven-development](../../subagent-driven-development/SKILL.md)
+for its implementation and review workflow. Agent continuation, fix rounds,
+and cleanup follow that workflow and the capabilities actually available.
+If a required capability is absent, report the limitation and choose a
+supported way to carry out the authorized work.
 
-Skills that create worktrees or finish branches should detect their
-environment with read-only git commands before proceeding:
+Configuration changes and plugin installation require their own task scope.
+Do not treat loading a skill as a request to change user configuration.
+
+## Inspect the Git Workspace
+
+When the task involves Git workspace or integration decisions, use read-only
+inspection to identify the repository and its current state:
 
 ```bash
-GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
-GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
-BRANCH=$(git branch --show-current)
+git rev-parse --show-toplevel
+git rev-parse --git-dir
+git rev-parse --git-common-dir
+git branch --show-current
+git worktree list --porcelain
 ```
 
-- `GIT_DIR != GIT_COMMON` → already in a linked worktree (skip creation)
-- `BRANCH` empty → detached HEAD (cannot branch/push/PR from sandbox)
+Interpret the paths and worktree metadata together; do not classify a submodule
+or other separate Git directory as a linked worktree from one path comparison.
+An empty branch name indicates detached HEAD. It does not establish which
+branch, commit, push, or pull-request operations the environment permits.
 
-See `using-git-worktrees` Step 0 and `finishing-a-development-branch`
-Step 1 for how each skill uses these signals.
+Follow the project's Git workspace and finishing procedures, or compatible
+available Git skills, for workspace suitability and an authorized integration
+or handoff. Use ordinary Git or host tools when no specialized workflow is
+available. Respect ownership of an externally managed workspace and the host's
+instructions.
 
-## Codex App Finishing
+Read [using-kryptonite](../SKILL.md) for stage routing,
+[developing-with-specs](../../developing-with-specs/SKILL.md) for the working
+spec, and the [agent record conventions](../../writing-agent-handoffs/references/roles.md)
+for communication paths. Distinguish assigned code checkouts from the work
+owner's shared spec and reporting paths.
 
-When the sandbox blocks branch/push operations (detached HEAD in an
-externally managed worktree), the agent commits all work and informs
-the user to use the App's native controls:
+## Restricted or Managed Operations
 
-- **"Create branch"** — names the branch, then commit/push/PR via App UI
-- **"Hand off to local"** — transfers work to the user's local checkout
+Check actual permissions and operation results separately from branch state.
+When an operation is blocked, report its cause and use the harness's approval
+or handoff mechanism when applicable. Do not substitute another unauthorized
+mutation for the blocked action.
 
-The agent can still run tests, stage files, and output suggested branch
-names, commit messages, and PR descriptions for the user to copy.
+Prepare reviewable changes and relevant verification evidence within the
+authorized scope. Stage, commit, push, or transfer work only as authorized by
+the user's task and the applicable Git workflow. Keep unrelated work outside
+the candidate. Use host-provided controls when the host owns the operation;
+describe only controls available in the current environment.

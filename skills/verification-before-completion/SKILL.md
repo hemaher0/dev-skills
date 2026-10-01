@@ -1,120 +1,83 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: Use before claiming a result is complete, correct, fixed, passing, or ready for a commit, integration, release, or handoff
 ---
 
 # Verification Before Completion
 
-## Overview
+Base each claim on evidence that covers the actual outcome and remains valid
+after the latest relevant change. Verify the result, not merely the existence
+of a change or another agent's completion report.
 
-**Core principle:** Evidence before claims, always.
+## Establish the Claim and Target
 
-**Violating the letter of this rule is violating the spirit of this rule.**
+Identify the requested outcome, governing criteria, actual artifact revision
+or snapshot, and relevant environment. For development work, compare the
+original goal and supporting requirements in the current working spec using
+[developing-with-specs](../developing-with-specs/SKILL.md).
 
-## The Iron Law
+A test, inspection, or review covers its checked scope. A passing component
+test alone does not establish every requirement, and checking source data
+alone does not verify that a derived document copied it correctly.
+An "all" or "every" claim needs coverage of the entire stated set; otherwise
+identify the checked subset.
 
-```
-NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
-```
+For a failure's causal explanation, assess the discriminating evidence using
+[systematic-debugging](../systematic-debugging/SKILL.md). A corrected symptom
+does not alone establish the cause or permanent prevention. Distinguish a
+tested behavioral correction, a causal explanation, and temporary mitigation.
 
-If you haven't run the verification command in this message, you cannot claim it passes.
+## Choose and Inspect Adequate Evidence
 
-## The Gate Function
+Use a focused test or build, reproduction, direct artifact/UI/API inspection,
+static check, or other observation that establishes the claimed outcome.
+Follow binding project checks. Use
+[test-driven-development](../test-driven-development/SKILL.md) when deciding
+whether a new test or test-first approach adds useful coverage.
 
-```
-BEFORE claiming any status or expressing satisfaction:
+| Claim | Covering evidence |
+| --- | --- |
+| Selected tests or a build pass | The actual check result, with failures, warnings, and exit status inspected. |
+| A defect is fixed | The original symptom and relevant regression behavior are checked on the corrected target. A real old/new comparison strengthens the evidence when useful and available. |
+| A low-impact artifact change is correct | Inspection of the actual changed artifact, including rendered output or references when relevant. |
+| A refactoring preserves behavior | Adequate passing baseline and post-change checks for the affected contract. |
+| Requirements are met | Material criteria traced to artifacts and appropriate checks, including the user's requested outcome. |
+| Delegated work is ready | Returned artifacts inspected and covering evidence assessed independently by the current owner. |
 
-1. IDENTIFY: What command proves this claim?
-2. RUN: Execute the FULL command (fresh, complete)
-3. READ: Full output, check exit code, count failures
-4. VERIFY: Does output confirm the claim?
-   - If NO: State actual status with evidence
-   - If YES: State claim WITH evidence
-5. ONLY THEN: Make the claim
+Run missing checks and read their complete results. Reuse earlier evidence
+when its target, environment, assumptions, and criteria remain applicable;
+repeat affected checks when a relevant change invalidates them. An unrelated
+passing check or a previously checked different snapshot is not a substitute.
+A useful passing baseline does not need an artificial failure, and direct
+inspection does not need a new persistent test merely to qualify as evidence.
 
-Skip any step = lying, not verifying
-```
+## Commit and Integration Candidates
 
-## Common Failures
+Use [using-kryptonite](../using-kryptonite/SKILL.md) for commit-preparation
+routing. This skill owns completion evidence, not another preparation or
+review loop.
 
-| Claim | Requires | Not Sufficient |
-|-------|----------|----------------|
-| Tests pass | Test command output: 0 failures | Previous run, "should pass" |
-| Linter clean | Linter output: 0 errors | Partial check, extrapolation |
-| Build succeeds | Build command: exit 0 | Linter passing, logs look good |
-| Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
-| Regression test works | Red-green cycle verified | Test passes once |
-| Agent completed | VCS diff shows changes | Agent reports "success" |
-| Requirements met | Line-by-line checklist | Tests passing |
+Verify the actual candidate or establish that the checked artifacts match it.
+A working-tree check may include unstaged changes absent from the index;
+partial staging can produce a different result. Formatting, hooks, restaging,
+conflict resolution, or other edits require renewal of affected evidence.
+Use the project Git workflow to review actual commit contents and messages,
+then verify the result of any authorized Git operation.
 
-## Red Flags - STOP
+For a material post-review change, renew affected technical review under the
+invoking workflow's gates and fix limits. Report unresolved criteria or blockers
+rather than treating an exhausted allowance as success.
 
-- Using "should", "probably", "seems to"
-- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
-- About to commit/push/PR without verification
-- Trusting agent success reports
-- Relying on partial verification
-- Thinking "just this once"
-- Tired and wanting work over
-- **ANY wording implying success without having run verification**
+## Report the Verified Scope
 
-## Rationalization Prevention
+State what was checked, its actual target, and result. Keep material limits
+in the central status claim and recommendation, including relevant
+version or environment restrictions, rather than only in a closing caveat.
+Preserve criterion-linked evidence in the existing work record or report; create no
+second verification registry. Separate implementation, documentation, commit,
+integration, and complete-work status when they differ.
 
-| Excuse | Reality |
-|--------|---------|
-| "Should work now" | RUN the verification |
-| "I'm confident" | Confidence ≠ evidence |
-| "Just this once" | No exceptions |
-| "Linter passed" | Linter ≠ compiler |
-| "Agent said success" | Verify independently |
-| "I'm tired" | Exhaustion ≠ excuse |
-| "Partial check is enough" | Partial proves nothing |
-| "Different words so rule doesn't apply" | Spirit over letter |
-
-## Key Patterns
-
-**Tests:**
-```
-✅ [Run test command] [See: 34/34 pass] "All tests pass"
-❌ "Should pass now" / "Looks correct"
-```
-
-**Regression tests (TDD Red-Green):**
-```
-✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
-❌ "I've written a regression test" (without red-green verification)
-```
-
-**Build:**
-```
-✅ [Run build] [See: exit 0] "Build passes"
-❌ "Linter passed" (linter doesn't check compilation)
-```
-
-**Requirements:**
-```
-✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
-❌ "Tests pass, phase complete"
-```
-
-**Agent delegation:**
-```
-✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
-❌ Trust agent report
-```
-
-## When To Apply
-
-**ALWAYS before:**
-- ANY variation of success/completion claims
-- ANY expression of satisfaction
-- ANY positive statement about work state
-- Committing, PR creation, task completion
-- Moving to next task
-- Delegating to agents
-
-**Rule applies to:**
-- Exact phrases
-- Paraphrases and synonyms
-- Implications of success
-- ANY communication suggesting completion/correctness
+If a check is unavailable, identify the unverified outcome and actual reason.
+Do not imply broader success. Present the applied working spec and history
+while retained, or the durable references preserving its governing basis after
+completed temporary-record disposal.

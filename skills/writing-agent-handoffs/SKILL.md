@@ -1,117 +1,161 @@
 ---
 name: writing-agent-handoffs
-description: Use when preparing documented assignments or requesting and consolidating handoff documents from parallel agents, including ownership, evidence, and remaining work.
+description: Use when transferring responsibility for work between agents, or documenting assignments and their results while the requesting agent retains responsibility.
 ---
 
 # Writing Agent Handoffs
 
-Make a task understandable to the next owner without relying on inherited
-conversation context. Distinguish the assigned work, the agent's interpretation,
-and the actual outcome. A handoff documents authority already granted; it does
-not authorize delegation, edits, commits, or external actions.
+Document the responsibility being transferred or retained, the work's purpose,
+and the evidence another agent needs to act. The same rules apply to peer
+agents and subagents, within one session or across sessions. These documents
+record existing authority; they do not grant permission to delegate, edit,
+commit, or perform external actions.
 
-## Identify Participants and Tasks
+## Choose the Document
 
-Use the owning document's fields to distinguish these identities:
+| Document | Purpose | Responsibility | Expected response |
+| --- | --- | --- | --- |
+| [Handoff](templates/handoff.md) | Transfer continuation of a named work scope to the next agent. | Moves from sender to recipient. | No acknowledgement, acceptance, or return report required. |
+| [Brief](templates/brief.md) | Request a bounded activity and define its expected result. | Remains with the requesting agent. | Results, missing context, or a blocker through a report. |
+| [Report](templates/report.md) | Return the outcome and evidence for a specific brief revision. | Remains with the current owner. | The owner evaluates the result and handles remaining work. |
 
-- **Run ID:** The execution scope. Reuse the host's run/session ID or the
-  project's execution ID. If neither exists, the coordinator creates one
-  unique ID using the project's allocator or a UUID and records it once.
-- **Task ID:** The work being assigned. Reuse the authoritative work-item or
-  plan task ID. Retain the plan reference when task numbers are only unique
-  within a plan. Task identity persists when the assignee changes.
-- **Owner ID:** The actual assignee. Use the agent ID returned by the host.
-  If the host provides no ID, the coordinator allocates a local ID such as
-  `worker-01` and records it together with the run ID. Only the coordinator
-  allocates these local IDs; check existing assignments to avoid duplicates.
-- **Role:** The participant's responsibility, such as implementation, review,
-  or coordination. Record the role alongside the owner ID; a role name alone
-  does not identify a participant.
+A report does not become a handoff because it contains enough context to
+continue. Use a separate handoff when responsibility actually moves. Reference
+existing briefs and reports in that handoff to preserve their context; the
+handoff records the transfer.
 
-Record the ID sources and bindings in the existing assignment or handoff record,
-including the coordinator and intended recipient. Treat `(run ID, owner ID)`
-as the ownership reference. A local fallback ID is not a host-issued ID. If a
-host ID becomes available only after dispatch, mark the assignment as awaiting
-that binding and record the returned ID when it is available; do not invent it.
+Read [roles and template conventions](references/roles.md) when preparing or
+interpreting these documents. It defines the role vocabulary, identities,
+status values, placeholder rules, and document locations. Reuse existing
+equivalent records rather than creating duplicate copies merely for formatting.
 
-Reuse recorded run IDs and owner bindings when resuming the same execution.
-Allocate a fresh local owner ID for a replacement agent and do not recycle the
-previous ID within that run. On transfer, preserve the task ID and record the
-previous owner, new owner, and transfer time or development stage. Keep previous
-contributions attributed to their actual authors. Old records with unknown
-identities stay explicitly unknown unless evidence establishes the binding.
+## Identify the Work and Participants
 
-## Prepare the Assignment
+Reuse the work and task IDs, agent identities, and ownership record already
+established by the project or host. Include the plan reference when a task ID
+is only unique within that plan. Preserve work and task identity when agents
+change; retain authorship of their earlier contributions.
 
-The coordinator identifies the authoritative request and applicable spec or
-plan, then gives each worker a documented assignment containing:
+Distinguish the requester, assignee, current owner, author, and recorder in the
+record; the same agent can fill multiple fields. The assignee performs the
+requested activity; that assignment alone does not make the assignee the owner.
+A role describes an activity, not an identity, supervisor relationship, or
+permission grant.
 
-- Run and task identities, owner and recipient references, and their roles.
-- The original request or its authoritative source, preserving its intent.
-- The worker's goal and interpretation, with assumptions distinguished from
-  explicit requirements and unresolved decisions identified.
-- Included and excluded work, relevant constraints, and acceptance criteria.
-- The worker's responsibilities, permitted write surfaces, dependencies,
-  interfaces with other tasks, and the owner of shared integration.
-- Relevant inputs, the assigned workspace or revision when applicable, and
-  the applicable spec reference, expected deliverables, and verification evidence.
-- Where to write the return handoff and who receives it.
+Use a recorded local identity when the host supplies none, with its source
+and work scope explicit. Do not present a local identity as host-issued or
+invent a missing binding. Resolve a missing recipient or scope before recording
+a transfer. Mark other unavailable facts as unknown and identify any missing
+information that prevents dependent work.
 
-Use actual task IDs and paths when known. Do not invent repository locations
-or permission grants to fill a document. The worker reads the assignment and
-reports material misunderstandings or blockers to the coordinator before
-dependent work. Reconcile those differences with the authoritative request.
+## Delegate Through a Brief and Report
 
-## Request the Return Handoff
+Prepare the [brief](templates/brief.md) before the delegated activity. Record
+the requesting owner and assignee, original intent, bounded scope, governing
+spec or plan and revision, dependencies, permitted surfaces, completion
+criteria, and expected report destination. Distinguish explicit requirements,
+derived necessities, selected means, and unresolved assumptions using the
+governing spec rather than creating another specification.
 
-Tell each worker at assignment time to produce a handoff before ownership
-transfer or completion. An existing report can serve as the handoff if it
-contains the needed information. Request a concise return message with the
-document path and status so the coordinator can find the full evidence.
+Correlate the brief and its reports with `request_id` and `brief_revision`.
+For material instruction changes, record a new brief revision and preserve
+the earlier basis. Give each report a distinct `report_id`; preserve prior
+reports and their actual authors, including when an authorized recorder writes
+returned content on their behalf.
 
-The return document records:
+The assignee returns a [report](templates/report.md) with actual work, artifact
+paths and revisions, criterion outcomes, verification evidence, deviations,
+and remaining work. Use `DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, or
+`BLOCKED` according to the reference. Report missing inputs or blockers before
+work that depends on resolving them. Intended checks are not executed evidence.
 
-- The run, task, and author identities, role, and intended recipient matching
-  the recorded assignment, plus any ownership transfer.
-- Assigned goal, understood scope, and the work actually completed.
-- Changed artifacts and their paths; actual branch and commit or revision
-  identifiers when the work uses version control. Identify uncommitted work.
-- Decisions and deviations, their sources, evidence and rationale, any
-  authorization they needed, and added or revised spec requirements.
-- Checks performed, commands and results, and material verification gaps.
-- Remaining work, blockers, risks supported by evidence, and the next action
-  with its owner and dependencies.
+The current owner checks the report against the brief and actual artifacts,
+resolves discrepancies, and decides the next action. Reporting completion is
+a claim, not proof of completion or a transfer of responsibility. Preserve
+meaningful uncertainty and verify combined outcomes under the owning workflow.
 
-Preserve uncertainty. A worker's completion statement is a claim for the
-coordinator to verify against artifacts and evidence.
+For development work, the current owner reconciles proposed decisions and
+evidence into the shared working spec with
+[developing-with-specs](../developing-with-specs/SKILL.md). Assignees return
+proposals in their reports rather than independently overwriting that spec.
 
-## Coordinate Parallel Ownership
+## Transfer Responsibility Through a Handoff
 
-Assign separate handoff paths for independent workers. Each worker writes only
-its assigned document; the coordinator owns consolidation and shared
-integration. Give an overlapping artifact one writer or provide isolation
-under the project's workflow. Do not let workers overwrite a shared handoff
-or commit through a shared document checkout.
+Use one [handoff](templates/handoff.md) per transfer. Identify the sender,
+recipient, transferred scope, existing authority, governing references,
+current state, actual workspace and revision, material uncommitted changes,
+and evidence. Carry forward important decisions, unsuccessful prior attempts,
+verification gaps, blockers, outstanding requests, and a concrete first action.
 
-Follow the project's document locations, schema, and access rules. When linked
-child work items are configured, attach each worker's handoff to its assigned
-child and let the coordinator update the parent. Otherwise reuse the existing
-report area or state a suitable temporary location; avoid a competing history.
-Keep private task context within its authorized audience.
+Recording the completed handoff and making it available to the named recipient
+completes the transfer. The sender stops work within the transferred scope.
+No acknowledgement, acceptance, or result report to the sender is required.
+Responsibility for any scope outside the transfer remains as previously recorded.
 
-## Accept the Handoff
+Update the existing ownership record, or use the handoff itself when no
+separate record exists. The recipient checks the transferred state and relevant
+artifact revisions before dependent work and continues within the existing
+authority; this check is not an acceptance gate for the transfer.
 
-The coordinator reads each document, verifies its run, task, owner, and role
-against the assignment, checks material claims against the actual artifacts,
-and reconciles gaps or overlapping assumptions before dependent work. Resolve
-an identity mismatch before accepting a handoff under the wrong task or owner.
-Record which work was accepted, what remains unresolved, and who owns the
-next action. Verify the combined result with checks suited to integration;
-individual handoffs alone do not establish that the combined work succeeds.
+If requests remain in flight, retain their request IDs, original requester
+attribution, briefs, and revisions. Include their assignees, latest reports,
+open findings, and needed decisions in the handoff. Route later reports to
+the successor owner using the updated reply destination; preserve the original
+brief and record the destination change in the ownership record or handoff.
 
-For development work, use
-[developing-with-specs](../developing-with-specs/SKILL.md) to consolidate the
-applied working spec and decision history in the task scratchpad. The
-coordinator presents that reference and the reasons for changes to the user
-at completion; worker-only reports do not establish that the user knows what
-spec the delivered work used.
+## Use Briefs and Reports for Code Review
+
+Use [requesting-code-review](../requesting-code-review/SKILL.md) when the owning
+workflow calls for code review. Carry its review scope and output requirements
+in the brief's conditional review section: governing requirements and revision,
+producer, baseline and target, producer report, available evidence, and
+severity and blocking criteria. For a multi-commit change, use the recorded
+start and end of the assigned work so the range covers the entire change.
+
+The independent reviewer is distinct from the producer and inspects the
+assigned artifacts without modifying them. Return the review report through
+the permitted reporting surface, or through an authorized recorder when the
+reviewer cannot write there. Preserve the reviewer as the author.
+
+Use the report's conditional review section to record the applicable verdicts,
+findings with IDs, severity, locations and evidence, and verification limits.
+Include the review workflow's detailed output in that report or reference its
+existing artifact. Completing a review assignment does not mean the reviewed
+implementation passed; state both the report status and review verdicts.
+
+Evaluate feedback with
+[receiving-code-review](../receiving-code-review/SKILL.md) before implementing
+suggestions. The current owner retains responsibility for disposition and
+resolution. A delegated fix uses a brief linked to the findings and a report
+with the changes and covering evidence. The owning development workflow
+determines review timing, re-review, and completion gates.
+
+## Keep Records Available and Finalize
+
+Follow project settings and existing workflow paths first, including existing
+SDD helper-script destinations. The fallback location is
+`.kryptonite/work/<work-id>/`, with `briefs/`, `reports/`, and `handoffs/` as
+defined in the reference. Reuse the existing progress or ownership record;
+do not introduce a second registry or move existing artifacts for this layout.
+
+Give independent writers separate record paths and one writer or appropriate
+isolation for shared artifacts. The current owner consolidates shared state.
+Follow configured child work-item links and document schemas where available,
+and keep private context within its authorized audience. Check identities and
+revisions before acting on delayed or repeated documents; re-delivery does not
+create another assignment or ownership transfer. A durable child work item
+retains task history and links these records; its parent relation does not
+replace a brief/report or establish a handoff. An authorized recorder may append
+an assignee's events without changing their authorship or granting write access.
+
+Keep records needed by outstanding requests, unresolved findings, remaining
+work, or the next owner. Sending a handoff or report does not itself trigger
+cleanup. Dispose of only completed communication records within existing
+authority after their necessary decisions, evidence, and continuation state
+are preserved and project retention permits it. Preserve other active work.
+
+For development finalization, use
+[developing-with-specs](../developing-with-specs/SKILL.md) to preserve the applied
+requirements and evidence in durable documentation. Pending required stages
+still need their records. This skill owns communication and transfer semantics,
+not a separate commit or generalization schedule.

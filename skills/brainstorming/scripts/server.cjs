@@ -102,13 +102,6 @@ const URL_HOST = process.env.BRAINSTORM_URL_HOST || (HOST === '127.0.0.1' ? 'loc
 const SESSION_DIR = process.env.BRAINSTORM_DIR || '/tmp/brainstorm';
 const CONTENT_DIR = path.join(SESSION_DIR, 'content');
 const STATE_DIR = path.join(SESSION_DIR, 'state');
-const KRYPTONITE_VERSION = readKryptoniteVersion();
-const KRYPTONITE_BRAND_IMAGE_URL = 'https://primeradiant.com/brand/superpowers-visual-brainstorming-logo.png';
-const TELEMETRY_DISABLE_ENV_VARS = [
-  'SUPERPOWERS_DISABLE_TELEMETRY',
-  'DISABLE_TELEMETRY'
-];
-const KRYPTONITE_TELEMETRY_DISABLED = TELEMETRY_DISABLE_ENV_VARS.some(name => isTruthyEnv(process.env[name]));
 let ownerPid = process.env.BRAINSTORM_OWNER_PID ? Number(process.env.BRAINSTORM_OWNER_PID) : null;
 
 // Per-session secret key. The companion is reachable by any local browser tab
@@ -158,20 +151,16 @@ const MIME_TYPES = {
 // ========== Templates and Constants ==========
 
 function waitingPage() {
-  return renderBranding(`<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>Brainstorm Companion</title>
 <style>
 body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; }
 h1 { color: #333; } p { color: #666; }
-.brand { display: flex; align-items: center; min-width: 0; overflow: hidden; margin-bottom: 1.5rem; color: #666; font-size: 0.9rem; line-height: 1; }
-.brand a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; min-width: 0; max-width: 100%; line-height: 1; }
-.brand-copy { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1; transform: translateY(-1px); }
-.brand-logo { display: block; height: 1em; width: auto; max-width: 180px; filter: invert(1); }
 </style>
 </head>
-<body><!-- BRANDING --><h1>Brainstorm Companion</h1>
-<p>Waiting for the agent to push a screen...</p></body></html>`);
+<body><h1>Brainstorm Companion</h1>
+<p>Waiting for the agent to push a screen...</p></body></html>`;
 }
 
 const FORBIDDEN_PAGE = `<!DOCTYPE html>
@@ -204,55 +193,13 @@ const helperInjection = '<script>\n' + helperScript + '\n</script>';
 
 // ========== Helper Functions ==========
 
-function readKryptoniteVersion() {
-  const manifest = path.join(__dirname, '../../../.codex-plugin/plugin.json');
-  try {
-    const data = JSON.parse(fs.readFileSync(manifest, 'utf-8'));
-    if (data.version) return String(data.version);
-  } catch (e) {
-    // The companion can still run when the Codex manifest is unavailable.
-  }
-  return 'unknown';
-}
-
-function isTruthyEnv(value) {
-  if (!value) return false;
-  const normalized = String(value).trim().toLowerCase();
-  if (!normalized) return false;
-  return !['0', 'false', 'no', 'off'].includes(normalized);
-}
-
-function escapeHtmlText(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-function brandMarkup() {
-  const version = escapeHtmlText(KRYPTONITE_VERSION);
-  const text = KRYPTONITE_TELEMETRY_DISABLED
-    ? 'kryptonite v' + version
-    : 'kryptonite v' + version;
-  const logo = KRYPTONITE_TELEMETRY_DISABLED
-    ? ''
-    : '<img class="brand-logo" src="' + KRYPTONITE_BRAND_IMAGE_URL + '?v=' + encodeURIComponent(KRYPTONITE_VERSION) + '" alt="Prime Radiant" referrerpolicy="no-referrer" decoding="async">';
-
-  return '<div class="brand"><a href="https://github.com/hemaher0/dev-skills">' + logo + '<span class="brand-copy">' + text + '</span></a></div>';
-}
-
-function renderBranding(html) {
-  return html.split('<!-- BRANDING -->').join(brandMarkup());
-}
-
 function isFullDocument(html) {
   const trimmed = html.trimStart().toLowerCase();
   return trimmed.startsWith('<!doctype') || trimmed.startsWith('<html');
 }
 
 function wrapInFrame(content) {
-  return renderBranding(frameTemplate).replace('<!-- CONTENT -->', content);
+  return frameTemplate.replace('<!-- CONTENT -->', content);
 }
 
 function getNewestScreen() {

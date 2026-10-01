@@ -1,168 +1,122 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
+description: Use when established requirements need a multi-step implementation plan with explicit purposes, dependencies, deliverables, and verification.
 ---
 
 # Writing Plans
 
-## Overview
+Translate the working spec into actionable work for a capable implementer.
+Preserve the reasons and boundaries that matter, while leaving implementation
+judgment where the requirements permit it.
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+Use [developing-with-specs](../developing-with-specs/SKILL.md) to read and maintain
+the shared spec. If the goal or a consequential choice is unresolved, use
+[brainstorming](../brainstorming/SKILL.md) for that uncertainty rather than
+repeating already settled exploration or approval.
 
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+## Location and Inputs
 
-**Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
+Reuse the active plan and the project's configured format and location. If an
+existing formal workflow owns tasks, use that artifact and reference it from
+the working spec rather than creating a competing plan. Otherwise default to
+`<resolved-scratchpad-root>/<work-id>/<work-id>-plan.md`, beside `spec.md`.
 
-**Context:** If working in an isolated worktree, it should have been created via the `kryptonite:using-git-worktrees` skill at execution time.
+A configured durable plan can be the active artifact or retain its decisions;
+link it without starting a second task list. Select one execution controller
+for the scope, including when formal tasks are executed by another compatible
+workflow. Plan review checks requirement coverage and dependencies; technical
+review, documentation audit, and Git candidate/message review remain distinct.
 
-**Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
-- (User preferences for plan location override this default)
+Keep the plan basename unique among active SDD plans: the existing SDD helper
+uses it to select `.kryptonite/sdd/<plan-basename>/`. A generic `plan.md` in
+different work folders would still select the same workspace. For an existing
+configured plan with a collision, resolve the workspace conflict before SDD;
+do not silently rename the plan or change helper interfaces.
 
-## Scope Check
+Read the current spec, its revision and sources, affected project files, and
+existing checks. Identify missing inputs and distinguish implementation
+discovery from decisions that must be resolved before a dependent task.
 
-If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
+## Decompose by Purpose
 
-## File Structure
+Choose tasks with clear deliverables and meaningful verification boundaries.
+Group setup and documentation with the deliverable that needs them; split where
+independent responsibility, dependencies, or review justify it. Do not impose
+fixed durations, file counts, or a separate task for each mechanical action.
 
-Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
+Each task needs its purpose and requirement IDs, relevant scope and exact
+artifact paths, dependencies, necessary interfaces, and completion checks.
+Define signatures or exchanged data shapes when another task depends on them.
+Do not prescribe full implementation code unless exact code is needed to
+preserve a fragile contract. Follow existing project patterns without expanding
+the task into an unrelated restructure.
 
-- Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
-- You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.
-- Files that change together should live together. Split by responsibility, not by technical layer.
-- In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
+## Plan Shape
 
-This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
-
-## Task Right-Sizing
-
-A task is the smallest unit that carries its own test cycle and is worth a
-fresh reviewer's gate. When drawing task boundaries: fold setup,
-configuration, scaffolding, and documentation steps into the task whose
-deliverable needs them; split only where a reviewer could meaningfully
-reject one task while approving its neighbor. Each task ends with an
-independently testable deliverable.
-
-## Bite-Sized Task Granularity
-
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
-
-## Plan Document Header
-
-**Every plan MUST start with this header:**
+Use the project's structure when established. Otherwise start with:
 
 ```markdown
-# [Feature Name] Implementation Plan
+# [Work Title] Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use kryptonite:subagent-driven-development (recommended) or kryptonite:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
-**Goal:** [One sentence describing what this builds]
-
-**Architecture:** [2-3 sentences about approach]
-
-**Tech Stack:** [Key technologies/libraries]
+**Work ID:** [Existing work ID]
+**Spec:** [Actual spec path and material revision]
+**Goal:** [Original observable result]
+**Execution:** [Existing user choice or applicable project workflow]
 
 ## Global Constraints
 
-[The spec's project-wide requirements — version floors, dependency limits,
-naming and copy rules, platform requirements — one line each, with exact
-values copied verbatim from the spec. Every task's requirements implicitly
-include this section.]
+[Applicable governing requirements with IDs and sources; retain exact required values.]
 
----
+## Dependencies and Open Decisions
+
+[Affected tasks, required inputs, and who resolves material unknowns before dependent work.]
+
+### Task 1: [Deliverable]
+
+**Spec:** [Actual spec path and material revision]
+**Purpose and requirements:** [Result this task serves and requirement IDs]
+**Scope and constraints:** [Included work, excluded work, and applicable exact constraints]
+**Dependencies:** [Task IDs or existing inputs]
+**Files:** [Actual create, modify, and relevant check paths]
+**Interfaces:** [Required inputs/outputs and exact shared contracts, or none]
+**Completion and verification:** [Observable criteria, check method or commands, and expected observations]
+
+- [ ] [Action with enough context to implement]
+- [ ] [Check covering the stated result]
 ```
 
-## Task Structure
+When SDD is selected, keep numbered `Task N` headings and `- [ ]` checkboxes
+for its extraction interface. Other controllers keep their required task format.
+Each extracted task must retain its spec reference, purpose, dependencies,
+applicable constraints, and completion criteria without relying on neighboring
+task prose. References can supply shared evidence; do not duplicate the whole
+spec or every other task's code.
 
-````markdown
-### Task N: [Component Name]
+A filled plan must be actionable. Replace generic instructions such as "add
+appropriate validation" with the required behavior and its checks. Known
+unknowns may remain when a named discovery or decision step resolves them
+before dependent work. Do not turn an unresolved requirement into invented
+code, or leave a blocking placeholder without a resolution step.
 
-**Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+Apply the project's test policy and the relevant testing workflow to the actual
+change. Include regression or TDD steps when warranted or required; do not add
+tests that merely mirror low-impact prose or mechanical edits. A plan does not
+authorize commits: include commit checkpoints only when the chosen execution
+workflow needs them and existing instructions authorize them.
 
-**Interfaces:**
-- Consumes: [what this task uses from earlier tasks — exact signatures]
-- Produces: [what later tasks rely on — exact function names, parameter
-  and return types. A task's implementer sees only their own task; this
-  block is how they learn the names and types neighboring tasks use.]
+## Review and Route Execution
 
-- [ ] **Step 1: Write the failing test**
+Check every material requirement against tasks and covering evidence, including
+the original requested outcome. Check task dependencies, shared interfaces,
+unsupported scope additions, unresolved blockers, and whether isolated task
+briefs remain usable. Revise affected parts and recheck findings as needed.
+The [plan review prompt](plan-document-reviewer-prompt.md) supports an independent
+review when needed and authorized; self-review does not require dispatch.
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
-```
-
-- [ ] **Step 2: Run test to verify it fails**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
-
-- [ ] **Step 3: Write minimal implementation**
-
-```python
-def function(input):
-    return expected
-```
-
-- [ ] **Step 4: Run test to verify it passes**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: PASS
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
-```
-````
-
-## No Placeholders
-
-Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
-- "TBD", "TODO", "implement later", "fill in details"
-- "Add appropriate error handling" / "add validation" / "handle edge cases"
-- "Write tests for the above" (without actual test code)
-- "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
-- Steps that describe what to do without showing how (code blocks required for code steps)
-- References to types, functions, or methods not defined in any task
-
-## Self-Review
-
-After writing the complete plan, look at the spec with fresh eyes and check the plan against it. This is a checklist you run yourself — not a subagent dispatch.
-
-**1. Spec coverage:** Skim each section/requirement in the spec. Can you point to a task that implements it? List any gaps.
-
-**2. Placeholder scan:** Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.
-
-**3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
-
-If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
-
-## Execution Handoff
-
-After saving the plan, offer execution choice:
-
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Two execution options:**
-
-**1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
-
-**2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
-
-**Which approach?"**
-
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use kryptonite:subagent-driven-development
-- Fresh subagent per task + two-stage review
-
-**If Inline Execution chosen:**
-- **REQUIRED SUB-SKILL:** Use kryptonite:executing-plans
-- Batch execution with checkpoints for review
+Report the plan path and material unresolved decisions. If execution was already
+requested, continue using the chosen workflow; do not ask the user to choose
+again. Use [executing-plans](../executing-plans/SKILL.md) for direct execution.
+Use [subagent-driven-development](../subagent-driven-development/SKILL.md) when
+delegation is authorized, suitable, and its task-commit review requirements can
+be satisfied. Tool availability alone does not select or authorize delegation.
+Planning alone does not authorize starting implementation or remote Git work.

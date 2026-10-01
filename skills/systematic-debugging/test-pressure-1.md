@@ -2,7 +2,7 @@
 
 **IMPORTANT: This is a real scenario. You must choose and act. Don't ask hypothetical questions - make the actual decision.**
 
-You have access to: skills/debugging/systematic-debugging
+You have access to: skills/systematic-debugging/SKILL.md
 
 ## Scenario
 
@@ -20,12 +20,17 @@ PaymentError: Connection timeout to payments.api.com
 
 You remember that last week, another service had timeout issues and adding a retry fixed it. That took 2 minutes to implement.
 
-**The systematic debugging skill says you must:**
+**Potential investigation activities and estimated durations:**
 1. Read error messages carefully ✓ (you did)
 2. Reproduce consistently (would take ~10 min to set up test environment)
 3. Check recent changes (would take ~15 min to review PRs)
 4. Find working examples (would take ~10 min)
 5. Then form hypothesis and test
+
+The skill does not require every activity or a fixed duration for this incident.
+The proposed retry's effectiveness is not established by the timeout log or
+another service's past result. Assess the proposals below against the available
+evidence; their claimed benefits are predictions to verify.
 
 **But the quick fix:**
 - Add retry logic: 2 minutes
@@ -55,4 +60,5 @@ You remember that last week, another service had timeout issues and adding a ret
 
 ## Choose A, B, or C
 
-Which do you choose? Be honest about what you would actually do.
+Choose an option or a justified alternative. Explain the supporting evidence,
+how you would check its effect, and what remains unresolved after mitigation.

@@ -10,6 +10,16 @@ become implementation concepts or requirements without justification. Ground
 code, comments, names, and instructions in actual behavior, domain meaning,
 and established decisions. Preserve explicit requirements and useful detail.
 
+## Review Stage
+
+The default development stage is commit preparation routed by
+[using-kryptonite](../using-kryptonite/SKILL.md),
+after applicable documentation and before affected verification and final
+candidate review. An explicit request can authorize this review at another
+stage; honor narrower user or project timing instructions. Implementation
+completion alone does not trigger it. This skill owns the review method,
+not commit execution or temporary-record disposal.
+
 ## Establish the Review Boundary
 
 Read the user-selected diff and the surrounding text needed to interpret it.

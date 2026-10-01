@@ -1,136 +1,170 @@
 ---
 name: developing-with-specs
-description: Use before and during software development to maintain a working spec and decision history in a scratchpad, elaborate missing requirements, and present the spec actually used at completion.
+description: Use before and during software development to derive necessary requirements from user intent and project evidence, maintain a working spec and decision history, and verify the delivered result.
 ---
 
 # Developing With Specs
 
-Autonomously turn the user's intent into an actionable spec, even when the user
-has not supplied one. Write and maintain the working spec and decision history
-in a scratchpad as development reveals new facts and choices. At completion,
-the user must be able to inspect what was specified, what changed, why the
-agent made those choices, and what was implemented.
+Give implementation choices a purpose before acting. Connect the user's desired
+result to necessary conditions, chosen solutions, planned work, and evidence
+that the original result was achieved. Apply this throughout exploration,
+planning, implementation, and verification, rather than as a separate phase.
 
-## Establish the Working Spec in a Scratchpad
+## One Working Spec Per Work
 
-Read `Scratchpad root` from the target project's root `AGENTS.local.md`; the
-[local configuration template](templates/AGENTS.local.md) provides its
-placeholder. Resolve a configured relative path from that project's root and
-use an absolute path as configured. If the file or setting is absent, the value
-is empty, or its placeholder is unresolved, use
-`<project-root>/.kryptonite/scratchpad/`. The project root is the target
-project's root, not the installed plugin's directory or the shell's current
-subdirectory.
+Resolve `Scratchpad root` from effective project instructions or their existing
+configuration source. A selected personal/checkout path in root
+`AGENTS.local.md` overrides that location within project policy. An absent,
+empty, or placeholder value is unset; use the project setting, then
+`<project-root>/.kryptonite/scratchpad/` when neither supplies a path. Resolve
+relative paths from that project root and use absolute paths as configured.
+The [local override template](templates/AGENTS.local.md) is optional; no local
+file is needed for the project setting or default. Shared workflow, plan,
+documentation and retention rules stay with their responsible owners.
 
-Create the resolved directory when needed. Reuse the existing task document
-there, or create a clearly named task-specific Markdown document following the
-project's format. State its path and keep the working spec and decision history
-together there, with an explicit owner and audience. Preserve the record and
-needed evidence for the final handoff under the project's retention rules.
-If a configured location cannot be used, report and resolve that problem rather
-than silently choosing another location.
+Reuse the current work ID and existing working spec. For new work, the default
+is `<resolved-scratchpad-root>/<work-id>/spec.md`. Keep the current spec and its
+decision history together, identify the current owner and revision, and state
+the actual path. Create only the needed directory and record. If the configured
+location is unavailable, resolve that problem rather than silently substituting
+another location. Do not move ongoing records just to adopt this layout.
 
-Read the request, applicable contracts, and relevant repository evidence, and
-reference those sources from the scratchpad. Existing formal specs remain
-governing inputs; keep the working spec consistent with them. When a change
-requires a formal contract update, use its owning workflow and link the result
-from the scratchpad. For OpenSpec-governed behavior, use the required change
-and delta-spec workflow with verifiable scenarios. A scratchpad or plan alone
-does not replace a required formal behavior spec.
+Use the [spec template](templates/spec.md) when no project format applies.
+Scale its content to the change; a small change can use a compact record with
+the same distinctions and covering checks. These are local defaults, not a
+requirement to introduce another project registry.
 
-A small change can have a compact scratchpad spec; it still needs the relevant
-behavior, constraints, decisions, and acceptance checks.
+Read the request, governing contracts, and relevant repository evidence.
+Existing formal specs remain authoritative. Reference their requirements
+instead of copying a competing contract into the scratchpad. Use the owning
+workflow when a formal contract needs changing; for OpenSpec-governed behavior,
+the required change and delta-spec workflow still applies. A working spec or
+plan alone does not replace that contract.
 
-Capture the interpreted goal, included and excluded work, observable behavior,
-constraints, responsibilities, dependencies, and acceptance criteria. Identify
-the original request and other authoritative sources. Distinguish:
+## Derive Requirements Before Choosing Means
 
-- Explicit user requirements and established contracts.
-- Observed facts, with their sources and applicable limits.
-- Derived requirements, with the goal and evidence that justify them.
-- Agent-selected solutions, with their rationale and consequences.
-- Unverified assumptions and open questions, with how they can be resolved.
+Keep these categories distinct:
 
-Existing code establishes current behavior; it does not by itself establish
-the user's desired behavior. Do not present an agent preference or inference
-as a user requirement. Fill reasonable gaps from evidence and project
-conventions within the user's authorization; raise decisions that need
-unavailable information or authority.
+| Category | What establishes it |
+| --- | --- |
+| Requested requirement | The user's desired result, scope, or explicit constraint. |
+| Governing constraint | An applicable project policy or formal contract, with its source. |
+| Observed fact | Inspected behavior, interface, data, or environment, with evidence and limits. |
+| Derived requirement | A condition needed for a requested result or governing constraint under the observed project conditions. |
+| Selected solution | A chosen way to satisfy a requirement, with a purpose and rationale. |
+| Assumption or open question | An unverified premise, its effect, and how and when to resolve it. |
 
-## Record Choices as They Are Made
+Give requirements stable IDs. For a derived requirement, identify its parent
+requirement or governing constraint, the evidence supporting the derivation,
+and an observable acceptance criterion. Check whether the condition is actually
+necessary in this project or only one possible implementation. An unsupported
+derivation remains a proposal or assumption; it is not an established fact.
 
-Record development choices in the scratchpad's decision history as work
-proceeds. Include choices made during implementation, verification, and integration,
-not just choices in the initial design. Do not omit a choice solely because
-the agent considers it routine or obvious. Mechanical work already determined
-by an existing requirement can refer to that requirement; related choices can
-share an entry when all affected work and the common rationale remain clear.
+For example, a CSV export may need the project's existing access restrictions
+to satisfy its governing authorization contract. Streaming is a selected means
+whose justification depends on output size and resource constraints. Do not
+promote that technique to a requirement merely because it is familiar.
 
-For each decision, preserve enough information to establish:
+Existing code establishes current behavior, not desired behavior. A preference,
+"best practice," or passing implementation tests alone does not justify an
+addition. Refine omitted necessities within existing authorization; consult the
+user when a decision changes their goal, crosses the agreed scope, or needs
+information or authority that cannot otherwise be obtained.
 
-- What was decided, by whom, and when or at which development stage.
-- Which goal or requirement it serves and whether it was requested, derived,
-  or selected by the agent.
-- Why the choice is appropriate, with concrete evidence or a stated tradeoff;
-  include relevant alternatives when an actual choice between them was made.
-- Its assumptions, uncertainty, affected behavior or artifacts, and checks.
-- Whether it remains active, was revised, was rejected, or is unresolved.
+## Record Purposeful Decisions and Changes
 
-"Best practice" or "the tests pass" alone does not explain why a choice meets
-the user's goal. Distinguish observed support from an assumption. Gather
-evidence or keep the uncertainty visible when the rationale is insufficient.
-Do not fabricate reasons, sources, timestamps, or user approval afterward.
+Before a material choice drives implementation, record the goal or requirement
+it serves, why it is appropriate, its evidence or tradeoff, affected artifacts,
+and the check that will assess it. Include alternatives when there is a real
+choice; do not invent alternatives to fill a quota.
 
-## Evolve the Spec During Implementation
+Record choices affecting requirements, observable behavior, interfaces, scope,
+dependencies, verification, or consequential implementation strategy. Mechanical
+work determined by an existing rule can reference it. Related choices can share
+an entry when their purpose, basis, and affected work remain clear; a separate
+entry for every editing action is unnecessary.
 
-New facts can require additions or revisions. Record the previous expectation,
-the change, its reason and source, and its effect on implementation and
-acceptance checks. Preserve superseded decisions in the scratchpad's history,
-revision links, or a change log. The final working spec describes the actual
-accepted behavior; its history explains how that behavior was reached.
+Keep the current body up to date and append material history with the actual
+actor, stage or known time, prior expectation, change, reason, and impact.
+Preserve earlier reasoning and link superseding decisions rather than erasing
+them. Increment the spec revision for material requirement or decision changes.
+Do not fabricate sources, timestamps, approval, or contemporaneous reasoning.
+If a choice was recorded late, acknowledge that and reconcile its effects.
 
-Autonomous refinement within existing authorization does not require advance
-approval of every choice. Honor review gates explicitly required by the user
-or project and approvals already covering the same scope. A change that
-contradicts the user's requirement or exceeds that authority needs the user's
-decision before dependent work. Silence is not approval when approval is needed.
+New facts can arise in a plan, implementation, review, or verification. Resolve
+the affected spec, plan, and acceptance checks together before dependent work.
+Identify evidence made stale by a relevant change and recheck that scope;
+unaffected evidence need not be discarded. Do not silently weaken criteria or
+redefine the goal to fit the implementation. Existing approval continues to
+cover the same scope; honor actual user and project review gates.
 
-Do not silently weaken an acceptance criterion or redefine a requirement to
-make an implementation appear correct. Explain and resolve a mismatch. If an
-earlier choice was not recorded, document the omission honestly and reconcile
-the affected spec and artifacts; do not disguise the entry as contemporaneous.
+## Keep Ownership Explicit
 
-## Coordinate Delegated Decisions
+The current work owner reconciles the shared spec. Give an assignee the spec
+path and revision, governing inputs, bounded scope, authority, and expected
+report. Workers return proposed decisions and evidence in their assigned
+records rather than independently overwriting the shared spec.
 
-Give each worker the scratchpad spec reference and governing inputs, its
-assigned scope and authority, and where to record choices and proposed changes.
-Workers keep their assigned records current and return decision references
-with their handoffs. The coordinator owns the consolidated scratchpad working
-spec and reconciliation
-of cross-task changes; workers use their assigned records and do not overwrite
-the shared scratchpad independently.
+Use the [brief](../writing-agent-handoffs/templates/brief.md) and
+[report](../writing-agent-handoffs/templates/report.md) when documented
+delegation is needed: the requesting agent retains responsibility. A
+[handoff](../writing-agent-handoffs/templates/handoff.md) transfers the named
+scope to the next owner when recorded and made available, without requiring a
+response or acknowledgement. Transfer unresolved questions and outstanding
+requests with it; their reports follow the new owner. These semantics apply
+to peers and subagents alike. Follow the existing
+[role and record conventions](../writing-agent-handoffs/references/roles.md).
+A report is evidence for the owner to assess, not automatic acceptance or a
+grant of authority.
 
-Use [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) when documented
-parallel assignments and returns are needed. Consolidate worker decisions,
-their evidence, and spec changes before the final user handoff. A worker's
-report alone does not establish that a change is justified or authorized.
+## Verify the Original Result and Preserve Its Basis
 
-## Verify and Present the Applied Spec
+Check both whether the derived requirements and selected solutions remain
+faithful to the user's intent and whether the delivered artifacts satisfy the
+current spec. Verify the original requested outcome as well as its supporting
+conditions. Tests generated from an implementation can miss the same omitted
+requirement as that implementation; use the governing criteria and evidence
+appropriate to the actual outcome. Record failures and unverified claims.
 
-Check both whether the spec remains faithful to the user's intent and whether
-the implementation meets the spec. Inspect the resulting artifacts against
-the current spec and decision history. Account for implemented choices and
-spec changes; a passing test or a structural validator alone does not establish
-that the chosen requirements were appropriate.
+Write or update final durable documentation using project settings, then the
+applicable documentation skill or procedure for unspecified details. Otherwise,
+update relevant existing documents or create a necessary `docs/<topic>.md`
+outside `.kryptonite`. Preserve the applied behavior, scope, necessary
+derivations, decision rationale, governing references, and verification basis.
+Accurate existing documents can be reused; a routine commit does not require
+a new final document. Present the durable references and scoped results, and
+the applied spec and history while they remain available.
 
-At completion, explicitly present a reviewable reference to the scratchpad's
-final applied spec and decision history, including applicable governing
-contract references, plus a concise account of:
+Supply that document owner with the reconciled requirements/criteria, spec
+revision, actual artifacts, review outcomes, and covering evidence. Resolve
+returned conflicts in the affected spec/plan/evidence before dependent work.
+Preserve necessary applied information in durable sources; references to
+temporary files scheduled for disposal cannot be the only retained basis.
+Documentation ownership does not transfer implementation scheduling, technical
+verdicts, or temporary-record retention authority.
 
-- The behavior, scope, and responsibilities the implementation actually used.
-- Requirements and decisions added or changed during development and why.
-- Agent-selected solutions and the evidence or tradeoffs behind them.
-- Acceptance checks and results, deviations, and unresolved assumptions.
+Use [using-kryptonite](../using-kryptonite/SKILL.md) to route requested commit
+preparation. This skill supplies its governing requirements and documentation
+basis; it does not authorize Git operations or define another commit schedule.
 
-A silent file update or an unlinked worker report does not satisfy this
-handoff. The user must be able to review the actual basis of the delivered work.
+Dispose of only this completed work's temporary spec and related artifacts
+within existing authority, after needed information is preserved durably and
+required stages are complete. Honor project retention and explicit deferrals;
+keep records needed by remaining work, outstanding requests, or the next owner.
+Use [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) for communication
+records. A commit, review, or handoff alone does not satisfy these conditions,
+and Git resource cleanup is a separate decision. A temporary spec must not
+remain the only reference for delivered behavior after disposal.
+
+## Design Basis
+
+These writing rules adapt requirement traceability and validation from the
+[NASA handbook](https://www.nasa.gov/reference/system-engineering-handbook-appendix/),
+artifact reconciliation from
+[Spec Kit](https://github.github.io/spec-kit/guides/evolving-specs.html), and
+decision rationale and history from
+[Microsoft's ADR guidance](https://learn.microsoft.com/en-us/azure/well-architected/architect-role/architecture-decision-record).
+[WiseSpec](https://arxiv.org/html/2609.00568v1) investigates structured,
+iteratively refined requirements for coding agents. These sources inform the
+design; they do not establish this template or path convention as a standard
+or prove that it improves agent performance.
