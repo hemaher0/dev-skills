@@ -60,58 +60,45 @@ new session. See the [official local plugin guide](https://developers.openai.com
 
 ### Project settings
 
-Create or update root `AGENTS.local.md` as part of every installation, even
-without a separate request for the file. Preserve existing configuration and
-established choices.
+Writing root `AGENTS.local.md` is a required installation step.
 
-Read existing project instructions and their configuration sources. Shared
-scratchpad/plan/document conventions and retention exceptions belong there;
-common workflow and defaults belong to their responsible skills. Keep existing
-paths. New unconfigured work uses `.kryptonite/scratchpad/` without adding that
-default to another configuration file.
+1. Read existing project instructions and the
+   [local development template](skills/developing-with-specs/templates/AGENTS.local.md).
+   Create the file from that template, or merge its development section into
+   the existing file. Preserve established settings and other packages' sections.
+2. Replace applicable placeholders with actual values. Fill `Scratchpad root`
+   with the established project path, or `.kryptonite/scratchpad/` when using
+   the documented default. Resolve relative paths from the project root.
+   Remove fields that do not apply.
+3. Keep shared project policy in its existing home and reusable workflow rules
+   in their skills. Where settings are already maintained elsewhere, reference
+   their actual source and verify its contents. The workflow entrypoint is
+   [using-kryptonite](skills/using-kryptonite/SKILL.md); scratchpad and spec rules
+   are in [developing-with-specs](skills/developing-with-specs/SKILL.md).
+4. Connect the local file to root instructions using the procedure below.
 
-Read the [local development template](skills/developing-with-specs/templates/AGENTS.local.md)
-and merge its development section into `AGENTS.local.md`. Fill selected
-personal/checkout-specific scratchpad overrides only. If none are needed,
-write `Local overrides: None. Use effective project settings and skill defaults.`
-in that section instead of omitting the file or copying default paths. Remove
-unused template fields and preserve other packages' sections. Follow project
-document and Git policies without requiring a particular plugin.
-
-Connect the local file to root instructions. If `AGENTS.md` exists, preserve it
-and add the following instruction unless it already reads or resolves to the
-local file:
+If root `AGENTS.md` exists, preserve it and add this instruction unless it
+already reads or resolves to the local file:
 
 ```markdown
 Read and follow root AGENTS.local.md when it exists.
 ```
 
 If `AGENTS.md` is absent, the recommended connection is a relative symbolic
-link created from the project root, after writing `AGENTS.local.md`:
+link from the project root, after writing `AGENTS.local.md`:
 
 ```bash
 ln -s AGENTS.local.md AGENTS.md
 ```
 
-Preserve existing files and links; do not replace them or add a self-reference
-to a linked local file. If `AGENTS.override.md` takes precedence, ensure it also
-reads the local file. Verify the effective connection, including link targets.
+Preserve existing files and links and avoid self-references. If
+`AGENTS.override.md` takes precedence, ensure it reads the local file.
 
-Inspect repository facts and reuse established choices first. Confirm unresolved
-consequential choices, such as a different storage location or conflicting
-project rule, with the project owner before dependent setup. Write the resulting settings
-with ordinary file edits; fill applicable values and omit unused fields.
-Repeated setup updates the same sections without duplicates or overwritten
-policy. Report configured paths, changed instruction files, and any dependent
-feature still unconfigured. Settings do not grant execution or Git permissions.
-An unresolved choice is pending, not evidence that a setting is unnecessary.
-
-Before declaring installation complete, verify that `AGENTS.local.md` contains
-the resolved development settings or the explicit no-override declaration,
-has no unused placeholders, and is read through effective root instructions.
-Check marketplace paths/name and, in a new session, skill availability and the
-resolved scratchpad setting. Required unresolved choices remain pending;
-plugin availability alone does not complete configuration.
+Before completing installation, read the completed file and any referenced
+configuration. Verify that applicable values are filled, no placeholders
+remain, the scratchpad path resolves, and effective instructions read the local
+file. A generic "use defaults" statement does not replace filled settings.
+Check marketplace paths/name and skill availability in a new session.
 
 ## Skills
 
