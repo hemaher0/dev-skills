@@ -1,0 +1,20 @@
+{
+  "name": "kryptonite-dev",
+  "interface": {
+    "displayName": "kryptonite Dev"
+  },
+  "plugins": [
+    {
+      "name": "kryptonite",
+      "source": {
+        "source": "url",
+        "url": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

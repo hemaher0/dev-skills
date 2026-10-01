@@ -1,0 +1,3 @@
+interface:
+  display_name: "Developing with Specs"
+  short_description: "Keep specs and decision history in a scratchpad"

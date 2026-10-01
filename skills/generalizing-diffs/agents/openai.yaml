@@ -1,0 +1,3 @@
+interface:
+  display_name: "Generalizing Diffs"
+  short_description: "Remove context bias from code, names, comments, and docs"
