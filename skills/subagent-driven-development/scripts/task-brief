@@ -16,6 +16,8 @@ fi
 
 plan=$1
 n=$2
+[[ "$n" =~ ^[1-9][0-9]*$ ]] \
+  || { echo "task number must be a positive integer: $n" >&2; exit 2; }
 [ -f "$plan" ] || { echo "no such plan file: $plan" >&2; exit 2; }
 
 if [ $# -eq 3 ]; then
@@ -25,17 +27,46 @@ else
   out="$dir/task-${n}-brief.md"
 fi
 
-awk -v n="$n" '
-  /^```/ { infence = !infence }
-  !infence && /^#+[ \t]+Task[ \t]+[0-9]+/ {
-    intask = ($0 ~ ("^#+[ \t]+Task[ \t]+" n "([^0-9]|$)"))
-  }
-  intask { print }
-' "$plan" > "$out"
+[ ! -d "$out" ] || { echo "output is a directory: $out" >&2; exit 2; }
 
-if [ ! -s "$out" ]; then
+# Publish only a complete extraction. Keep the temporary file on the same
+# filesystem so a failed lookup cannot truncate an earlier enriched brief.
+tmp=$(mktemp "$(dirname "$out")/.task-brief.XXXXXX")
+trap 'rm -f -- "$tmp"' EXIT
+
+awk -v n="$n" '
+  {
+    line = $0
+    sub(/^ ? ? ?/, "", line)
+    if (infence) {
+      if (substr(line, 1, 1) == fencechar) {
+        run = line
+        if (fencechar == "`") sub(/[^`].*$/, "", run)
+        else sub(/[^~].*$/, "", run)
+        tail = substr(line, length(run) + 1)
+        if (length(run) >= fencesize && tail ~ /^[ \t]*$/) infence = 0
+      }
+    } else if (line ~ /^```/ || line ~ /^~~~/) {
+      fencechar = substr(line, 1, 1)
+      run = line
+      if (fencechar == "`") sub(/[^`].*$/, "", run)
+      else sub(/[^~].*$/, "", run)
+      tail = substr(line, length(run) + 1)
+      if (fencechar == "~" || tail !~ /`/) {
+        fencesize = length(run)
+        infence = 1
+      }
+    } else if (line ~ /^#+[ \t]+Task[ \t]+[0-9]+/) {
+      intask = (line ~ ("^#+[ \t]+Task[ \t]+" n "([^0-9]|$)"))
+    }
+    if (intask) print
+  }
+' "$plan" > "$tmp"
+
+if [ ! -s "$tmp" ]; then
   echo "task ${n} not found in ${plan} (no heading matching 'Task ${n}')" >&2
   exit 3
 fi
 
+mv -- "$tmp" "$out"
 echo "wrote ${out}: $(wc -l < "$out" | tr -d ' ') lines"

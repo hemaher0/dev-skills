@@ -20,6 +20,13 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Parse arguments
+require_option_value() {
+  if [[ $# -lt 2 || -z "${2:-}" || "${2:-}" == --* ]]; then
+    printf '{"error": "%s requires a value"}\n' "$1"
+    exit 1
+  fi
+}
+
 PROJECT_DIR=""
 FOREGROUND="false"
 FORCE_BACKGROUND="false"
@@ -29,18 +36,22 @@ IDLE_TIMEOUT_MINUTES=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --project-dir)
+      require_option_value "$@"
       PROJECT_DIR="$2"
       shift 2
       ;;
     --host)
+      require_option_value "$@"
       BIND_HOST="$2"
       shift 2
       ;;
     --url-host)
+      require_option_value "$@"
       URL_HOST="$2"
       shift 2
       ;;
     --idle-timeout-minutes)
+      require_option_value "$@"
       IDLE_TIMEOUT_MINUTES="$2"
       shift 2
       ;;

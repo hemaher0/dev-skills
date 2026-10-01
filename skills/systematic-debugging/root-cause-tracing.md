@@ -91,13 +91,16 @@ npm test 2>&1 | grep 'DEBUG git init'
 
 If something appears during tests but you don't know which test:
 
-Use the bisection script `find-polluter.sh` in this directory:
+Use the pollution investigation script `find-polluter.sh` in this directory:
 
 ```bash
 ./find-polluter.sh '.git' 'src/**/*.test.ts'
 ```
 
 Runs tests one-by-one, stops at first polluter. See script for usage.
+Failed commands, skipped runs, and an empty test selection produce an
+incomplete-verification result, not a clean verdict. Inspect a reported failed
+command before using absence of pollution as evidence.
 
 ## Real Example: Empty projectDir
 

@@ -138,6 +138,18 @@ the whole work: temporary records are disposed of only after completed-work
 information is preserved durably and retention needs are met. Git workspace
 cleanup is a separate ownership decision.
 
+## Validation
+
+Run the helper regression checks from this source checkout with Python 3,
+Bash, and Git available:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+The tests exercise task extraction, server option validation, and pollution
+investigation using temporary workspaces and controlled external commands.
+
 ## License
 
 [MIT License](LICENSE). Original copyright and attribution are retained.

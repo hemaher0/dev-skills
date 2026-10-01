@@ -493,10 +493,6 @@ agent evaluation:
   distinguish mistakes from quotations, template echoes, or valid exceptions.
 - Keep conclusions within the sampled tasks, contexts, and configurations.
 
-Read [persuasion-principles.md](persuasion-principles.md) only when that
-supplementary writing context helps a demonstrated discipline problem. Its
-examples do not substitute for evidence that the changed skill works.
-
 ## Anti-Patterns
 
 ### ❌ Narrative Example
