@@ -296,16 +296,11 @@ digraph when_flowchart {
 }
 ```
 
-**Use flowcharts ONLY for:**
-- Non-obvious decision points
-- Process loops where you might stop too early
-- "When to use A vs B" decisions
-
-**Never use flowcharts for:**
-- Reference material → Tables, lists
-- Code examples → Markdown blocks
-- Linear instructions → Numbered lists
-- Labels without semantic meaning (step1, helper2)
+Choose the representation that makes the relevant relationship easiest to
+understand. Flowcharts often help with branching decisions and process loops;
+tables suit comparisons, code blocks suit executable examples, and numbered
+lists often suffice for linear actions. A diagram can also clarify a linear
+flow when dependencies or ownership matter. Use meaningful labels.
 
 See [graphviz-conventions.dot](graphviz-conventions.dot) for graphviz style rules.
 

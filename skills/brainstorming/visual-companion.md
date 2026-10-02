@@ -82,11 +82,11 @@ Use `--url-host` to control what hostname is printed in the returned URL JSON.
    - **Required: confirm the server is alive before referring to the URL or pushing a screen.** Check that `$STATE_DIR/server-info` exists and `$STATE_DIR/server-stopped` does not. If it has shut down, restart it with `start-server.sh` using the **same `--project-dir`** — it reuses the same port, so the user's open tab reconnects on its own (it shows a "paused" overlay while the server is down) and you don't need to send a new URL. The server auto-exits after 4 hours idle (configurable with `--idle-timeout-minutes`).
    - Use semantic filenames: `platform.html`, `visual-style.html`, `layout.html`
    - **Never reuse filenames** — each screen gets a fresh file
-   - Use your file-creation tool — **never use cat/heredoc** (dumps noise into terminal)
+   - Use an available file-writing tool and keep routine creation output concise
    - Server automatically serves the newest file
 
 2. **Tell user what to expect and end your turn:**
-   - Remind them of the URL (every step, not just first)
+   - Provide the complete URL when first available or needed to access the screen
    - Give a brief text summary of what's on screen (e.g., "Showing 3 layout options for the homepage")
    - Ask them to respond in the terminal: "Take a look and let me know what you think. Click to select an option if you'd like."
 
@@ -238,7 +238,9 @@ When the user clicks options in the browser, their interactions are recorded to 
 {"type":"click","choice":"b","text":"Option B - Hybrid","timestamp":1706000115}
 ```
 
-The full event stream shows the user's exploration path — they may click multiple options before settling. The last `choice` event is typically the final selection, but the pattern of clicks can reveal hesitation or preferences worth asking about.
+Events record browser interactions. Interpret them with the user's explicit
+feedback and the displayed question; click order alone does not establish a
+settled preference or authorize an action.
 
 If `$STATE_DIR/events` doesn't exist, the user didn't interact with the browser — use only their terminal text.
 

@@ -1,18 +1,21 @@
 # Local Development Configuration
 
 <!-- Create or merge this package section into root AGENTS.local.md during
-installation. Keep the status even when no local overrides are needed; fill
-selected fields and remove unused fields/headings. Preserve existing values
+installation. Mark configuration complete only after required values or their
+existing authoritative sources are resolved. Remove unused fields/headings. Preserve existing values
 and other packages' sections. Shared project choices belong in effective
-project instructions or an existing referenced policy; do not copy defaults.
+project instructions or an existing referenced policy. Fill the effective
+scratchpad path, including the documented default when selected; reference
+an existing settings source instead when it already owns that value.
 Connect the file through existing AGENTS.md, or a recommended AGENTS.md symlink
 when absent, following the source README. These settings do not grant permissions
 or broaden shared project policy. -->
 
 ## Development Configuration Status
 
-- Local overrides: `<None. Use effective project settings and skill defaults. / Configured; see below. / Pending; identify the local decision.>`
+- Configuration status: `<Complete / Incomplete: identify required unresolved values>`
+- Existing settings source, when applicable: `<actual path to the authoritative development settings>`
 
 ## Development Scratchpad
 
-- Scratchpad root: `<repository-relative or absolute local override>`
+- Scratchpad root: `<actual project-relative or absolute path; default .kryptonite/scratchpad/>`

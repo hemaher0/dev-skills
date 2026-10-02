@@ -20,8 +20,10 @@ reply_to: "{{reply_destination}}"
 <!--
 Authoring instructions: Read ../references/roles.md in the template package.
 Use its predefined role values and placeholder conventions. Identify the
-expected report destination and exact brief revision. Remove this comment
-before publishing. Remove the review section for a non-review assignment.
+expected report destination and exact brief revision. Keep purpose, scope,
+authority, completion criteria and return routing. Omit irrelevant metadata,
+bullets, tables and sections; concise prose is sufficient for a small task.
+Remove this comment before publishing and the review section for non-review work.
 -->
 
 # Brief: {{title}}

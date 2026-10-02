@@ -17,7 +17,10 @@ ownership_record: "{{ownership_record}}"
 <!--
 Authoring instructions: Read ../references/roles.md in the template package.
 Use its predefined role values and placeholder conventions. Keep one document
-per transfer. Remove this comment before publishing the completed handoff.
+per transfer. Keep definite sender/successor, transfer scope and authority,
+current state, relevant evidence, pending requests and concrete continuation.
+Omit irrelevant metadata, bullets, tables and sections. Remove this comment
+before publishing the completed handoff.
 -->
 
 # Handoff: {{title}}

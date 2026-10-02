@@ -29,6 +29,12 @@ interpreting these documents. It defines the role vocabulary, identities,
 status values, placeholder rules, and document locations. Reuse existing
 equivalent records rather than creating duplicate copies merely for formatting.
 
+Scale the record to the assignment. Keep the responsibility and correlation
+information, purpose, boundaries, expected outcome and evidence needed by the
+next actor. Omit irrelevant template fields and tables; concise prose can
+cover a small non-code assignment. Include code/environment snapshots only
+when they are needed to interpret the result or resume work.
+
 ## Identify the Work and Participants
 
 Reuse the work and task IDs, agent identities, and ownership record already

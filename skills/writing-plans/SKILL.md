@@ -27,11 +27,10 @@ for the scope, including when formal tasks are executed by another compatible
 workflow. Plan review checks requirement coverage and dependencies; technical
 review, documentation audit, and Git candidate/message review remain distinct.
 
-Keep the plan basename unique among active SDD plans: the existing SDD helper
-uses it to select `.kryptonite/sdd/<plan-basename>/`. A generic `plan.md` in
-different work folders would still select the same workspace. For an existing
-configured plan with a collision, resolve the workspace conflict before SDD;
-do not silently rename the plan or change helper interfaces.
+Keep the plan's path identity and revision available to the selected executor.
+SDD owns its workspace allocation and recovery; it distinguishes plan paths
+without requiring globally unique filenames. Preserve ongoing records when
+changing a plan's location.
 
 Read the current spec, its revision and sources, affected project files, and
 existing checks. Identify missing inputs and distinguish implementation

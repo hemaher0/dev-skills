@@ -68,7 +68,9 @@ Writing root `AGENTS.local.md` is a required installation step.
    the existing file. Preserve established settings and other packages' sections.
 2. Replace applicable placeholders with actual values. Fill `Scratchpad root`
    with the established project path, or `.kryptonite/scratchpad/` when using
-   the documented default. Resolve relative paths from the project root.
+   the documented default. If an existing authoritative configuration already
+   owns that value, fill its actual source path instead of duplicating it.
+   Resolve relative paths from the project root.
    Remove fields that do not apply.
 3. Keep shared project policy in its existing home and reusable workflow rules
    in their skills. Where settings are already maintained elsewhere, reference
@@ -128,7 +130,8 @@ Each responsible skill defines its own artifacts and retention;
 Project settings and existing governing workflows take precedence. Working
 specs default to `.kryptonite/scratchpad/<work-id>/spec.md`, plans sit beside
 them, agent communication defaults to `.kryptonite/work/<work-id>/`, and SDD
-preserves its `.kryptonite/sdd/<plan-basename>/` helper contract.
+uses `.kryptonite/sdd/<plan-id>/`, with identity derived from the plan path.
+Existing pending SDD records are reconciled before reuse or explicit migration.
 
 See [developing-with-specs](skills/developing-with-specs/SKILL.md) for spec and
 durable-document placement, and the

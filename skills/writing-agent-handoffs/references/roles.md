@@ -55,17 +55,26 @@ record the new reply destination in the existing ownership record or handoff.
 
 ## Filling the Templates
 
-- Replace every `{{snake_case}}` placeholder. Use `none` for a field that does
-  not apply, `unknown` for an unavailable fact, and `not verified` for an
+- Treat the templates as starting points, not fixed schemas. Keep identity,
+  responsibility, purpose/scope, existing authority, result or continuation
+  criteria, and relevant evidence. A brief also needs a reply destination; a
+  report needs its request/revision binding and actual author; a handoff needs
+  a definite sender, successor, transfer scope and continuation state.
+- Omit metadata, bullets, tables and sections that are irrelevant to the
+  assignment. Git snapshots, environment details and prior-attempt tables are
+  needed when they affect the result or continuation, not for every activity.
+  Small assignments can use concise prose under the relevant headings.
+- Replace every remaining `{{snake_case}}` placeholder. Use `none` when absence
+  is relevant, `unknown` for an unavailable fact, and `not verified` for an
   unchecked claim. Do not invent identities, paths, authorization, or results.
 - YAML metadata values are quoted strings. Escape quotation marks and
   backslashes when substituting them; put multiline prose in the body.
 - Use project-root-relative artifact paths and report destinations, or
   absolute paths when the environment requires them. Template-package links
   resolve from their containing template or reference file.
-- Remove the authoring comment before publishing a filled document. Repeat
-  table rows as needed. A section without relevant entries can contain `none`;
-  remove only sections explicitly marked conditional.
+- Remove authoring comments before publishing. Preserve material constraints,
+  unmet criteria, verification gaps and pending requests when shortening a
+  record; formatting economy does not change responsibility or completion.
 - Reuse existing work and task IDs. `request_id` connects a brief and its
   reports; `brief_revision` identifies the exact instructions used. Record a
   new revision for material instruction changes and a distinct `report_id`

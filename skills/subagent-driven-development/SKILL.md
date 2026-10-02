@@ -88,19 +88,22 @@ Workers return proposed requirement or decision changes in reports; the current
 owner consolidates the shared spec and records material choices before dependent
 implementation, following developing-with-specs.
 
-Preserve existing SDD artifact locations. Without a project-specified override,
-run this skill's `scripts/sdd-workspace PLAN_FILE`: it prints
-`<repo-root>/.kryptonite/sdd/<plan-basename>/`. The directory holds the plan's
-ledger, briefs, reports, and review packages. Configured destinations can be
-passed explicitly to the helpers that accept `OUTFILE`; do not migrate existing
-records merely to adopt the communication templates.
+On continuation, use the workspace already associated with this plan and
+inspect its ledger before choosing defaults. For new work without a project
+override, `scripts/sdd-workspace PLAN_FILE` prints
+`<repo-root>/.kryptonite/sdd/<plan-id>/`. The ID is Git's hash of the normalized
+repository-relative plan path, or absolute path for an external plan; content
+revisions keep the same identity. The directory holds the ledger, briefs,
+reports and review packages. Helpers accepting `OUTFILE` retain explicit
+destinations. Pending filename-based records require ownership reconciliation
+before reuse or an explicit migration; the helper leaves them untouched.
 
 The ledger is `<workspace>/progress.md`, beginning with
 `# SDD ledger — plan: <plan file path>`. Record the full plan identity and
 revision, governing spec revision, starting branch baseline, current owner,
-retry policy, and task/request identities. A different plan with the same
-basename can collide with the helper's default directory: leave its records
-untouched and choose a distinct authorized workspace with explicit output paths.
+retry policy, and task/request identities. Distinct paths may share a filename;
+the workspace ID distinguishes them. For a renamed or moved plan, reconcile
+its recorded identity and pending work before selecting a different workspace.
 The old flat ledger and other plans' records are not this plan's progress.
 
 Record each dispatch before execution: assignee, request/brief revision,

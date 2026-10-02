@@ -61,13 +61,19 @@ function initializeWorkspace(projectDir: string, sessionId: string) {
 **Purpose:** Prevent dangerous operations in specific contexts
 
 ```typescript
+import { realpath } from 'node:fs/promises';
+import { isAbsolute, relative } from 'node:path';
+import { tmpdir } from 'node:os';
+
 async function gitInit(directory: string) {
   // In tests, refuse git init outside temp directories
   if (process.env.NODE_ENV === 'test') {
-    const normalized = normalize(resolve(directory));
-    const tmpDir = normalize(resolve(tmpdir()));
+    const target = await realpath(directory);
+    const boundary = await realpath(tmpdir());
+    const fromBoundary = relative(boundary, target);
 
-    if (!normalized.startsWith(tmpDir)) {
+    if (fromBoundary === '..' || fromBoundary.startsWith('../') ||
+        fromBoundary.startsWith('..\\') || isAbsolute(fromBoundary)) {
       throw new Error(
         `Refusing git init outside temp dir during tests: ${directory}`
       );

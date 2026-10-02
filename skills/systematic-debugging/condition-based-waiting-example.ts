@@ -1,6 +1,5 @@
-// Complete implementation of condition-based waiting utilities
-// From: Lace test infrastructure improvements (2025-10-03)
-// Context: Fixed 15 flaky tests by replacing arbitrary timeouts
+// Project-specific illustration of condition-based waiting utilities.
+// Adapt domain types/imports and choose timing values for the observed system.
 
 import type { ThreadManager } from '~/threads/thread-manager';
 import type { LaceEvent, LaceEventType } from '~/threads/types';
@@ -12,6 +11,7 @@ import type { LaceEvent, LaceEventType } from '~/threads/types';
  * @param threadId - Thread to check for events
  * @param eventType - Type of event to wait for
  * @param timeoutMs - Maximum time to wait (default 5000ms)
+ * @param pollIntervalMs - Observation interval (illustrative default 10ms)
  * @returns Promise resolving to the first matching event
  *
  * Example:
@@ -21,7 +21,8 @@ export function waitForEvent(
   threadManager: ThreadManager,
   threadId: string,
   eventType: LaceEventType,
-  timeoutMs = 5000
+  timeoutMs = 5000,
+  pollIntervalMs = 10
 ): Promise<LaceEvent> {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
@@ -35,7 +36,7 @@ export function waitForEvent(
       } else if (Date.now() - startTime > timeoutMs) {
         reject(new Error(`Timeout waiting for ${eventType} event after ${timeoutMs}ms`));
       } else {
-        setTimeout(check, 10); // Poll every 10ms for efficiency
+        setTimeout(check, pollIntervalMs);
       }
     };
 
@@ -51,6 +52,7 @@ export function waitForEvent(
  * @param eventType - Type of event to wait for
  * @param count - Number of events to wait for
  * @param timeoutMs - Maximum time to wait (default 5000ms)
+ * @param pollIntervalMs - Observation interval (illustrative default 10ms)
  * @returns Promise resolving to all matching events once count is reached
  *
  * Example:
@@ -62,7 +64,8 @@ export function waitForEventCount(
   threadId: string,
   eventType: LaceEventType,
   count: number,
-  timeoutMs = 5000
+  timeoutMs = 5000,
+  pollIntervalMs = 10
 ): Promise<LaceEvent[]> {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
@@ -80,7 +83,7 @@ export function waitForEventCount(
           )
         );
       } else {
-        setTimeout(check, 10);
+        setTimeout(check, pollIntervalMs);
       }
     };
 
@@ -97,6 +100,7 @@ export function waitForEventCount(
  * @param predicate - Function that returns true when event matches
  * @param description - Human-readable description for error messages
  * @param timeoutMs - Maximum time to wait (default 5000ms)
+ * @param pollIntervalMs - Observation interval (illustrative default 10ms)
  * @returns Promise resolving to the first matching event
  *
  * Example:
@@ -113,7 +117,8 @@ export function waitForEventMatch(
   threadId: string,
   predicate: (event: LaceEvent) => boolean,
   description: string,
-  timeoutMs = 5000
+  timeoutMs = 5000,
+  pollIntervalMs = 10
 ): Promise<LaceEvent> {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
@@ -127,7 +132,7 @@ export function waitForEventMatch(
       } else if (Date.now() - startTime > timeoutMs) {
         reject(new Error(`Timeout waiting for ${description} after ${timeoutMs}ms`));
       } else {
-        setTimeout(check, 10);
+        setTimeout(check, pollIntervalMs);
       }
     };
 
@@ -146,13 +151,11 @@ export function waitForEventMatch(
 // await new Promise(r => setTimeout(r, 50));  // Hope results arrive in 50ms
 // expect(toolResults.length).toBe(2);         // Fails randomly
 //
-// AFTER (reliable):
+// AFTER (condition-based):
 // ----------------
 // const messagePromise = agent.sendMessage('Execute tools');
 // await waitForEventCount(threadManager, threadId, 'TOOL_CALL', 2); // Wait for tools to start
 // agent.abort();
 // await messagePromise;
 // await waitForEventCount(threadManager, threadId, 'TOOL_RESULT', 2); // Wait for results
-// expect(toolResults.length).toBe(2); // Always succeeds
-//
-// Result: 60% pass rate → 100%, 40% faster execution
+// expect(toolResults.length).toBe(2); // Check the actual outcome.

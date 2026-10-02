@@ -28,7 +28,7 @@ Check:
   full implementation code is not required for every action.
 - Extraction: For SDD, do numbered Task N sections and checkboxes remain usable,
   and does each extracted task retain its purpose, spec reference, constraints,
-  dependencies, and completion criteria? Is the active plan basename unique?
+  dependencies, and completion criteria? Is the active plan path and revision identified?
 - Authority: Are delegation and any needed commit checkpoints supported by the
   selected workflow and existing instructions rather than assumed from tools?
 

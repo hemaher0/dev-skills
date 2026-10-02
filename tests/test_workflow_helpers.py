@@ -9,6 +9,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_BRIEF = ROOT / "skills/subagent-driven-development/scripts/task-brief"
+SDD_WORKSPACE = ROOT / "skills/subagent-driven-development/scripts/sdd-workspace"
 START_SERVER = ROOT / "skills/brainstorming/scripts/start-server.sh"
 FIND_POLLUTER = ROOT / "skills/systematic-debugging/find-polluter.sh"
 
@@ -24,6 +25,53 @@ class WorkspaceTest(unittest.TestCase):
             ["bash", str(script), *map(str, args)],
             cwd=self.work, env=env, capture_output=True, text=True, timeout=timeout,
         )
+
+
+class SDDWorkspaceTest(WorkspaceTest):
+    def setUp(self):
+        super().setUp()
+        subprocess.run(["git", "init", "-q", str(self.work)], check=True,
+                       capture_output=True, text=True)
+
+    def plan(self, name):
+        path = self.work / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("# Plan\n\n### Task 1: First\nFirst criterion.\n")
+        return path
+
+    def test_distinct_plan_paths_do_not_share_artifacts(self):
+        first = self.run_helper(SDD_WORKSPACE, self.plan("work-a/plan.md"))
+        second = self.run_helper(SDD_WORKSPACE, self.plan("work-b/plan.md"))
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        first_path, second_path = Path(first.stdout.strip()), Path(second.stdout.strip())
+        self.assertNotEqual(first_path, second_path)
+        (first_path / "progress.md").write_text("First plan progress.\n")
+        self.assertFalse((second_path / "progress.md").exists())
+
+    def test_path_spelling_and_content_revision_preserve_workspace(self):
+        plan = self.plan("work/plan.md")
+        first = self.run_helper(SDD_WORKSPACE, plan)
+        plan.write_text(plan.read_text() + "Updated criterion.\n")
+        second = self.run_helper(SDD_WORKSPACE, "work/../work/plan.md")
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertEqual(first.stdout, second.stdout)
+
+    def test_legacy_progress_is_preserved_and_explicit_outputs_remain_usable(self):
+        plan = self.plan("work/plan.md")
+        legacy = self.work / ".kryptonite/sdd/plan"
+        legacy.mkdir(parents=True)
+        ledger = legacy / "progress.md"
+        ledger.write_text("Recorded pending work.\n")
+        result = self.run_helper(SDD_WORKSPACE, plan)
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertIn("explicit helper OUTFILE", result.stderr)
+        self.assertEqual(ledger.read_text(), "Recorded pending work.\n")
+        output = legacy / "task-1-brief.md"
+        extracted = self.run_helper(TASK_BRIEF, plan, 1, output)
+        self.assertEqual(extracted.returncode, 0, extracted.stderr)
+        self.assertIn("First criterion.", output.read_text())
 
 
 class TaskBriefTest(WorkspaceTest):
@@ -99,7 +147,10 @@ class TaskBriefTest(WorkspaceTest):
         subprocess.run(["git", "init", "--quiet"], cwd=self.work, check=True)
         result = self.run_helper(TASK_BRIEF, self.plan, 1)
         self.assertEqual(result.returncode, 0, result.stderr)
-        expected = self.work / ".kryptonite/sdd/implementation-plan/task-1-brief.md"
+        outputs = list((self.work / ".kryptonite/sdd").rglob("task-1-brief.md"))
+        self.assertEqual(len(outputs), 1)
+        expected = outputs[0]
+        self.assertIn(str(expected), result.stdout)
         self.assertIn("First criterion.", expected.read_text())
         ignored = subprocess.run(
             ["git", "check-ignore", str(expected)], cwd=self.work, capture_output=True,

@@ -23,8 +23,10 @@ status: "{{report_status}}"
 Authoring instructions: Read ../references/roles.md in the template package.
 Use its role and status values. Preserve the actual author's identity when a
 different agent records this report. Resolve the recipient from the current
-ownership record. Remove this comment before publishing. Remove the review
-section for a non-review report.
+ownership record. Keep request/revision binding, actual authorship, result,
+criterion evidence and material gaps or remaining owner action. Omit irrelevant
+metadata, bullets, tables and sections; concise prose can carry the evidence.
+Remove this comment before publishing and the review section for non-review work.
 -->
 
 # Report: {{title}}

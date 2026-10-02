@@ -18,12 +18,9 @@ configuration source. A selected personal/checkout path in root
 empty, or placeholder value is unset; use the project setting, then
 `<project-root>/.kryptonite/scratchpad/` when neither supplies a path. Resolve
 relative paths from that project root and use absolute paths as configured.
-Installation creates or updates root `AGENTS.local.md` using the
-[local configuration template](templates/AGENTS.local.md), even when it records
-no local overrides; follow the source README for its instruction connection.
-Override fields remain optional. Existing projects missing the file can use
-the resolution above during ordinary development; installation setup is a
-separate task. Shared workflow, plan, documentation and retention rules stay
+Installation follows the source README and its configuration template.
+Ordinary development uses the resolution above without initializing unrelated
+settings. Shared workflow, plan, documentation and retention rules stay
 with their responsible owners.
 
 Reuse the current work ID and existing working spec. For new work, the default

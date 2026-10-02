@@ -57,12 +57,18 @@ expect(result).toBeDefined();
 
 ## Implementation
 
-Generic polling function:
+Prefer an event/subscription interface when it exposes the needed condition.
+Otherwise choose a polling interval from the expected latency, observation
+cost and test/runtime clock. The values below illustrate a bounded wait;
+they are not recommended intervals or deadlines for every system.
+
+Example polling function:
 ```typescript
 async function waitFor<T>(
   condition: () => T | undefined | null | false,
-  description: string,
-  timeoutMs = 5000
+  description = 'condition',
+  timeoutMs = 5000,
+  pollIntervalMs = 10
 ): Promise<T> {
   const startTime = Date.now();
 
@@ -74,20 +80,23 @@ async function waitFor<T>(
       throw new Error(`Timeout waiting for ${description} after ${timeoutMs}ms`);
     }
 
-    await new Promise(r => setTimeout(r, 10)); // Poll every 10ms
+    await new Promise(r => setTimeout(r, pollIntervalMs));
   }
 }
 ```
 
-See `condition-based-waiting-example.ts` in this directory for complete implementation with domain-specific helpers (`waitForEvent`, `waitForEventCount`, `waitForEventMatch`) from actual debugging session.
+See `condition-based-waiting-example.ts` for a project-specific illustration
+with event types and imports that must be adapted to the target project.
 
 ## Common Mistakes
 
-**❌ Polling too fast:** `setTimeout(check, 1)` - wastes CPU
-**✅ Fix:** Poll every 10ms
+**❌ Choosing an interval without considering the observer:** A costly or
+frequent check can waste resources; an infrequent check can hide useful timing.
+**✅ Fix:** Choose the observation mechanism and interval for the condition.
 
 **❌ No timeout:** Loop forever if condition never met
-**✅ Fix:** Always include timeout with clear error
+**✅ Fix:** Bound the wait through a deadline or cancellation mechanism and
+report the missing condition when the bound is reached.
 
 **❌ Stale data:** Cache state before loop
 **✅ Fix:** Call getter inside loop for fresh data
@@ -106,10 +115,8 @@ await new Promise(r => setTimeout(r, 200));   // Then: wait for timed behavior
 2. Based on known timing (not guessing)
 3. Comment explaining WHY
 
-## Real-World Impact
+## Verify the Change
 
-From debugging session (2025-10-03):
-- Fixed 15 flaky tests across 3 files
-- Pass rate: 60% → 100%
-- Execution time: 40% faster
-- No more race conditions
+Check the original intermittent symptom under relevant load and timing
+conditions. Waiting for a condition removes a timing guess; it does not prove
+the producer is correct or that other races are absent.
