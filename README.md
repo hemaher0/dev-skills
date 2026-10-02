@@ -19,9 +19,15 @@ Source repository: [hemaher0/dev-skills](https://github.com/hemaher0/dev-skills)
 
 ## Install for a project
 
-Use the project's existing plugin installation procedure, or register this
-source in a repository marketplace. For a first local-source setup, run from
-the target project's root; reuse an existing suitable source checkout:
+Keep the marketplace and enablement in the target project using the files
+below. Write these project files directly: `codex plugin marketplace add` and
+`codex plugin add` save user-level configuration in `~/.codex/config.toml`;
+running them from a project directory does not make them project-scoped.
+The plugin browser also saves user-level enablement choices.
+Neither route is a step in this project-only procedure.
+
+For a first local-source setup, run from the target project's root; reuse an
+existing suitable source checkout:
 
 ```bash
 mkdir -p .agents/vendor .agents/plugins .codex
@@ -54,9 +60,16 @@ enabled = true
 ```
 
 Local paths resolve from the marketplace root, which is the project root in
-this example. Open the project as trusted, restart the desktop app when needed,
-install/enable the plugin through its supported client workflow, and start a
-new session. See the [official local plugin guide](https://developers.openai.com/plugins/build/plugins).
+this example. Complete the project settings below, then open the project as
+trusted and start a new Codex session; restart the desktop app when needed.
+Codex uses the project configuration during local marketplace discovery and
+refresh. Verify that the plugin's skills are available in that project session.
+Project configuration is loaded only for trusted projects.
+
+Codex may keep plugin files in its shared `~/.codex/plugins/cache/`; that cache
+location does not determine enablement scope. Existing user-level enablement
+remains a separate setting; adding project settings does not remove it.
+See the [official project plugin configuration guide](https://developers.openai.com/plugins/build/plugins#enable-or-disable-a-plugin-for-a-repo).
 
 ### Project settings
 
