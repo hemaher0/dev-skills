@@ -37,7 +37,8 @@ trap 'rm -f -- "$tmp"' EXIT
 awk -v n="$n" '
   {
     line = $0
-    sub(/^ ? ? ?/, "", line)
+    for (indent = 0; indent < 3 && substr(line, 1, 1) == " "; indent++)
+      line = substr(line, 2)
     if (infence) {
       if (substr(line, 1, 1) == fencechar) {
         run = line
