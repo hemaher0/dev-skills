@@ -1,7 +1,7 @@
 # Codex Tools and Workspace Context
 
-Read this reference when skill execution depends on the current delegation
-tools, Git workspace, or environment restrictions.
+Read this reference when skill execution depends on shell command execution,
+the current delegation tools, Git workspace, or environment restrictions.
 
 ## Available Tools
 
@@ -20,6 +20,13 @@ supported way to carry out the authorized work.
 
 Configuration changes and plugin installation require their own task scope.
 Do not treat loading a skill as a request to change user configuration.
+
+## Shell Command Calls
+
+Do not use heredocs in shell commands submitted through tool calls. Pass
+multiline content through supported structured arguments or file-editing
+tools. This restriction governs command syntax; literal heredoc text in file
+content or documentation remains allowed.
 
 ## Inspect the Git Workspace
 

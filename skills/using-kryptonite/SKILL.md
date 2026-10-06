@@ -86,5 +86,6 @@ verification; being a worker does not waive those requirements.
 ## Codex Tools
 
 Read [codex-tools.md](references/codex-tools.md) when the current task depends
-on delegation tools, workspace detection, or Git operations in a managed
-environment. Use the actual harness capabilities and permissions.
+on shell command execution, delegation tools, workspace detection, or Git
+operations in a managed environment. Use the actual harness capabilities and
+permissions.
