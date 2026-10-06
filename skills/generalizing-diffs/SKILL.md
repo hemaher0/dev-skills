@@ -1,14 +1,15 @@
 ---
 name: generalizing-diffs
-description: Use when reviewing a Git diff of code, comments, identifiers, naming conventions, or prose for conversation-specific labels, speculative suggestions, and unsupported contextual assumptions.
+description: Use when reviewing a Git diff of code, prose, or instructions for overfitting to request wording or examples, conversation-specific labels, speculative suggestions, and unsupported contextual assumptions.
 ---
 
 # Generalizing Diffs
 
-Context bias occurs when conversational wording or incidental circumstances
-become implementation concepts or requirements without justification. Ground
-code, comments, names, and instructions in actual behavior, domain meaning,
-and established decisions. Preserve explicit requirements and useful detail.
+Context bias occurs when conversational wording, examples, or incidental
+circumstances shape an artifact's content, structure, or behavior without
+justification. Ground changed artifacts in actual intent, domain meaning,
+and established decisions. Generalize the underlying principle within the
+supported scope; preserve explicit requirements and useful detail.
 
 ## Review Stage
 
@@ -41,13 +42,34 @@ hypothesis, explicit request, or adopted decision. Use the surrounding intent
 and subsequent decisions; sentence form alone does not establish authorization.
 A suggestion can become a valid requirement when adopted or justified through
 the spec's decision process. Its presence or repetition in context does not
-make its wording an implementation concept.
+make its wording a concept or rule in the artifact.
 
 For a name, comment, convention, or behavior influenced by that statement,
 identify the requirement, domain concept, or justified decision it represents.
 Even an adopted idea should be expressed through its actual semantics rather
 than by mechanically copying a conversational label. Preserve deliberately
 specified terms and literal identifiers that belong to a real contract.
+
+## Generalize the Underlying Principle
+
+Review the substance of any changed artifact, including its decisions,
+organization, rules, and behavior. Overfitting to a user's request can affect
+documents, plans, explanations, recommendations, and reusable instructions
+as well as code.
+
+For each request-driven change, identify the intended outcome and the
+principle or condition that justifies it. Separate required specifics from
+illustrative examples, tentative suggestions, and incidental details. Express
+the grounded principle and its applicability so the result remains useful
+when those incidental details vary. Examine substantive choices alongside
+wording and names; a renamed one-off rule can still overfit the request.
+
+Choose the smallest revision that covers the supported scope. Keep
+task-specific facts, exact formats, and explicit limits when the requested
+result depends on them. Generalization must preserve the user's actual
+requirements. Broader claims, new use cases, frameworks, or unconditional
+rules need their own justification; uncertainty about scope should remain
+visible rather than becoming an invented requirement.
 
 ## Identify Unsupported Assumptions
 
@@ -58,8 +80,8 @@ Look for changes that:
 - Turn one incident or preferred solution into an unconditional rule.
 - Depend on conversation history through expressions such as "as discussed"
   or "use the same setup" without a discoverable source.
-- Make an illustrative example look mandatory, or prescribe a step even when
-  the condition that justifies it is absent.
+- Make an illustrative example look mandatory or exhaustive, or prescribe a
+  rule, structure, or step when the condition that justifies it is absent.
 - Describe an inference as an established requirement or broaden a claim
   beyond the evidence that supports it.
 - Copy a user's tentative label or phrasing into variable, function, class,
@@ -110,17 +132,20 @@ Examples of decisions to examine, not universal replacements:
 | `smart_retry` copied from "How about smarter retries?" | `retry_with_backoff` when backoff is what the implementation actually does. |
 | `# Use the user's preferred shortcut.` | `# Reuse the cached value while it remains valid.` when that invariant explains the code. |
 | A branch matching only an incidental example value | Implement the specified condition; preserve the special case if a genuine requirement needs it. |
+| A reusable guideline that turns the request's examples into an exhaustive checklist | State the shared principle, its applicability, and required exceptions; keep illustrative examples as examples. |
 
 An exact plan path or execution environment remains appropriate when the
 project or an executable helper actually requires it.
 
 ## Verify and Return
 
-For each rewrite, check a plausible different context: can a reader understand
-the name, comment, behavior, or instruction without this conversation? Check
-that it describes actual semantics and the original requirement still holds
-in its intended context. If the rewrite loses actionable detail or domain
-meaning, restore the necessary specificity.
+For each rewrite, check a plausible variation within the intended scope:
+does the artifact still satisfy the underlying requirement when incidental
+details change? For conditional rules or decisions, also check a boundary
+where they should not apply. Check that a reader can understand the artifact
+without this conversation, that it describes actual semantics, and that the
+original requirement still holds in its intended context. If the rewrite
+loses actionable detail or domain meaning, restore the necessary specificity.
 
 When editing is authorized, make the smallest relevant changes and reread the
 resulting diff. Run checks that cover renamed references or changed behavior,
