@@ -1,7 +1,8 @@
 # Codex Tools and Workspace Context
 
-Read this reference when skill execution depends on shell command execution,
-the current delegation tools, Git workspace, or environment restrictions.
+Read this reference when skill execution depends on command execution outside
+the sandbox, the current delegation tools, Git workspace, or environment
+restrictions.
 
 ## Available Tools
 
@@ -20,13 +21,6 @@ supported way to carry out the authorized work.
 
 Configuration changes and plugin installation require their own task scope.
 Do not treat loading a skill as a request to change user configuration.
-
-## Shell Command Calls
-
-Do not use heredocs in shell commands submitted through tool calls. Pass
-multiline content through supported structured arguments or file-editing
-tools. This restriction governs command syntax; literal heredoc text in file
-content or documentation remains allowed.
 
 ## Inspect the Git Workspace
 
@@ -64,6 +58,11 @@ Check actual permissions and operation results separately from branch state.
 When an operation is blocked, report its cause and use the harness's approval
 or handoff mechanism when applicable. Do not substitute another unauthorized
 mutation for the blocked action.
+
+Do not use heredocs in shell commands submitted for execution outside the
+sandbox. Use supported structured arguments or file-editing tools for
+multiline content. This rule applies to submitted command syntax; sandboxed
+commands and literal heredoc text in files or documentation remain allowed.
 
 Prepare reviewable changes and relevant verification evidence within the
 authorized scope. Stage, commit, push, or transfer work only as authorized by
