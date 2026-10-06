@@ -22,6 +22,14 @@ alone does not verify that a derived document copied it correctly.
 An "all" or "every" claim needs coverage of the entire stated set; otherwise
 identify the checked subset.
 
+Distinguish implementation correctness, suitability of the selected approach,
+and achievement of the requested outcome. For suitability, examine the
+consequential choices and unresolved premises identified by
+[developing-with-specs](../developing-with-specs/SKILL.md#ground-consequential-choices).
+More executions, completed artifacts, or checks for another claim do not extend
+the evidence to that question. Use the available domain workflow or relevant
+direct evidence when software checks cannot establish applicability.
+
 For a failure's causal explanation, assess the discriminating evidence using
 [systematic-debugging](../systematic-debugging/SKILL.md). A corrected symptom
 does not alone establish the cause or permanent prevention. Distinguish a

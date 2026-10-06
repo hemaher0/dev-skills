@@ -48,6 +48,10 @@ Review the current spec against the original request and governing evidence:
 
 - Are necessary conditions missing, or are optional means mislabeled as needs?
 - Does each material addition have a purpose and a supported derivation?
+- Does each consequential choice have evidence applicable to the current goal
+  and conditions, or an explicit assumption with a covering check before
+  dependent work, as required by
+  [developing-with-specs](../developing-with-specs/SKILL.md#ground-consequential-choices)?
 - Are the requirements consistent and observable enough to guide work?
 - Does verification cover the user's result, not only the selected components?
 - Are unresolved questions identified with their impact and resolution point?

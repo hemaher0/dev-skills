@@ -44,6 +44,10 @@ Reuse settled requirements, decisions, and authorization. Apply process
 guidance to the decisions it owns, then the relevant domain or implementation
 guidance. Plan execution, agent coordination, code review, test selection,
 completion evidence, and Git operations retain their own workflow owners.
+When a software task depends on a consequential domain assumption, use the
+available domain workflow or authoritative evidence to assess that assumption.
+The development workflow retains implementation and spec ownership; its checks
+cover only the outcomes they actually examine.
 
 When no specialized Git workflow is available, use ordinary Git or host tools
 under project instructions and actual permission controls. A routine authorized

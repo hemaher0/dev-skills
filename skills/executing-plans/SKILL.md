@@ -29,6 +29,11 @@ Check plan/spec revision alignment, dependencies, critical gaps, and the
 observable completion criteria. Resolve supported issues within existing
 authority. When a consequential answer or authorization is unavailable, identify
 the exact decision and pause dependent work while continuing independent work.
+Apply the spec's
+[consequential-choice checks](../developing-with-specs/SKILL.md#ground-consequential-choices)
+at their needed-by points. A plan or execution request does not validate its
+unresolved premises; obtain applicable evidence within the authorized scope
+before later tasks rely on them.
 
 ## Execute by Purpose
 

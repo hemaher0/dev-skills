@@ -53,6 +53,14 @@ needed outcome here; put a chosen means in Decisions unless a source mandates it
 
 ## Decisions
 
+<!--
+Connect the basis to the current goal and conditions, including for defaults
+and inherited choices. Scale checks to impact, uncertainty, and reversibility.
+Link unresolved premises to Assumptions and Open Questions and identify the
+needed-by point in Check. Selection, recording, and execution do not establish
+that a choice is suitable or turn it into a requested requirement.
+-->
+
 | ID | Purpose and requirement IDs | Selected means | Basis and actual alternatives | Consequences and affected artifacts | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | {{decision_id}} | {{decision_purpose_and_requirements}} | {{selected_solution}} | {{decision_basis_and_alternatives}} | {{decision_consequences}} | {{decision_check}} | {{decision_status}} |
@@ -70,6 +78,8 @@ Check the original outcome as well as derived conditions. Result: MET, NOT_MET,
 or NOT_VERIFIED. Name the actual artifact snapshot and spec revision checked.
 A passing implementation test does not by itself establish that the requirement
 was the right one. Preserve evidence references before temporary files expire.
+Keep implementation correctness, suitability of the chosen means, and the
+requested outcome distinct; each claim needs evidence covering its assumptions.
 -->
 
 | Requirement or decision IDs | Check and expected observation | Actual evidence | Spec revision and artifact snapshot | Result | Limits or next action |

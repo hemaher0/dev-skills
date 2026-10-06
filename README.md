@@ -146,6 +146,13 @@ them, agent communication defaults to `.kryptonite/work/<work-id>/`, and SDD
 uses `.kryptonite/sdd/<plan-id>/`, with identity derived from the plan path.
 Existing pending SDD records are reconciled before reuse or explicit migration.
 
+[Developing with specs](skills/developing-with-specs/SKILL.md#ground-consequential-choices)
+connects consequential choices to their purpose, applicable evidence, unresolved
+premises, and checks before dependent work. Evidence effort follows impact,
+uncertainty, and reversibility. A default, plan, or successful execution does not
+establish suitability or turn an agent's selection into a user requirement.
+Domain suitability and software correctness use their respective evidence.
+
 See [developing-with-specs](skills/developing-with-specs/SKILL.md) for spec and
 durable-document placement, and the
 [agent record conventions](skills/writing-agent-handoffs/references/roles.md)

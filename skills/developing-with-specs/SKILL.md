@@ -72,6 +72,32 @@ addition. Refine omitted necessities within existing authorization; consult the
 user when a decision changes their goal, crosses the agreed scope, or needs
 information or authority that cannot otherwise be obtained.
 
+## Ground Consequential Choices
+
+For a choice that materially affects the requested result, its interpretation,
+or the cost of dependent work, connect its purpose to evidence that applies
+under the actual conditions. Identify the unresolved premises, the consequence
+of being wrong, and the check needed before later work relies on those premises.
+Scale the evidence and verification effort to impact, uncertainty, and
+reversibility. Applicable prior validation, authoritative sources, direct
+observations, and supported tradeoffs can provide a basis; routine low-impact
+details can use ordinary implementation judgment.
+
+Treat a default or inherited choice as a candidate. Reuse it when its governing
+source or evidence applies to the current goal and conditions; otherwise retain
+the missing basis as an assumption. A selected means does not become a user
+requirement through repetition, inclusion in a plan, or execution. Keep the
+origin and evidential status of each consequential choice accurate as work moves
+between design, implementation, and verification.
+
+Give a consequential unresolved premise a resolution method and needed-by point.
+An authorized investigation can obtain that evidence, and independent work can
+continue. Resolve it before work whose validity or value depends on treating it
+as true. Recording the uncertainty or passing a check for another claim does
+not discharge it. When the premise concerns domain suitability, use the
+available domain workflow or authoritative evidence alongside software checks;
+no particular plugin, literature search, or exhaustive comparison is required.
+
 ## Record Purposeful Decisions and Changes
 
 Before a material choice drives implementation, record the goal or requirement
