@@ -32,10 +32,15 @@ The server watches a directory for HTML files and serves the newest one to the b
 
 ## Starting a Session
 
+Resolve the directory containing this guide from the loaded `brainstorming`
+skill and run its bundled scripts there. Do not assume the current project has
+a top-level `scripts/` directory.
+
 ```bash
 # Start AFTER the user approves the companion. --open auto-opens their browser on
 # the first screen; --project-dir persists mockups and enables same-port restart.
-scripts/start-server.sh --project-dir /path/to/project --open
+cd /path/to/resolved/brainstorming-skill
+./scripts/start-server.sh --project-dir /path/to/project --open
 
 # Returns: {"type":"server-started","port":52341,
 #           "url":"http://localhost:52341/?key=ab12…",
@@ -62,13 +67,13 @@ without repeating it.
 ```bash
 # Codex reaps background processes. The script auto-detects CODEX_CI and
 # switches to foreground mode. Run it normally — no extra flags needed.
-scripts/start-server.sh --project-dir /path/to/project --open
+./scripts/start-server.sh --project-dir /path/to/project --open
 ```
 
 If the URL is unreachable from your browser (common in remote/containerized setups), bind a non-loopback host:
 
 ```bash
-scripts/start-server.sh \
+./scripts/start-server.sh \
   --project-dir /path/to/project \
   --host 0.0.0.0 \
   --url-host localhost
@@ -263,12 +268,12 @@ If `$STATE_DIR/events` doesn't exist, the user didn't interact with the browser 
 ## Cleaning Up
 
 ```bash
-scripts/stop-server.sh $SESSION_DIR
+./scripts/stop-server.sh "$SESSION_DIR"
 ```
 
 If the session used `--project-dir`, mockup files persist in `.kryptonite/brainstorm/` for later reference. Only `/tmp` sessions get deleted on stop.
 
 ## Reference
 
-- Frame template (CSS reference): `scripts/frame-template.html`
-- Helper script (client-side): `scripts/helper.js`
+- [Frame template](scripts/frame-template.html) (CSS reference)
+- [Helper script](scripts/helper.js) (client-side)

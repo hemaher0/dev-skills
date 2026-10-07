@@ -136,12 +136,18 @@ check and rationale, actual target, commands or observations, results, and gaps.
 Record RED/GREEN only when observed. A low-impact edit needs no separate TDD
 document, duplicate checklist, new harness, or suite solely to satisfy this skill.
 
-[systematic-debugging](../systematic-debugging/SKILL.md) owns investigation of
-unexpected failures. This skill owns the test-selection and implementation
-feedback approach; it does not add a retry policy.
-[verification-before-completion](../verification-before-completion/SKILL.md)
-owns evidence for final claims. Passing one test does not establish every
-requirement or authorize completion beyond its coverage.
+When an unexpected failure needs causal investigation and
+`systematic-debugging` is host-listed, use that workflow. Otherwise inspect the
+actual observation, reproduce it when possible, compare expected and observed
+conditions, test a discriminating hypothesis, and correct only the supported
+cause. This skill owns the test-selection and implementation-feedback approach;
+it does not add a retry policy.
+
+For final claims, use `verification-before-completion` when it is host-listed.
+Otherwise compare the exact target with the governing criteria, run or inspect
+covering checks, and record results and limits. Passing one test does not
+establish every requirement or authorize completion beyond its coverage. Do
+not infer another skill's availability from a sibling vendor or cache folder.
 
 ## Basis
 

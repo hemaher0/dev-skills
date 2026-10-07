@@ -13,11 +13,13 @@ rather than the accumulated session history.
 
 ## When to Request Review
 
-Follow project instructions and the invoking workflow's review gates.
-[subagent-driven-development](../subagent-driven-development/SKILL.md) defines
-its task, fix, and final reviews. Other useful review points include completing
-a major feature, preparing integration, investigating a complex fix, or needing
-an independent assessment before further work.
+Follow project instructions and the invoking workflow's review gates. When
+`subagent-driven-development` is present in the current host's
+available-skills list and owns execution, follow its task, fix, and final
+review schedule. Otherwise use the current plan or project review gates; useful
+points include completing a major feature, preparing integration,
+investigating a complex fix, or needing an independent assessment before
+further work. Do not infer availability from a sibling vendor or cache folder.
 
 The invoking workflow owns scheduling, fix limits, and re-review. This skill
 prepares the request and result; it does not introduce another review loop.
@@ -56,9 +58,11 @@ commit merely to obtain a reviewable range; do not include unrelated work.
 
 ## Prepare the Request
 
-Use [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) and its
-[brief](../writing-agent-handoffs/templates/brief.md), or an existing equivalent
-record. Responsibility stays with the requesting owner.
+When `writing-agent-handoffs` is host-listed, use its brief/report workflow.
+Otherwise use an existing project review record or create a compact request
+and report in the current work-record location using the fields below. The
+request and report must remain correlated, preserve actual authorship, and
+name the current owner; responsibility stays with the requesting owner.
 
 Supply:
 
@@ -85,8 +89,8 @@ preserves the reviewer's actual authorship.
 
 ## Evaluate the Result
 
-Use the [report](../writing-agent-handoffs/templates/report.md), or the
-equivalent existing review record. Correlate it with the request and brief
+Use the project's equivalent review record or, when host-listed, the
+`writing-agent-handoffs` report. Correlate it with the request and brief
 revision, actual reviewed target, findings, criterion outcomes, evidence, and
 verification limits. Route it to the current owner if responsibility has moved.
 
@@ -95,11 +99,13 @@ Keep assignment status separate from spec compliance, quality, and readiness
 within the assigned scope. A scoped fix review does not approve the entire
 change.
 
-Apply [receiving-code-review](../receiving-code-review/SKILL.md) before fixes.
-The owner records supported acceptance, rejection, deferral of nonblocking
-suggestions, or missing evidence. Valid blocking findings and unverified binding
-criteria prevent approval. The invoking workflow decides the next assignment
-and required re-review; reaching its fix limit does not waive unresolved issues.
+Before fixes, use `receiving-code-review` when it is host-listed. Otherwise
+evaluate each finding against the governing requirements, actual artifacts,
+compatibility constraints, and evidence; record supported acceptance,
+rejection, deferral of nonblocking suggestions, or missing evidence before
+changing code. Valid blocking findings and unverified binding criteria prevent
+approval. The invoking workflow decides the next assignment and required
+re-review; reaching its fix limit does not waive unresolved issues.
 
 ## Example
 

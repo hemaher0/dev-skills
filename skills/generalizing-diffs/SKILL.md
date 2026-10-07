@@ -13,13 +13,16 @@ supported scope; preserve explicit requirements and useful detail.
 
 ## Review Stage
 
-The default development stage is commit preparation routed by
-[using-kryptonite](../using-kryptonite/SKILL.md),
-after applicable documentation and before affected verification and final
-candidate review. An explicit request can authorize this review at another
-stage; honor narrower user or project timing instructions. Implementation
-completion alone does not trigger it. This skill owns the review method,
-not commit execution or temporary-record disposal.
+The default development stage is commit preparation after applicable
+documentation and before affected verification and final candidate review. If
+`using-kryptonite` appears in the current host's available-skills list, it can
+route that stage; otherwise follow the project's commit-preparation procedure
+or the same sequence with ordinary documentation, Git diff, verification, and
+candidate/message review tools. Do not infer availability from a vendor or
+cache folder. An explicit request can authorize this review at another stage;
+honor narrower user or project timing instructions. Implementation completion
+alone does not trigger it. This skill owns the review method, not commit
+execution or temporary-record disposal.
 
 ## Establish the Review Boundary
 

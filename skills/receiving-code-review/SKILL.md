@@ -25,8 +25,11 @@ before accepting, rejecting, or implementing it.
    affected behavior. Return actual changes, target, covering evidence, and
    unresolved findings through its report.
 
-Use existing records from
-[writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) where applicable.
+When `writing-agent-handoffs` appears in the current host's available-skills
+list, use its existing records where applicable. Otherwise use the project's
+review record or record the request/finding IDs, reviewer and producer,
+reviewed target, evidence, disposition, owner, and next action in the current
+work record. Do not infer availability from a sibling vendor or cache folder.
 The current owner retains responsibility for disposition and follow-up;
 receiving feedback does not transfer ownership or grant additional authority.
 

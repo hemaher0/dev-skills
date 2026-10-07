@@ -89,10 +89,12 @@ Subagent:
 
     ## Report Contract
 
-    Use the shared report template's structure in [REPORT_FILE]. Preserve
-    earlier returns in this file and append a report with a distinct report
-    ID, current request ID and brief revision, actual author/recorder,
-    original requester, current owner, and target revision or snapshot.
+    Use the project's report structure in [REPORT_FILE] when one is supplied.
+    Otherwise use the fields in this Report Contract directly; no companion
+    skill or external template is required. Preserve earlier returns in this
+    file and append a report with a distinct report ID, current request ID and
+    brief revision, actual author/recorder, original requester, current owner,
+    and target revision or snapshot.
 
     Include:
     - Understood goal and work actually performed, with artifact paths.

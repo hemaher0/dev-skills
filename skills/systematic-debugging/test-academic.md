@@ -1,6 +1,7 @@
 # Academic Test: Systematic Debugging Skill
 
-You have access to the systematic debugging skill at skills/systematic-debugging/SKILL.md
+You have access to the systematic-debugging skill instructions supplied with
+this prompt.
 
 Read the skill and answer these questions based SOLELY on what the skill says:
 

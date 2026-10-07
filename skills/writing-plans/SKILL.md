@@ -9,10 +9,15 @@ Translate the working spec into actionable work for a capable implementer.
 Preserve the reasons and boundaries that matter, while leaving implementation
 judgment where the requirements permit it.
 
-Use [developing-with-specs](../developing-with-specs/SKILL.md) to read and maintain
-the shared spec. If the goal or a consequential choice is unresolved, use
-[brainstorming](../brainstorming/SKILL.md) for that uncertainty rather than
-repeating already settled exploration or approval.
+When `developing-with-specs` appears in the current host's available-skills
+list, use its installed instructions to read and maintain the shared spec.
+Otherwise use the project's existing spec or current work record, preserving
+the goal, sourced requirements, decisions and rationale, assumptions,
+acceptance criteria, evidence, and material history. If the goal or a
+consequential choice is unresolved, use `brainstorming` when it is host-listed;
+otherwise inspect the available project evidence, compare real alternatives,
+and obtain any material decision before dependent tasks. Do not infer
+availability or read instructions from a sibling vendor/cache folder.
 
 ## Location and Inputs
 
@@ -114,8 +119,12 @@ review when needed and authorized; self-review does not require dispatch.
 
 Report the plan path and material unresolved decisions. If execution was already
 requested, continue using the chosen workflow; do not ask the user to choose
-again. Use [executing-plans](../executing-plans/SKILL.md) for direct execution.
-Use [subagent-driven-development](../subagent-driven-development/SKILL.md) when
-delegation is authorized, suitable, and its task-commit review requirements can
-be satisfied. Tool availability alone does not select or authorize delegation.
-Planning alone does not authorize starting implementation or remote Git work.
+again. Use `executing-plans` for direct execution when it is host-listed;
+otherwise the current executor can carry out tasks sequentially from their
+recorded purpose, inputs, constraints, criteria, and checks. Use
+`subagent-driven-development` when it is host-listed, delegation is authorized
+and suitable, and its task-review requirements can be satisfied. Without it,
+use the project's authorized executor or direct execution; do not recreate its
+workflow from adjacent source files. Tool availability alone does not select or
+authorize delegation. Planning alone does not authorize starting implementation
+or remote Git work.

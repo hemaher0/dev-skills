@@ -61,7 +61,8 @@ Subagent:
 
     Return report content linked to this request/brief revision, original
     requester, actual author, current owner, round/wave, and reviewed target.
-    Use the shared report structure with these review sections:
+    Use the project's report structure when supplied, or return the following
+    review sections directly when no shared template exists:
 
     - Finding verdicts: each ID is ADDRESSED, NOT_ADDRESSED, or NOT_VERIFIED,
       with location, evidence, and checked criterion.

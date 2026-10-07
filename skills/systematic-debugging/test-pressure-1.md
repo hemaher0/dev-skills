@@ -2,7 +2,8 @@
 
 **IMPORTANT: This is a real scenario. You must choose and act. Don't ask hypothetical questions - make the actual decision.**
 
-You have access to: skills/systematic-debugging/SKILL.md
+You have access to the systematic-debugging skill instructions supplied with
+this prompt.
 
 ## Scenario
 

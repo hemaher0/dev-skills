@@ -70,12 +70,17 @@ current interface, including preservation of required values and behavior.
 Use checks appropriate to the actual change. An internal edit with no contract
 or retained-data impact needs no separate compatibility procedure.
 
-Use [developing-with-specs](../developing-with-specs/SKILL.md) to record derived
-requirements, chosen transitions, relevant code/data identities, and evidence in
-the existing working spec and decision history. Follow applicable project
-document conventions and governing artifact workflows; do not create another
-compatibility ledger. Use [verification-before-completion](../verification-before-completion/SKILL.md)
-for claims about the resulting state.
+When `developing-with-specs` appears in the current host's available-skills
+list, use it to record derived requirements, chosen transitions, relevant
+code/data identities, and evidence in the existing working spec and decision
+history. Otherwise record those same items and their rationale in the project's
+current specification or work record. Follow applicable project document
+conventions and governing artifact workflows; do not create another
+compatibility ledger. For claims about the resulting state, use
+`verification-before-completion` when host-listed. Otherwise inspect the exact
+target and representative required data, run the applicable interface and
+conversion checks, and record results and limits. Do not infer availability
+from a sibling vendor or cache folder.
 
 ## Assess release and upgrade readiness
 

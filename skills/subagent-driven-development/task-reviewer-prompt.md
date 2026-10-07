@@ -88,8 +88,9 @@ Subagent:
 
     ## Report
 
-    Return report content using the shared report structure, linked to the
-    review request/revision and actual target. Include your author identity,
+    Return report content using the project's report structure when supplied,
+    or the required sections below when no shared template exists. Link it to
+    the review request/revision and actual target. Include your author identity,
     evidence, limits, and remaining owner action. The owner may record it.
 
     Required review sections:

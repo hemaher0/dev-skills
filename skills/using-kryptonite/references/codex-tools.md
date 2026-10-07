@@ -11,13 +11,16 @@ delegation when it serves the task, the relevant workflow calls for it, and
 the current instructions and authorization permit it. Tool availability alone
 does not authorize parallel work.
 
-Use [dispatching-parallel-agents](../../dispatching-parallel-agents/SKILL.md)
-for independent concurrent tasks and
-[subagent-driven-development](../../subagent-driven-development/SKILL.md)
-for its implementation and review workflow. Agent continuation, fix rounds,
-and cleanup follow that workflow and the capabilities actually available.
-If a required capability is absent, report the limitation and choose a
-supported way to carry out the authorized work.
+When `dispatching-parallel-agents` appears in the current host's
+available-skills list, use it for independent concurrent tasks. When
+`subagent-driven-development` is host-listed, use it for its sequential
+implementation and review workflow. Otherwise use the host's ordinary agent
+tools with explicit scopes, separate write surfaces, recorded requester/owner
+and assignee identities, expected evidence, and controller-reviewed results;
+execute coupled tasks sequentially. Do not infer availability from files in a
+vendor checkout or plugin cache. If a required host capability is absent,
+report the limitation and choose a supported way to carry out the authorized
+work.
 
 Configuration changes and plugin installation require their own task scope.
 Do not treat loading a skill as a request to change user configuration.
@@ -46,11 +49,13 @@ or handoff. Use ordinary Git or host tools when no specialized workflow is
 available. Respect ownership of an externally managed workspace and the host's
 instructions.
 
-Read [using-kryptonite](../SKILL.md) for stage routing,
-[developing-with-specs](../../developing-with-specs/SKILL.md) for the working
-spec, and the [agent record conventions](../../writing-agent-handoffs/references/roles.md)
-for communication paths. Distinguish assigned code checkouts from the work
-owner's shared spec and reporting paths.
+Use this skill's [stage routing](../SKILL.md). If `developing-with-specs` or
+`writing-agent-handoffs` is host-listed, use it for the working spec or agent
+records respectively. Otherwise keep requirements, decisions, criteria, and
+evidence in the project's current work record, and record each assignment's
+requester/current owner, assignee/author, scope, target, result, gaps, and next
+owner action. Distinguish assigned code checkouts from the work owner's shared
+spec and reporting paths.
 
 ## Restricted or Managed Operations
 

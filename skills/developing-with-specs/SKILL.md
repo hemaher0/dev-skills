@@ -132,17 +132,23 @@ path and revision, governing inputs, bounded scope, authority, and expected
 report. Workers return proposed decisions and evidence in their assigned
 records rather than independently overwriting the shared spec.
 
-Use the [brief](../writing-agent-handoffs/templates/brief.md) and
-[report](../writing-agent-handoffs/templates/report.md) when documented
-delegation is needed: the requesting agent retains responsibility. A
-[handoff](../writing-agent-handoffs/templates/handoff.md) transfers the named
-scope to the next owner when recorded and made available, without requiring a
-response or acknowledgement. Transfer unresolved questions and outstanding
-requests with it; their reports follow the new owner. These semantics apply
-to peers and subagents alike. Follow the existing
-[role and record conventions](../writing-agent-handoffs/references/roles.md).
-A report is evidence for the owner to assess, not automatic acceptance or a
-grant of authority.
+When `writing-agent-handoffs` is host-listed, use its actual
+host-listed installed instructions, templates, and role conventions. Otherwise
+use the project's equivalent records or write compact records beside the work:
+a brief identifies the request, requester/current owner, assignee, scope,
+authority, inputs, criteria, and report destination; a report identifies its
+author, request, actual artifacts and target, evidence, gaps, and remaining
+owner action; a handoff identifies sender, successor, transferred scope,
+current state, authority, outstanding requests, and first continuation action.
+Do not infer availability or load its resources from a sibling vendor or cache
+folder.
+
+The requesting agent retains responsibility for a brief. A handoff transfers
+the named scope to the next owner when recorded and made available, without
+requiring a response or acknowledgement. Transfer unresolved questions and
+outstanding requests with it; their reports follow the new owner. These
+semantics apply to peers and subagents alike. A report is evidence for the
+owner to assess, not automatic acceptance or a grant of authority.
 
 ## Verify the Original Result and Preserve Its Basis
 
@@ -170,18 +176,24 @@ temporary files scheduled for disposal cannot be the only retained basis.
 Documentation ownership does not transfer implementation scheduling, technical
 verdicts, or temporary-record retention authority.
 
-Use [using-kryptonite](../using-kryptonite/SKILL.md) to route requested commit
-preparation. This skill supplies its governing requirements and documentation
-basis; it does not authorize Git operations or define another commit schedule.
+When requested commit preparation begins, use `using-kryptonite` if it appears
+in the host's available-skills list. Otherwise follow the project's Git review
+procedure, or inspect the complete candidate, intended disclosure, required
+checks, and proposed message with ordinary Git tools before any authorized
+commit. This skill supplies the governing requirements and documentation basis;
+it does not authorize Git operations or define another commit schedule.
 
 Dispose of only this completed work's temporary spec and related artifacts
 within existing authority, after needed information is preserved durably and
 required stages are complete. Honor project retention and explicit deferrals;
 keep records needed by remaining work, outstanding requests, or the next owner.
-Use [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) for communication
-records. A commit, review, or handoff alone does not satisfy these conditions,
-and Git resource cleanup is a separate decision. A temporary spec must not
-remain the only reference for delivered behavior after disposal.
+For communication records, use `writing-agent-handoffs` when it is host-listed;
+otherwise preserve the identities, ownership, request/result correlation,
+evidence, and retention state in the project's existing work record or the
+compact records described above. A commit, review, or handoff alone does not
+satisfy these conditions, and Git resource cleanup is a separate decision. A
+temporary spec must not remain the only reference for delivered behavior after
+disposal.
 
 ## Design Basis
 

@@ -27,11 +27,14 @@ boundaries through purpose, interfaces, and dependencies, not file count or
 arbitrary time slices. Resolve tightly coupled or contradictory tasks before
 dispatch instead of silently rewriting the plan.
 
-[executing-plans](../executing-plans/SKILL.md) supports direct plan execution in
-the current or a successor session. This skill adds sequential delegated
-implementation and task-level review. It does not replace
-[dispatching-parallel-agents](../dispatching-parallel-agents/SKILL.md), which
-handles independent problem domains concurrently.
+When `executing-plans` appears in the current host's available-skills list, it
+supports direct plan execution in the current or a successor session. Without
+it, the current controller can execute the plan's tasks directly using their
+recorded purposes, dependencies, criteria, and checks. This skill adds
+sequential delegated implementation and task-level review. If
+`dispatching-parallel-agents` is host-listed, use it for genuinely independent
+problem domains; otherwise keep this workflow's implementation tasks
+sequential. Do not infer availability from a sibling vendor or cache folder.
 
 ```dot
 digraph process {
@@ -77,20 +80,26 @@ Use the applicable Git workspace workflow to verify or create a suitable
 checkout within existing authorization. Respect project/user branch and commit
 instructions; this skill does not grant permission for Git or external actions.
 
-Read the plan once, locate its governing working spec through
-[developing-with-specs](../developing-with-specs/SKILL.md), and note purpose,
-requirement IDs, revisions, global constraints, prerequisites, and task order.
+Read the plan once and locate its governing working spec. If
+`developing-with-specs` is host-listed, use it to maintain that spec; otherwise
+use the project's existing spec or work record and preserve the goal,
+requirements and sources, consequential decisions and rationale, assumptions,
+criteria, evidence, and material history. Note purpose, requirement IDs,
+revisions, global constraints, prerequisites, and task order.
 Identify conflicting requirements or mandated behavior that appears defective.
 Resolve factual questions from existing authority; batch unresolved material
 decisions for the owner or user before affected implementation. Do not invent
 a new spec per worker or rationalize a choice only after implementing it.
 Workers return proposed requirement or decision changes in reports; the current
 owner consolidates the shared spec and records material choices before dependent
-implementation, following developing-with-specs.
+implementation using the available skill or the inline record contract above.
 
 On continuation, use the workspace already associated with this plan and
-inspect its ledger before choosing defaults. For new work without a project
-override, `scripts/sdd-workspace PLAN_FILE` prints
+inspect its ledger before choosing defaults. Resolve the directory containing
+this loaded skill; its bundled helpers live under that directory's `scripts/`
+subdirectory and remain available through a complete skill-folder symlink. For
+new work without a project override,
+`<subagent-driven-development-skill-dir>/scripts/sdd-workspace PLAN_FILE` prints
 `<repo-root>/.kryptonite/sdd/<plan-id>/`. The ID is Git's hash of the normalized
 repository-relative plan path, or absolute path for an external plan; content
 revisions keep the same identity. The directory holds the ledger, briefs,
@@ -152,14 +161,15 @@ model is available, improve context or report the remaining blocker.
 Record the task's `BASE` before dispatch (`git rev-parse HEAD` for committed
 work) and the exact working-state baseline if changes are uncommitted.
 
-For a new task brief, run `scripts/task-brief PLAN_FILE N [OUTFILE]`. It extracts
-the full `Task N` text and reports `wrote <path>: <line count> lines`; use that
-path. Do not regenerate a live enriched brief blindly on resume: the helper
-overwrites its output.
+For a new task brief, run
+`<subagent-driven-development-skill-dir>/scripts/task-brief PLAN_FILE N [OUTFILE]`.
+It extracts the full `Task N` text and reports
+`wrote <path>: <line count> lines`; use that path. Do not regenerate a live
+enriched brief blindly on resume: the helper overwrites its output.
 
-Apply [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) and the
-existing [brief template](../writing-agent-handoffs/templates/brief.md) to this
-same artifact, retaining the extracted task text verbatim and adding:
+If `writing-agent-handoffs` is host-listed, apply its brief/report conventions
+to this same artifact. Otherwise use the project record or enrich the extracted
+brief directly with the following fields, retaining its task text verbatim:
 
 - Request and brief revision, requester/current owner, assignee as `implementer`,
   work root, permitted writes/decisions, and report destination.
@@ -178,12 +188,15 @@ The dispatch contains the brief/report paths, work root, a short explanation
 of where the task fits, and necessary context references. The worker may read
 referenced spec or dependency sections; it need not ingest the whole plan.
 
-Keep the established `task-N-report.md` beside `task-N-brief.md`. Use the existing
-[report template](../writing-agent-handoffs/templates/report.md); successive
-returns in the same file append separately identified reports with request,
-brief revision, actual author/recorder, target snapshot, and evidence. Preserve
-earlier reports. Review and fix assignments have their own request identities
-and destinations recorded in the ledger, even when they reuse relevant inputs.
+Keep the established `task-N-report.md` beside `task-N-brief.md`. When
+`writing-agent-handoffs` is host-listed, its installed report template can supply the
+structure. Otherwise record result status/reason, request and brief revision,
+actual author/recorder and current owner, work performed, artifacts and target,
+criterion outcomes, commands/results, gaps, decisions, prior attempts, and
+remaining owner action. Successive returns in the same file append separately
+identified reports. Preserve earlier reports. Review and fix assignments have
+their own request identities and destinations recorded in the ledger, even
+when they reuse relevant inputs.
 
 Record the dispatched agent's identity. The default task fix policy resumes
 that implementer for rounds 1–3 and uses a fresh implementer for rounds 4–5,
@@ -207,13 +220,17 @@ or proceed with dependent work while its prerequisite remains blocked.
 
 ## 3. Review the Task Independently
 
-Dispatch a reviewer distinct from the producer. Use
-[requesting-code-review](../requesting-code-review/SKILL.md) with the task-scoped
-[task-reviewer-prompt.md](task-reviewer-prompt.md). Self-review does not replace
-the required **spec-compliance and task-quality verdicts**.
+Dispatch a reviewer distinct from the producer. If `requesting-code-review` is
+host-listed, use its request workflow with the task-scoped
+[task-reviewer prompt](task-reviewer-prompt.md). Otherwise create the review
+request from the exact target, governing criteria, producer evidence, severity
+rules, and permitted read-only/report surfaces described in this section and
+the prompt. Self-review does not replace the required **spec-compliance and
+task-quality verdicts**.
 
 Generate the review package with
-`scripts/review-package PLAN_FILE BASE HEAD [OUTFILE]`. The helper reports
+`<subagent-driven-development-skill-dir>/scripts/review-package PLAN_FILE BASE HEAD [OUTFILE]`.
+The helper reports
 `wrote <path>: ...`; pass the actual path. Use the recorded pre-task baseline
 and actual target, never `HEAD~1` for a multi-commit task. The package includes
 all commits and the net diff in that range. It covers committed changes only;
@@ -243,10 +260,11 @@ needed; do not ban necessary verification or rerun suites by ritual.
 
 ## 4. Evaluate Feedback and Fix Within the Limit
 
-Apply [receiving-code-review](../receiving-code-review/SKILL.md) **before each
-fix assignment**. Check each finding against requirements, actual artifacts,
-and project context. Clarify unclear feedback; record supported acceptance,
-reasoned rejection, or unresolved evidence needs with stable finding IDs.
+Before each fix assignment, use `receiving-code-review` when it is host-listed.
+Otherwise apply this section directly: check each finding against requirements,
+actual artifacts, compatibility constraints, and project context before making
+a change. Clarify unclear feedback; record supported acceptance, reasoned
+rejection, or unresolved evidence needs with stable finding IDs.
 A genuine conflict with a governing user decision requires resolution by the
 appropriate owner or user. Do not wait until the attempt cap to evaluate
 feedback, silently discard it, or downgrade a valid issue just to end the loop.
@@ -270,7 +288,7 @@ For each allowed round:
    a report with actual changes, snapshot, criterion results, covering check
    commands/results, unresolved findings, and new diagnostic information.
 3. Package the full fix range or working snapshot and dispatch
-   [re-review-prompt.md](re-review-prompt.md). Check prior findings and
+   the [re-review prompt](re-review-prompt.md). Check prior findings and
    regressions caused by the fix. Reuse valid evidence or obtain justified
    reproduction; the fix report alone does not establish that a finding closed.
 4. Record outcomes and finding dispositions, then evaluate any remaining
@@ -303,8 +321,11 @@ After all tasks, review the entire change from the recorded branch/work
 baseline to the actual target, not merely the last task's diff. Use the package
 helper for committed ranges, or a versioned equivalent covering the full
 working state. Provide the governing spec/plan, producer evidence, and ledger
-entries for deferred/rejected findings to
-[requesting-code-review's reviewer](../requesting-code-review/code-reviewer.md).
+entries for deferred/rejected findings to the `requesting-code-review` reviewer
+when that skill is host-listed. Otherwise adapt this skill's
+[task reviewer prompt](task-reviewer-prompt.md) to the whole recorded baseline
+through target and require the same criterion, quality, severity, and evidence
+fields.
 Include original-goal and cross-task interface/invariant checks on the actual
 integrated state. Individual task checks and a clean merge do not establish
 combined correctness.
@@ -319,13 +340,17 @@ as passed or start an unrecorded second wave.
 
 ## Finish and Record Retention
 
-Use [verification-before-completion](../verification-before-completion/SKILL.md)
-to check final artifacts against the working spec. Use
-[developing-with-specs](../developing-with-specs/SKILL.md) for final durable
-documentation and spec retention, and
-[writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) for communication
-records. Route requested commit preparation through
-[using-kryptonite](../using-kryptonite/SKILL.md).
+For final completion, use `verification-before-completion` when it is
+host-listed. Otherwise compare the exact final target with every binding
+criterion and the original outcome, run the covering checks, and record target,
+results, limits, and unresolved gaps. Use `developing-with-specs` for durable
+documentation and spec retention when host-listed; otherwise update the project's
+existing durable document with applied requirements, decisions, artifacts, and
+evidence. Use `writing-agent-handoffs` for communication records when host-listed;
+otherwise retain the identities, ownership, request/result correlation,
+evidence, and retention state in this workspace's records. Route requested
+commit preparation through `using-kryptonite` when host-listed, or through the
+project's Git review procedure using ordinary Git inspection.
 
 SDD owns its task/final review scheduling and fix limits; it does not own common
 commit timing. Renew affected evidence when preparation changes a reviewed

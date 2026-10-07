@@ -81,9 +81,13 @@ a claim, not proof of completion or a transfer of responsibility. Preserve
 meaningful uncertainty and verify combined outcomes under the owning workflow.
 
 For development work, the current owner reconciles proposed decisions and
-evidence into the shared working spec with
-[developing-with-specs](../developing-with-specs/SKILL.md). Assignees return
-proposals in their reports rather than independently overwriting that spec.
+evidence into the shared working spec. When `developing-with-specs` appears in
+the current host's available-skills list, use its installed instructions;
+otherwise update the project's current spec or work record directly with the
+decision's purpose, basis, affected artifacts, check, and history. Do not infer
+availability or read instructions from a sibling vendor/cache folder. Assignees
+return proposals in their reports rather than independently overwriting that
+spec.
 
 ## Transfer Responsibility Through a Handoff
 
@@ -111,12 +115,13 @@ brief and record the destination change in the ownership record or handoff.
 
 ## Use Briefs and Reports for Code Review
 
-Use [requesting-code-review](../requesting-code-review/SKILL.md) when the owning
-workflow calls for code review. Carry its review scope and output requirements
-in the brief's conditional review section: governing requirements and revision,
-producer, baseline and target, producer report, available evidence, and
-severity and blocking criteria. For a multi-commit change, use the recorded
-start and end of the assigned work so the range covers the entire change.
+When the owning workflow calls for code review, use
+`requesting-code-review` if it is host-listed. Otherwise prepare the request
+directly in the brief's conditional review section: governing requirements and
+revision, producer, baseline and target, producer report, available evidence,
+review scope, and severity and blocking criteria. For a multi-commit change,
+use the recorded start and end of the assigned work so the range covers the
+entire change.
 
 The independent reviewer is distinct from the producer and inspects the
 assigned artifacts without modifying them. Return the review report through
@@ -129,12 +134,14 @@ Include the review workflow's detailed output in that report or reference its
 existing artifact. Completing a review assignment does not mean the reviewed
 implementation passed; state both the report status and review verdicts.
 
-Evaluate feedback with
-[receiving-code-review](../receiving-code-review/SKILL.md) before implementing
-suggestions. The current owner retains responsibility for disposition and
-resolution. A delegated fix uses a brief linked to the findings and a report
-with the changes and covering evidence. The owning development workflow
-determines review timing, re-review, and completion gates.
+Before implementing suggestions, use `receiving-code-review` when it is
+host-listed. Otherwise evaluate each finding against the requirements, actual
+artifacts, compatibility constraints, and evidence, then record its supported
+acceptance, rejection, nonblocking deferral, or missing context. The current
+owner retains responsibility for disposition and resolution. A delegated fix
+uses a brief linked to the findings and a report with the changes and covering
+evidence. The owning development workflow determines review timing, re-review,
+and completion gates.
 
 ## Keep Records Available and Finalize
 
@@ -160,8 +167,8 @@ cleanup. Dispose of only completed communication records within existing
 authority after their necessary decisions, evidence, and continuation state
 are preserved and project retention permits it. Preserve other active work.
 
-For development finalization, use
-[developing-with-specs](../developing-with-specs/SKILL.md) to preserve the applied
-requirements and evidence in durable documentation. Pending required stages
+For development finalization, use `developing-with-specs` when it is
+host-listed. Otherwise preserve the applied requirements, decisions, artifacts,
+and evidence in the project's durable documentation. Pending required stages
 still need their records. This skill owns communication and transfer semantics,
 not a separate commit or generalization schedule.

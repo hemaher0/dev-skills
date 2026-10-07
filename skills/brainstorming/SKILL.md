@@ -10,10 +10,14 @@ user wants, what conditions are necessary in this project, and which means
 should achieve it. A clear, already authorized change does not need another
 design-approval ceremony.
 
-Use [developing-with-specs](../developing-with-specs/SKILL.md) throughout this
-work. Reuse its working spec and history; the default is
-`.kryptonite/scratchpad/<work-id>/spec.md`, subject to project configuration.
-Do not create a second design-spec copy or commit a document automatically.
+If `developing-with-specs` appears in the current host's available-skills list,
+use that installed copy throughout this work. Otherwise keep the same
+information in the project's existing design or work record, or in
+`.kryptonite/scratchpad/<work-id>/spec.md` when no format is configured: intent,
+observed facts, requirements and their sources, decisions and rationale,
+assumptions, acceptance criteria, and material history. Do not infer
+availability from a sibling vendor or cache folder. Do not create a second
+design-spec copy or commit a document automatically.
 
 ## Explore the Missing Decisions
 
@@ -50,8 +54,8 @@ Review the current spec against the original request and governing evidence:
 - Does each material addition have a purpose and a supported derivation?
 - Does each consequential choice have evidence applicable to the current goal
   and conditions, or an explicit assumption with a covering check before
-  dependent work, as required by
-  [developing-with-specs](../developing-with-specs/SKILL.md#ground-consequential-choices)?
+  dependent work? When `developing-with-specs` is host-listed, its installed
+  guidance supplies the fuller workflow; otherwise apply this check directly.
 - Are the requirements consistent and observable enough to guide work?
 - Does verification cover the user's result, not only the selected components?
 - Are unresolved questions identified with their impact and resolution point?
@@ -63,10 +67,13 @@ review when such review is needed and delegation is authorized. Otherwise
 perform the check directly. Findings should identify consequential omissions,
 contradictions, or unsupported choices, rather than stylistic preferences.
 
-When a multi-step plan is needed, continue with
-[writing-plans](../writing-plans/SKILL.md). For a bounded change that needs no
-separate plan, continue the authorized implementation with the shared spec and
-covering verification. Brainstorming does not mandate a particular executor.
+When a multi-step plan is needed and `writing-plans` is host-listed, continue
+with its installed planning workflow. Otherwise
+write actionable tasks in the project's plan or current work record, connecting
+each task to its purpose, dependencies, artifacts, and verification. For a
+bounded change that needs no separate plan, continue the authorized
+implementation with the shared spec and covering verification. Brainstorming
+does not mandate a particular executor.
 
 ## Visual Companion
 
@@ -86,5 +93,5 @@ unless the user reopens the choice. No separate-message format is required.
 
 A question about a UI topic is not automatically a visual question. "What does personality mean in this context?" is a conceptual question — use the terminal. "Which wizard layout works better?" is a visual question — use the browser.
 
-If they agree to the companion, read the detailed guide before proceeding:
-`skills/brainstorming/visual-companion.md`
+If they agree to the companion, read the skill-relative
+[visual companion guide](visual-companion.md) before proceeding.

@@ -13,8 +13,12 @@ of a change or another agent's completion report.
 
 Identify the requested outcome, governing criteria, actual artifact revision
 or snapshot, and relevant environment. For development work, compare the
-original goal and supporting requirements in the current working spec using
-[developing-with-specs](../developing-with-specs/SKILL.md).
+original goal and supporting requirements in the current working spec. When
+`developing-with-specs` appears in the current host's available-skills list,
+use it to maintain that record; otherwise read and update the project's current
+spec or work record directly, preserving sourced requirements, decisions,
+criteria, evidence, and history. Do not infer availability from a sibling
+vendor or cache folder.
 
 A test, inspection, or review covers its checked scope. A passing component
 test alone does not establish every requirement, and checking source data
@@ -23,25 +27,30 @@ An "all" or "every" claim needs coverage of the entire stated set; otherwise
 identify the checked subset.
 
 Distinguish implementation correctness, suitability of the selected approach,
-and achievement of the requested outcome. For suitability, examine the
-consequential choices and unresolved premises identified by
-[developing-with-specs](../developing-with-specs/SKILL.md#ground-consequential-choices).
+and achievement of the requested outcome. For suitability, examine each
+consequential choice's purpose, applicable evidence or tradeoff, unresolved
+premises, consequence of error, and covering check before relying on it. The
+`developing-with-specs` skill supplies a fuller workflow when host-listed.
 More executions, completed artifacts, or checks for another claim do not extend
 the evidence to that question. Use the available domain workflow or relevant
 direct evidence when software checks cannot establish applicability.
 
-For a failure's causal explanation, assess the discriminating evidence using
-[systematic-debugging](../systematic-debugging/SKILL.md). A corrected symptom
-does not alone establish the cause or permanent prevention. Distinguish a
-tested behavioral correction, a causal explanation, and temporary mitigation.
+For a failure's causal explanation, use `systematic-debugging` when it is
+host-listed. Otherwise compare expected and observed behavior, reproduce or
+inspect the failure, test hypotheses that distinguish plausible causes, and
+keep unsupported explanations unresolved. A corrected symptom does not alone
+establish the cause or permanent prevention. Distinguish a tested behavioral
+correction, a causal explanation, and temporary mitigation.
 
 ## Choose and Inspect Adequate Evidence
 
 Use a focused test or build, reproduction, direct artifact/UI/API inspection,
 static check, or other observation that establishes the claimed outcome.
-Follow binding project checks. Use
-[test-driven-development](../test-driven-development/SKILL.md) when deciding
-whether a new test or test-first approach adds useful coverage.
+Follow binding project checks. When `test-driven-development` is host-listed,
+use it to decide whether a new test or test-first approach adds useful
+coverage. Otherwise select checks from the observable criterion, plausible
+wrong result, consequences, and existing coverage; do not add a test that only
+mirrors the implementation.
 
 | Claim | Covering evidence |
 | --- | --- |
@@ -61,9 +70,12 @@ inspection does not need a new persistent test merely to qualify as evidence.
 
 ## Commit and Integration Candidates
 
-Use [using-kryptonite](../using-kryptonite/SKILL.md) for commit-preparation
-routing. This skill owns completion evidence, not another preparation or
-review loop.
+For commit-preparation routing, use `using-kryptonite` when it is host-listed.
+Otherwise follow the project's Git procedure, or update durable documentation,
+inspect the complete candidate for grounded scope and disclosure, renew affected
+verification/review, and review the proposed message before an authorized
+commit. This skill owns completion evidence, not another preparation or review
+loop.
 
 Verify the actual candidate or establish that the checked artifacts match it.
 A working-tree check may include unstaged changes absent from the index;

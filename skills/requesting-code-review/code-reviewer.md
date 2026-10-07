@@ -1,9 +1,13 @@
 # Code Reviewer Prompt Template
 
 Use for an independent review when the invoking workflow does not supply a
-specialized prompt. Carry the assignment in the existing
-[brief](../writing-agent-handoffs/templates/brief.md) and return its
-[report](../writing-agent-handoffs/templates/report.md), or equivalent records.
+specialized prompt. If `writing-agent-handoffs` appears in the current host's
+available-skills list, its brief/report records can carry the assignment.
+Otherwise use the project's review records or a compact request and report
+containing the assignment identity, requester/current owner, reviewer and
+producer, scope, target, criteria, evidence, findings, limits, and next owner
+action. File presence in a vendor or cache directory does not establish skill
+availability.
 
 **Purpose:** Assess the assigned change against its original goal, governing
 requirements, and quality criteria. The owner determines follow-up and approval.

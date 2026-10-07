@@ -8,112 +8,158 @@ code review, and development delivery. It is based on
 
 Source repository: [hemaher0/dev-skills](https://github.com/hemaher0/dev-skills).
 
-## Package
+## Install for a project
+
+Run these commands from the project root. The clone keeps the complete native
+source tree, including scripts and templates used by selected skills:
+
+```bash
+mkdir -p .agents/vendor .agents/skills
+git clone --branch main https://github.com/hemaher0/dev-skills.git .agents/vendor/dev-skills
+```
+
+Choose either a selective installation or the all-skills variant. For a
+selective installation, edit the list and link only those complete skill
+folders:
+
+```bash
+for skill in using-kryptonite developing-with-specs systematic-debugging; do
+  if [ -e ".agents/skills/$skill" ] || [ -L ".agents/skills/$skill" ]; then
+    echo "destination already exists: .agents/skills/$skill" >&2
+    exit 1
+  fi
+  ln -s "../vendor/dev-skills/skills/$skill" ".agents/skills/$skill"
+done
+```
+
+To expose every skill instead:
+
+```bash
+for source in .agents/vendor/dev-skills/skills/*; do
+  [ -d "$source" ] || continue
+  skill=${source##*/}
+  if [ -e ".agents/skills/$skill" ] || [ -L ".agents/skills/$skill" ]; then
+    echo "destination already exists: .agents/skills/$skill" >&2
+    exit 1
+  fi
+  ln -s "../vendor/dev-skills/skills/$skill" ".agents/skills/$skill"
+done
+```
+
+Do not replace an existing destination. Inspect it and either keep it, remove
+it deliberately, or choose a different skill selection. The relative links
+remain valid when the project moves because both source and links are under its
+`.agents/` directory. The vendor checkout by itself is not a discovered skill.
+
+Start a new Codex session in the project after installation. If the host does
+not detect the change automatically, restart it. Ask Codex to use a selected
+skill by name, such as `using-kryptonite`, and confirm that the current host's
+available-skills list contains that exact name and installed location. A source
+folder existing under `.agents/vendor/` does not establish availability.
+For an explicit invocation, prompt `Use $using-kryptonite for this task`.
+
+```bash
+readlink .agents/skills/using-kryptonite
+test -f .agents/skills/using-kryptonite/SKILL.md
+```
+
+Update only this project's source checkout:
+
+```bash
+git -C .agents/vendor/dev-skills pull --ff-only
+```
+
+Remove a project skill by unlinking its exposure while retaining the vendor
+source for other selected skills:
+
+```bash
+unlink .agents/skills/systematic-debugging
+```
+
+Project instructions are optional installation inputs. Add or merge the
+[local development template](skills/developing-with-specs/templates/AGENTS.local.md)
+only when the project needs to configure a scratchpad root or another setting
+owned there. Preserve existing instructions and fill every retained value. The
+default scratchpad location needs no project configuration.
+
+## Install globally
+
+Global skills are shared by Codex sessions for this user. Clone the source and
+create the discovery directory under `$HOME/.agents`:
+
+```bash
+mkdir -p "$HOME/.agents/vendor" "$HOME/.agents/skills"
+git clone --branch main https://github.com/hemaher0/dev-skills.git "$HOME/.agents/vendor/dev-skills"
+```
+
+Choose either a selective installation or the all-skills variant. For a
+selective installation, edit the list:
+
+```bash
+for skill in using-kryptonite writing-plans requesting-code-review; do
+  destination="$HOME/.agents/skills/$skill"
+  if [ -e "$destination" ] || [ -L "$destination" ]; then
+    echo "destination already exists: $destination" >&2
+    exit 1
+  fi
+  ln -s "../vendor/dev-skills/skills/$skill" "$destination"
+done
+```
+
+To expose every skill globally instead:
+
+```bash
+for source in "$HOME/.agents/vendor/dev-skills"/skills/*; do
+  [ -d "$source" ] || continue
+  skill=${source##*/}
+  destination="$HOME/.agents/skills/$skill"
+  if [ -e "$destination" ] || [ -L "$destination" ]; then
+    echo "destination already exists: $destination" >&2
+    exit 1
+  fi
+  ln -s "../vendor/dev-skills/skills/$skill" "$destination"
+done
+```
+
+Start a new Codex session after installation, or restart the host if automatic
+change detection does not refresh the skill list. Invoke a selected skill by
+name and verify its exact name and installed location in the current host's
+available-skills list. Check the linked source with:
+
+```bash
+readlink "$HOME/.agents/skills/using-kryptonite"
+test -f "$HOME/.agents/skills/using-kryptonite/SKILL.md"
+```
+
+For an explicit invocation, prompt `Use $using-kryptonite for this task`.
+
+Update or remove only the global installation with:
+
+```bash
+git -C "$HOME/.agents/vendor/dev-skills" pull --ff-only
+unlink "$HOME/.agents/skills/requesting-code-review"
+```
+
+A global skill applies across projects. If a project also exposes a skill with
+the same name, both may appear; Codex does not merge duplicate skills or promise
+that one shadows the other. Remove the unintended exposure or use distinct
+names rather than relying on precedence.
+
+## Optional plugin compatibility
+
+This repository also remains a Codex plugin package:
 
 - [Plugin manifest](.codex-plugin/plugin.json): `kryptonite`, version `0.1.0`.
 - [Repository marketplace](.agents/plugins/marketplace.json): `kryptonite-dev`.
 - [Bootstrap skill](skills/using-kryptonite/SKILL.md): `using-kryptonite`.
-- Skills use the `kryptonite:` invocation namespace.
-- The package targets Codex and includes its
-  [tool reference](skills/using-kryptonite/references/codex-tools.md).
+- Plugin-provided skills use the `kryptonite:` invocation namespace.
 
-## Install for a project
-
-Keep the marketplace and enablement in the target project using the files
-below. Write these project files directly: `codex plugin marketplace add` and
-`codex plugin add` save user-level configuration in `~/.codex/config.toml`;
-running them from a project directory does not make them project-scoped.
-The plugin browser also saves user-level enablement choices.
-Neither route is a step in this project-only procedure.
-
-For a first local-source setup, run from the target project's root; reuse an
-existing suitable source checkout:
-
-```bash
-mkdir -p .agents/vendor .agents/plugins .codex
-git clone --branch main https://github.com/hemaher0/dev-skills.git .agents/vendor/dev-skills
-```
-
-Merge this entry into `.agents/plugins/marketplace.json`, preserving its actual
-marketplace name and other plugin entries:
-
-```json
-{
-  "name": "project-skills",
-  "plugins": [
-    {
-      "name": "kryptonite",
-      "source": {"source": "local", "path": "./.agents/vendor/dev-skills"},
-      "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
-      "category": "Developer Tools"
-    }
-  ]
-}
-```
-
-Merge into project `.codex/config.toml`, substituting the existing marketplace
-name when it differs from `project-skills`:
-
-```toml
-[plugins."kryptonite@project-skills"]
-enabled = true
-```
-
-Local paths resolve from the marketplace root, which is the project root in
-this example. Complete the project settings below, then open the project as
-trusted and start a new Codex session; restart the desktop app when needed.
-Codex uses the project configuration during local marketplace discovery and
-refresh. Verify that the plugin's skills are available in that project session.
-Project configuration is loaded only for trusted projects.
-
-Codex may keep plugin files in its shared `~/.codex/plugins/cache/`; that cache
-location does not determine enablement scope. Existing user-level enablement
-remains a separate setting; adding project settings does not remove it.
-See the [official project plugin configuration guide](https://developers.openai.com/plugins/build/plugins#enable-or-disable-a-plugin-for-a-repo).
-
-### Project settings
-
-Writing root `AGENTS.local.md` is a required installation step.
-
-1. Read existing project instructions and the
-   [local development template](skills/developing-with-specs/templates/AGENTS.local.md).
-   Create the file from that template, or merge its development section into
-   the existing file. Preserve established settings and other packages' sections.
-2. Replace applicable placeholders with actual values. Fill `Scratchpad root`
-   with the established project path, or `.kryptonite/scratchpad/` when using
-   the documented default. If an existing authoritative configuration already
-   owns that value, fill its actual source path instead of duplicating it.
-   Resolve relative paths from the project root.
-   Remove fields that do not apply.
-3. Keep shared project policy in its existing home and reusable workflow rules
-   in their skills. Where settings are already maintained elsewhere, reference
-   their actual source and verify its contents. The workflow entrypoint is
-   [using-kryptonite](skills/using-kryptonite/SKILL.md); scratchpad and spec rules
-   are in [developing-with-specs](skills/developing-with-specs/SKILL.md).
-4. Connect the local file to root instructions using the procedure below.
-
-If root `AGENTS.md` exists, preserve it and add this instruction unless it
-already reads or resolves to the local file:
-
-```markdown
-Read and follow root AGENTS.local.md when it exists.
-```
-
-If `AGENTS.md` is absent, the recommended connection is a relative symbolic
-link from the project root, after writing `AGENTS.local.md`:
-
-```bash
-ln -s AGENTS.local.md AGENTS.md
-```
-
-Preserve existing files and links and avoid self-references. If
-`AGENTS.override.md` takes precedence, ensure it reads the local file.
-
-Before completing installation, read the completed file and any referenced
-configuration. Verify that applicable values are filled, no placeholders
-remain, the scratchpad path resolves, and effective instructions read the local
-file. A generic "use defaults" statement does not replace filled settings.
-Check marketplace paths/name and skill availability in a new session.
+Plugin installation and enablement are separate from the native skill-folder
+procedures above. Plugin commands and the plugin browser can write user-level
+configuration and managed cache entries; running them inside a project does not
+make that state project-local. Follow the host's plugin documentation when that
+packaged route is desired. Do not treat a managed plugin cache, a vendor clone,
+or a sibling skill folder as proof that a skill is currently available.
 
 ## Skills
 
@@ -135,6 +181,14 @@ Check marketplace paths/name and skill availability in a new session.
 | [generalizing-diffs](skills/generalizing-diffs/SKILL.md) | Ground changed code and prose in actual requirements and semantics. |
 | [managing-compatibility](skills/managing-compatibility/SKILL.md) | Align changed interfaces and required data, and assess release or upgrade readiness. |
 | [writing-skills](skills/writing-skills/SKILL.md) | Develop and validate reusable skills. |
+
+Each selected skill retains its own responsibility when installed alone.
+References to another skill are optional: use the exact installed name and
+location from the current host's available-skills list. Do not treat an
+adjacent folder in this vendor checkout or a plugin cache as an available skill,
+because a host-listed project, global, or plugin copy may be a different
+revision. When a companion is absent, follow the concrete project or inline
+fallback in the selected skill.
 
 ## Working Files
 

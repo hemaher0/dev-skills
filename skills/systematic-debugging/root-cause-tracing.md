@@ -93,10 +93,12 @@ npm test 2>&1 | grep 'DEBUG git init'
 
 If something appears during tests but you don't know which test:
 
-Use the pollution investigation script `find-polluter.sh` in this directory:
+Resolve the directory containing this loaded `systematic-debugging` skill and
+invoke its bundled `find-polluter.sh`; do not assume the project root contains
+the script:
 
 ```bash
-./find-polluter.sh '.git' 'src/**/*.test.ts'
+/path/to/resolved/systematic-debugging-skill/find-polluter.sh '.git' 'src/**/*.test.ts'
 ```
 
 Runs tests one-by-one, stops at first polluter. See script for usage.

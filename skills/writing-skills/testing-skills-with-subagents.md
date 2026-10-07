@@ -119,9 +119,13 @@ workspace. Provide the relevant skill and genuine task context in each run.
 Use fresh contexts when independent samples or old/new comparisons require
 them; note inherited guidance that could affect the result.
 
-If authorized independent evaluations can run concurrently, use
-[dispatching-parallel-agents](../dispatching-parallel-agents/SKILL.md) for
-coordination. Tool availability does not itself authorize delegation.
+If authorized independent evaluations can run concurrently and
+`dispatching-parallel-agents` appears in the current host's available-skills
+list, use its installed workflow for coordination. Otherwise give each worker
+an explicit evaluation scope, inputs, isolated artifacts, criteria, and result
+destination, then inspect and integrate their results as the controller. Do not
+infer availability or load instructions from an adjacent vendor/cache folder.
+Tool availability does not itself authorize delegation.
 
 When agent execution is unavailable or not warranted, inspect the relevant
 scenarios and report that method. Do not describe inspection as measured agent

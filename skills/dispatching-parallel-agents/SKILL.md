@@ -10,9 +10,10 @@ description: Use when two or more independent problem domains can be investigate
 Dispatch one agent per independent problem domain and let them investigate or
 fix it concurrently. The coordinator integrates their results and retains
 responsibility for the whole work. This skill does not turn a sequential
-implementation plan into parallel implementation tasks; use
-[subagent-driven-development](../subagent-driven-development/SKILL.md) for that
-skill's sequential implementation and review cycle.
+implementation plan into parallel implementation tasks. If
+`subagent-driven-development` is host-listed and its workflow is selected, it
+can run that sequential implementation and review cycle; otherwise execute the
+coupled tasks sequentially under the current plan or project procedure.
 
 Give each agent isolated task context: the goal, relevant evidence, interfaces,
 constraints, and artifact references it needs. Do not pass accumulated session
@@ -64,12 +65,15 @@ digraph when_to_use {
 
 ## Prepare Briefs and Reports
 
-Use [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) and its existing
-[brief](../writing-agent-handoffs/templates/brief.md) and
-[report](../writing-agent-handoffs/templates/report.md) templates. Reuse the
-project's or current workflow's paths and records; otherwise use that skill's
-`.kryptonite/work/<work-id>/` defaults. Do not create a competing spec or
-contract document for each agent.
+If `writing-agent-handoffs` appears in the current host's available-skills list,
+use its linked brief/report workflow. Otherwise use the project's equivalent
+records or create compact brief and report files in the active work-record
+location, falling back to `.kryptonite/work/<work-id>/`. The brief and report
+must contain the identities and fields listed below; a report does not transfer
+ownership, and a transfer separately names the successor, scope, current state,
+authority, pending requests, and first action. Do not infer availability from a
+sibling vendor or cache folder, and do not create a competing spec or contract
+document for each agent.
 
 Each brief identifies the request, brief revision, assignee, current owner,
 role, and report destination, and includes:
@@ -136,11 +140,14 @@ assignment unchanged.
    contracts, and run the relevant regression checks and project-required
    suite. Record the tested target; earlier worker runs apply to their recorded
    snapshots, not automatically to the combined result.
-5. Use [requesting-code-review](../requesting-code-review/SKILL.md) at the review
-   points required by the change and project. Supply the real baseline-to-target
-   range, governing requirements, and evidence. Evaluate feedback through
-   [receiving-code-review](../receiving-code-review/SKILL.md) before assigning
-   fixes; valid unresolved Critical/Important findings prevent completion.
+5. At review points required by the change and project, use
+   `requesting-code-review` when it is host-listed. Otherwise give an independent
+   reviewer the real baseline-to-target range, governing requirements, exact
+   artifacts, evidence, and severity rules, and require criterion-linked
+   findings. Before assigning fixes, use `receiving-code-review` when host-listed;
+   otherwise check each finding against the requirements and actual artifacts,
+   record its supported disposition, and renew affected evidence after fixes.
+   Valid unresolved Critical/Important findings prevent completion.
 
 Parallel dispatch does not add SDD's mandatory per-task review loop to every
 investigation. Keep the enclosing workflow's review and completion gates.
@@ -158,14 +165,16 @@ status is `DONE`, or discarding all of it merely because a revision changed.
 Preserve material attempts and pending requests through worker replacement or
 ownership transfer.
 
-For development work, use
-[developing-with-specs](../developing-with-specs/SKILL.md) for durable
-documentation and spec retention, and
-[writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) for communication
-records. Route requested commit preparation through
-[using-kryptonite](../using-kryptonite/SKILL.md). Parallel dispatch owns
-independent assignments and result integration. Returning reports does not
-authorize disposal of pending records or cleanup of other work.
+For development work, use `developing-with-specs` for durable documentation and
+spec retention when it is host-listed; otherwise update the project's existing
+specification or durable document with the applied requirements, decisions,
+artifacts, and evidence. Use `writing-agent-handoffs` for communication records
+when host-listed; otherwise retain the brief/report/transfer fields described in
+this skill. Route requested commit preparation through `using-kryptonite` when
+host-listed, or through the project's Git review procedure using ordinary Git
+inspection. Parallel dispatch owns independent assignments and result
+integration. Returning reports does not authorize disposal of pending records
+or cleanup of other work.
 
 ## Example
 

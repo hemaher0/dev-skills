@@ -9,13 +9,15 @@ Investigate the difference between expected and observed behavior, then choose
 a correction supported by the evidence. A symptom, a causal hypothesis, and a
 verified resolution are different claims.
 
-This skill owns failure diagnosis and supported corrections.
-[Developing-with-specs](../developing-with-specs/SKILL.md) owns requirements,
-[test-driven-development](../test-driven-development/SKILL.md) owns test
-selection, and
-[verification-before-completion](../verification-before-completion/SKILL.md)
-owns the evidence needed for a completion claim. An ordinary document answer
-does not need a debugging investigation.
+This skill owns failure diagnosis and supported corrections. When the current
+host lists `developing-with-specs`, `test-driven-development`, or
+`verification-before-completion`, use each for its respective requirements,
+test-selection, or completion-evidence workflow. Otherwise use the governing
+project requirements; choose a focused behavioral check from the expected
+outcome, likely failure, and existing coverage; and verify the corrected target
+against the original symptom, affected regressions, and binding project checks.
+Do not infer skill availability from a sibling vendor or cache folder. An
+ordinary document answer does not need a debugging investigation.
 
 ## Scope and Urgency
 
@@ -91,10 +93,10 @@ changes or repeat a failed attempt without new evidence or a changed hypothesis.
 ## Phase 4: Correct and Verify
 
 1. **Establish a covering check.** Reuse the smallest reliable reproduction
-   or existing check for the symptom. Use
-   [test-driven-development](../test-driven-development/SKILL.md) to choose
-   useful coverage: a focused automated test, direct exercise, or inspection
-   can be appropriate to the defect and its consequences. Observe the real
+   or existing check for the symptom. When `test-driven-development` is
+   host-listed, use it to choose useful coverage. Otherwise select a focused
+   automated test, direct exercise, or inspection according to the defect's
+   observable contract, failure risk, and existing coverage. Observe the real
    pre-fix defect when possible; record a reproduction gap rather than
    inventing a failure. Add a regression test when it protects an uncovered
    behavioral contract; a new framework or persistent test is not required
@@ -103,10 +105,12 @@ changes or repeat a failed attempt without new evidence or a changed hypothesis.
    with a bounded change. Keep unrelated improvements out of the fix; a
    coherent correction may require changes in several files or components.
 3. **Verify the result.** Check the original symptom on the corrected target,
-   affected regression behavior, and binding project checks. Use
-   [verification-before-completion](../verification-before-completion/SKILL.md)
-   before reporting success. Separate what the checks establish about behavior
-   from what the investigation establishes about its cause.
+   affected regression behavior, and binding project checks. When
+   `verification-before-completion` is host-listed, use its completion workflow;
+   otherwise record the exact target, commands or observations, results, gaps,
+   and the criteria each check covers before reporting success. Separate what
+   the checks establish about behavior from what the investigation establishes
+   about its cause.
 4. **Reassess an unsuccessful correction.** Use its result to revisit the
    evidence, hypothesis, and model of the system. Repeated failures may warrant
    examining coupling or architecture, but their count does not prove an

@@ -11,16 +11,23 @@ A skill should improve a future agent's decisions in a recurring situation.
 Define the intended outcome, write focused guidance, and validate the changed
 meaning in proportion to its consequences.
 
-**Personal skills live in your Codex skills directory.** This plugin's skills
-live in its `skills/` directory. Read
-[codex-tools.md](../using-kryptonite/references/codex-tools.md) when authoring
-or validation depends on the current harness's tools or workspace.
+Native project skills are exposed as complete folders under
+`<project>/.agents/skills/`; native global skills are exposed under
+`$HOME/.agents/skills/`. A plugin package may keep its source under its own
+`skills/` directory. When authoring or validation depends on the current
+harness's tools or workspace, inspect the actual host tool descriptions,
+permissions, project instructions, and Git state directly. If
+`using-kryptonite` is host-listed, its installed tool reference can add
+host-specific guidance; do not read an adjacent vendor/cache copy merely
+because the file exists.
 
 Use existing evidence when available. A baseline comparison can help diagnose
 a failure or evaluate a proposed instruction; a failing baseline is not a
-prerequisite for requested guidance. The proportional check-selection principles
-in [test-driven-development](../test-driven-development/SKILL.md) can inform
-validation without making every documentation edit a RED-GREEN exercise.
+prerequisite for requested guidance. When `test-driven-development` is
+host-listed, its installed check-selection guidance can inform validation.
+Otherwise choose checks from the intended decision, plausible failure,
+consequence, and existing coverage; do not make every documentation edit a
+RED-GREEN exercise.
 
 ## What is a Skill?
 
@@ -231,9 +238,10 @@ search-conversations supports multiple modes and filters. Run --help for details
 When searching, dispatch subagent with template...
 [20 lines of repeated instructions]
 
-# ✅ GOOD: Reference other skill
-When independent tasks warrant parallel work, use the available
-[dispatching-parallel-agents](../dispatching-parallel-agents/SKILL.md) workflow.
+# ✅ GOOD: Reference another skill conditionally
+When independent tasks warrant parallel work and
+`dispatching-parallel-agents` is host-listed, use its installed workflow;
+otherwise coordinate them with explicit scopes and isolated write surfaces.
 ```
 
 **Compress examples:**
@@ -269,17 +277,25 @@ a conditional reference. Length alone does not establish clarity or correctness.
 
 ### 5. Cross-Referencing Other Skills
 
-Link to the available skill or supporting file and explain when it is needed:
+Keep another skill optional unless the task truly cannot be performed without
+it. Check the current host's available-skills list and use the exact installed
+name and location reported there; do not link to a neighboring vendor/cache
+folder that may be absent or a different revision. Give this skill a concrete
+inline or project-procedure fallback that preserves its own responsibility.
+Links to supporting files inside this same complete skill folder remain direct.
+For example:
 
 ```markdown
-When an unexpected failure needs investigation, use
-[systematic-debugging](../systematic-debugging/SKILL.md).
+When an unexpected failure needs investigation and `systematic-debugging` is
+host-listed, use its installed workflow; otherwise reproduce or inspect the
+failure, compare expected and observed conditions, test a causal hypothesis,
+and verify the supported correction.
 ```
 
 Mark a dependency as required only when the task genuinely depends on it.
-An optional reference is not a prerequisite. Read or execute supporting files
-when the current task needs their detail, using the target runtime's supported
-reference mechanisms.
+An optional reference is not a prerequisite. Read or execute same-skill
+supporting files when the current task needs their detail, using the target
+runtime's supported reference mechanisms.
 
 ## Flowchart Usage
 
@@ -304,11 +320,13 @@ flow when dependencies or ownership matter. Use meaningful labels.
 
 See [graphviz-conventions.dot](graphviz-conventions.dot) for graphviz style rules.
 
-**Visualizing for your human partner:** Use [render-graphs.js](render-graphs.js)
-when rendering a skill's flowcharts to SVG is useful:
+**Visualizing for your human partner:** Resolve this skill's installed directory
+and use its [render-graphs.js](render-graphs.js) when rendering a skill's
+flowcharts to SVG is useful:
 ```bash
-./render-graphs.js ../some-skill           # Each diagram separately
-./render-graphs.js ../some-skill --combine # All diagrams in one SVG
+cd /path/to/resolved/writing-skills-skill
+./render-graphs.js /path/to/target-skill           # Each diagram separately
+./render-graphs.js /path/to/target-skill --combine # All diagrams in one SVG
 ```
 
 ## Code Examples

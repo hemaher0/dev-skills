@@ -14,7 +14,11 @@ A skill does not grant permission for additional actions.
 1. Identify the current goal, scope, and unresolved decisions.
 2. Check available skill descriptions and select relevant or explicitly
    requested skills. Read their current instructions before the work they govern.
-   Clarify missing context when it is needed to determine applicability.
+   Treat a skill as available only when the current host lists it. A folder in
+   a vendor checkout, plugin cache, or neighboring installation is not enough.
+   Read or invoke the exact installed name and location reported by the host;
+   an adjacent source link may be a different revision or package. Clarify
+   missing context when it is needed to determine applicability.
 3. Reuse guidance already read while its content and the relevant task
    assumptions remain unchanged. Reconsider selection when the goal, stage,
    constraints, or guidance changes.
@@ -31,14 +35,14 @@ conflict with the current task rather than silently ignoring it.
 
 | Current work | Routing |
 |---|---|
-| Software planning or implementation | Establish or reuse the working spec with [developing-with-specs](../developing-with-specs/SKILL.md). Use [brainstorming](../brainstorming/SKILL.md) when goals, constraints, necessary conditions, or consequential choices remain unresolved. |
-| A bug, failed check, or unexpected behavior | Use [systematic-debugging](../systematic-debugging/SKILL.md) to investigate before proposing a fix. |
-| Creating, revising, or checking reusable agent instructions | Use [writing-skills](../writing-skills/SKILL.md) for authoring and proportional validation. |
+| Software planning or implementation | When host-listed, use `developing-with-specs` to establish or reuse the working spec and `brainstorming` for unresolved goals or consequential choices. Without them, maintain the project spec or current work record directly with intent, facts, sourced requirements, decisions and rationale, assumptions, criteria, evidence, and history; resolve material uncertainty from project evidence or ask for the necessary decision before dependent work. |
+| A bug, failed check, or unexpected behavior | When host-listed, use `systematic-debugging`. Otherwise establish expected and observed behavior, reproduce or inspect the failure, compare relevant conditions, test a discriminating causal hypothesis, make the supported correction, and recheck the symptom and relevant regressions. |
+| Creating, revising, or checking reusable agent instructions | When host-listed, use `writing-skills`. Otherwise identify the trigger, responsibility, boundaries, and intended decisions; make the smallest grounded revision; then inspect metadata, links, supporting resources, and realistic application/non-application cases. |
 | Selecting a checkout or branch before Git implementation | Follow the project's designated Git workspace procedure or a compatible available Git skill. Reuse a suitable existing workspace. |
-| Preparing a commit | Update applicable durable documentation through the project's designated documentation skill or procedure → [generalizing-diffs](../generalizing-diffs/SKILL.md) → affected [verification](../verification-before-completion/SKILL.md) and technical re-review under the invoking workflow → project Git review of the actual candidate and message → authorized commit and verification of its result. |
-| Finalizing development work | Use [developing-with-specs](../developing-with-specs/SKILL.md) to preserve the applied requirements, decisions, and evidence in durable documents. Follow [writing-agent-handoffs](../writing-agent-handoffs/SKILL.md) for communication-record retention. A routine commit does not establish work completion or authorize record disposal. |
+| Preparing a commit | Update applicable durable documentation through the project's procedure or an available documentation skill. Use `generalizing-diffs` and `verification-before-completion` when host-listed; otherwise inspect the complete diff for request-specific assumptions, check affected criteria on the exact candidate, and record results and gaps. Renew technical review required by the invoking workflow, then use the project Git procedure to review candidate content, disclosure, secrets, and message before an authorized commit and verify its result. |
+| Finalizing development work | When host-listed, use `developing-with-specs` for durable requirements/decision/evidence preservation and `writing-agent-handoffs` for communication-record retention. Otherwise update the project's durable document and current work records directly, preserving ownership, request/result identity, applied requirements, decisions, artifacts, evidence, gaps, and pending stages. A routine commit does not establish work completion or authorize record disposal. |
 | A branch integration, publication for review, or preservation decision | Follow the project's Git finishing procedure or a compatible available Git skill for the authorized outcome. |
-| Release or upgrade preparation, or installation/publication effects of a Git action | Follow the project's release procedure and existing automation. Use [managing-compatibility](../managing-compatibility/SKILL.md) for contract/data readiness and version impact. A Git action alone does not call for a version bump or an extra manual release. |
+| Release or upgrade preparation, or installation/publication effects of a Git action | Follow the project's release procedure and existing automation. When host-listed, use `managing-compatibility`; otherwise inspect affected interfaces, callers, retained/exchanged data, observable behavior, transition needs, and representative checks before choosing version impact. A Git action alone does not call for a version bump or an extra manual release. |
 
 Reuse settled requirements, decisions, and authorization. Apply process
 guidance to the decisions it owns, then the relevant domain or implementation
