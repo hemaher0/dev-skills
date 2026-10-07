@@ -8,7 +8,7 @@
       "name": "kryptonite",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/kryptonite"
       },
       "policy": {
         "installation": "AVAILABLE",

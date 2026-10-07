@@ -8,10 +8,11 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TASK_BRIEF = ROOT / "skills/subagent-driven-development/scripts/task-brief"
-SDD_WORKSPACE = ROOT / "skills/subagent-driven-development/scripts/sdd-workspace"
-START_SERVER = ROOT / "skills/brainstorming/scripts/start-server.sh"
-FIND_POLLUTER = ROOT / "skills/systematic-debugging/find-polluter.sh"
+SKILLS = ROOT / "plugins/kryptonite/skills"
+TASK_BRIEF = SKILLS / "subagent-driven-development/scripts/task-brief"
+SDD_WORKSPACE = SKILLS / "subagent-driven-development/scripts/sdd-workspace"
+START_SERVER = SKILLS / "brainstorming/scripts/start-server.sh"
+FIND_POLLUTER = SKILLS / "systematic-debugging/find-polluter.sh"
 
 
 class WorkspaceTest(unittest.TestCase):
