@@ -125,6 +125,16 @@ unaffected evidence need not be discarded. Do not silently weaken criteria or
 redefine the goal to fit the implementation. Existing approval continues to
 cover the same scope; honor actual user and project review gates.
 
+For multi-step implementation, reconcile the current stage and the selected
+executor's existing progress checkpoint against governing artifacts and actual
+work/evidence at implementation entry, after a material change to a requirement,
+decision, or review outcome, and before resuming interrupted execution. Complete
+this check before the next affected dependent action. The checkpoint identifies
+the current task, prerequisite evidence, open review/verification gaps, and next
+action. Reuse current entries and valid evidence; do not create another ledger
+or reopen unchanged decisions. This is an internal readiness check within
+existing authority; a paused implementation remains paused.
+
 ## Keep Ownership Explicit
 
 The current work owner reconciles the shared spec. Give an assignee the spec

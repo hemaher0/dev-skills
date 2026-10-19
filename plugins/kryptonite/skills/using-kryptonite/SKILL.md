@@ -36,6 +36,7 @@ conflict with the current task rather than silently ignoring it.
 | Current work | Routing |
 |---|---|
 | Software planning or implementation | When host-listed, use `developing-with-specs` to establish or reuse the working spec and `brainstorming` for unresolved goals or consequential choices. Without them, maintain the project spec or current work record directly with intent, facts, sourced requirements, decisions and rationale, assumptions, criteria, evidence, and history; resolve material uncertainty from project evidence or ask for the necessary decision before dependent work. |
+| Established requirements need a multi-step implementation plan | When host-listed, use `writing-plans`, reusing any existing formal plan. Otherwise use the project plan or current work record with purposeful tasks, dependencies, completion checks, and one authorized executor. |
 | A bug, failed check, or unexpected behavior | When host-listed, use `systematic-debugging`. Otherwise establish expected and observed behavior, reproduce or inspect the failure, compare relevant conditions, test a discriminating causal hypothesis, make the supported correction, and recheck the symptom and relevant regressions. |
 | Creating, revising, or checking reusable agent instructions | When host-listed, use `writing-skills`. Otherwise identify the trigger, responsibility, boundaries, and intended decisions; make the smallest grounded revision; then inspect metadata, links, supporting resources, and realistic application/non-application cases. |
 | Selecting a checkout or branch before Git implementation | Follow the project's designated Git workspace procedure or a compatible available Git skill. Reuse a suitable existing workspace. |
@@ -73,6 +74,11 @@ consider alternative explanations for causal or comparative conclusions when
 they matter. Gather needed evidence or narrow the claim. Keep material limits
 in the conclusion and recommendation, rather than only in a closing caveat.
 This is a brief judgment within the task, not a visible per-answer checklist.
+
+Within the authorized evidence scope, check the relevant underlying records and
+complete tool calls/results for absence or causal claims, including
+counterevidence. An unobserved event or workflow deviation does not by itself
+establish absence or an internal motive.
 
 Complete the requested result and necessary actions using existing
 authorization. Resolve routine choices from context; ask when essential

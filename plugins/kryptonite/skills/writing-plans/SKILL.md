@@ -65,7 +65,7 @@ Use the project's structure when established. Otherwise start with:
 **Work ID:** [Existing work ID]
 **Spec:** [Actual spec path and material revision]
 **Goal:** [Original observable result]
-**Execution:** [Existing user choice or applicable project workflow]
+**Execution:** [Selected controller, governing choice or suitability reason, and existing progress-record path]
 
 ## Global Constraints
 
@@ -116,6 +116,13 @@ unsupported scope additions, unresolved blockers, and whether isolated task
 briefs remain usable. Revise affected parts and recheck findings as needed.
 The [plan review prompt](plan-document-reviewer-prompt.md) supports an independent
 review when needed and authorized; self-review does not require dispatch.
+
+Before dependent implementation, identify the selected controller and briefly
+record why it fits the task boundaries, dependencies, and required reviews in
+the existing plan or progress record. Reuse an explicit user or project choice.
+OpenSpec apply can control direct execution, or its formal tasks can be used by
+another compatible controller. Read-only investigation or review delegation
+does not select SDD.
 
 Report the plan path and material unresolved decisions. If execution was already
 requested, continue using the chosen workflow; do not ask the user to choose
