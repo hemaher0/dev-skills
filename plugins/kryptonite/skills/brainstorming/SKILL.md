@@ -46,6 +46,28 @@ agreed scope for their decision before dependent work; do not ask them to
 approve the same design again merely because it was written into a file.
 Record unsupported premises explicitly rather than quietly deciding them.
 
+## Shape consequential interfaces
+
+When a change crosses a meaningful ownership or interface boundary, sketch a
+representative caller's usage before filling in implementation. Derive the
+necessary data shapes, signatures, failure behavior and state ownership from
+that usage and the domain's invariants. Keep the sketch in the existing design
+or spec; it need not be a separate scaffold commit or temporary broken code.
+
+Look for states that must stay synchronized, repeated shape assumptions and
+branches that encode one domain rule in many places. Consider whether a state
+model, type or owning boundary can express that rule directly. Compare genuinely
+different designs when uncertainty warrants it, without a fixed candidate quota.
+Prefer boundaries that hide meaningful decisions and reduce the context a
+caller must hold. A new wrapper or abstraction needs an actual purpose.
+
+If implementation repeatedly needs the same escape hatch or violates the
+sketch's assumptions, revisit the model and its evidence before extending it.
+Preserve valid work and governing constraints; friction alone is not a reason
+to discard a design. When host-listed, `investigating-codebase` can establish
+existing behavior and rationale; otherwise inspect the relevant code, consumers
+and history directly.
+
 ## Check Readiness
 
 Review the current spec against the original request and governing evidence:

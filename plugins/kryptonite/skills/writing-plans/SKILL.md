@@ -55,6 +55,30 @@ Do not prescribe full implementation code unless exact code is needed to
 preserve a fragile contract. Follow existing project patterns without expanding
 the task into an unrelated restructure.
 
+## Design a workflow when no existing procedure fits
+
+Start with an observable completion condition, the scope and scale of the
+work, consequential unknowns, resource limits, and applicable review gates.
+Resolve uncertainty before steps whose validity depends on it. Prioritize
+high-impact unknowns when dependency order allows; mechanical work with a
+settled design needs no additional design ceremony.
+
+Choose units with meaningful verification and recovery boundaries. Establish
+the baseline or observation method before a change would destroy needed
+comparison evidence. Reuse adequate checks; create a harness only for an actual
+gap. Scale review and checkpoint needs to consequences and existing authority,
+not elapsed time alone. A long run does not create a new permission requirement.
+
+For exploratory units, record the hypothesis, discriminating observation and
+conditions for keeping, revising or abandoning the approach. Preserve negative
+and inconclusive results in the existing spec/progress history. A plan should
+say when its approach needs reconsideration without prescribing an automatic
+rollback of shared state or unrelated changes.
+
+Put the designed procedure in the same active plan and select one executor.
+It remains subject to existing formal contracts, review and Git workflows;
+designing a custom procedure does not replace them or authorize publication.
+
 ## Plan Shape
 
 Use the project's structure when established. Otherwise start with:

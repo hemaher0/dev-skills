@@ -87,6 +87,21 @@ Review is read-only on implementation artifacts and Git state. Return the
 report through the permitted reporting surface, or an authorized recorder who
 preserves the reviewer's actual authorship.
 
+## Use additional perspectives when warranted
+
+When the scope and uncertainty justify multiple reviewers and delegation is
+authorized, give each the same governing intent, exact target and binding
+criteria. Use supported tools and available models; neither a fixed panel nor
+different model families is required. Independent perspectives are useful only
+when their findings can be checked against the actual change.
+
+Combine duplicate findings while preserving attribution and disagreements.
+Assess each finding's evidence, consequence and applicability. Agreement is
+not proof, and a valid defect raised by only one reviewer remains actionable.
+Separate required fixes, optional improvements, context and rejected findings
+with reasons under the existing severity policy. Review count does not grant
+authority to apply changes or create another execution controller.
+
 ## Evaluate the Result
 
 Use the project's equivalent review record or, when host-listed, the

@@ -5,6 +5,9 @@ Version: **0.1.0**
 kryptonite is a Codex plugin for planning, implementation, debugging, testing,
 code review, and development delivery. It is based on
 [Superpowers v6.2.0](https://github.com/obra/superpowers/tree/v6.2.0).
+Selected investigation, review and prevention workflows also adapt ideas from
+[pstack](https://github.com/cursor/plugins/tree/main/pstack); see the
+[attribution and license](THIRD_PARTY_NOTICES.md).
 
 Source repository: [hemaher0/dev-skills](https://github.com/hemaher0/dev-skills).
 
@@ -239,6 +242,11 @@ or a sibling skill folder as proof that a skill is currently available.
 | [generalizing-diffs](plugins/kryptonite/skills/generalizing-diffs/SKILL.md) | Ground changed code and prose in actual requirements and semantics. |
 | [managing-compatibility](plugins/kryptonite/skills/managing-compatibility/SKILL.md) | Align changed interfaces and required data, and assess release or upgrade readiness. |
 | [writing-skills](plugins/kryptonite/skills/writing-skills/SKILL.md) | Develop and validate reusable skills. |
+| [reviewing-code-comments](plugins/kryptonite/skills/reviewing-code-comments/SKILL.md) | Remove redundant comments, preserve required rationale, and identify constraints or design problems hidden by prose. |
+| [benchmarking-performance](plugins/kryptonite/skills/benchmarking-performance/SKILL.md) | Validate workloads, comparison conditions, actual work and uncertainty behind performance claims. |
+| [investigating-codebase](plugins/kryptonite/skills/investigating-codebase/SKILL.md) | Explain current code behavior and investigate evidence for design rationale. |
+| [recovering-work-context](plugins/kryptonite/skills/recovering-work-context/SKILL.md) | Reconstruct goals, decisions and attempts from scoped history and reconcile them with live state. |
+| [preventing-recurring-errors](plugins/kryptonite/skills/preventing-recurring-errors/SKILL.md) | Identify recurring failure mechanisms and verify proportionate structural or checking remedies. |
 
 Each selected skill retains its own responsibility when installed alone.
 References to another skill are optional: use the exact installed name and
@@ -247,6 +255,34 @@ adjacent folder in this vendor checkout or a plugin cache as an available skill,
 because a host-listed project, global, or plugin copy may be a different
 revision. When a companion is absent, follow the concrete project or inline
 fallback in the selected skill.
+
+## Investigation and improvement workflows
+
+The workflows have distinct responsibilities. Code investigation explains
+behavior and rationale; context recovery reconstructs the user's work; handoffs
+transfer responsibility. Comment review can identify a necessary code change,
+but does not authorize it. Recurrence prevention owns the failure pattern and
+selects a remedy; debugging, compatibility, tests and skill authoring retain
+their parts of an authorized implementation.
+
+Design and review guidance checks caller usage, domain invariants, hidden
+mutable state and unnecessary indirection. Compatibility investigation follows
+indirect consumers and verifies the facts on which a safety conclusion depends.
+Tests are assessed for detecting broken behavior while surviving internal
+restructuring. Parallel work separates mutable targets before adding structural
+serialization where sharing is necessary.
+
+When no existing procedure fits, the existing planning workflow defines the
+completion condition, important unknowns, verification and recovery boundaries,
+and one executor. Execution records exploratory hypotheses and observations;
+completion checks the integrated result against the original goal. This keeps
+one plan and execution controller rather than introducing another mode.
+
+These adaptations preserve project contracts, useful rationale and existing
+authorization. They do not require fixed model panels, tool-specific transcript
+paths, benchmark repetition quotas or automatic commits. They use scoped
+evidence and checks appropriate to the consequence and uncertainty. Sources are
+identified in the relevant skills and [third-party notice](THIRD_PARTY_NOTICES.md).
 
 ## Working Files
 

@@ -111,6 +111,13 @@ responsibility, data, behavior, or domain concept using project conventions.
 Write comments about intent, invariants, constraints, and supported tradeoffs
 that a reader can understand without the conversation.
 
+For comment necessity or claimed constraints, use `reviewing-code-comments`
+when host-listed at its exact installed location. Otherwise remove redundant
+narration, verify the claim, preserve necessary contracts and rationale, and
+identify a structural replacement before deleting a constraint's only
+explanation. Generalization does not require eliminating useful comments or
+authorize the code changes a comment review may propose.
+
 Keep genuine local requirements local. Preserve exact commands, identifiers,
 paths, and formats when callers or the owning workflow depend on them. Preserve
 contextual provenance in spec histories and handoffs where that context is

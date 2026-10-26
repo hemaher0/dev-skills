@@ -66,6 +66,21 @@ authoring ledger is required.
 - Project-specific conventions (put in your instructions file)
 - Mechanical constraints (if it's enforceable with regex/validation, automate it—save documentation for judgment calls)
 
+## Route recurring corrections to their cause
+
+Before turning repeated feedback into another instruction, identify the
+demonstrated error pattern and whether structure, types, runtime validation,
+lint or behavioral checks can prevent it more reliably. When host-listed,
+`preventing-recurring-errors` owns that investigation and prevention work;
+resolve its exact installed location. Without it, inspect representative
+occurrences, select a proportionate mechanism and verify bad and valid cases
+within the authorized scope. This skill owns any remaining reusable guidance.
+
+Keep judgment-dependent lessons and useful rationale in the responsible skill.
+Consolidate duplicate instructions after checking their consumers. A mechanical
+fix does not automatically make all explanation obsolete, and a recurring
+correction does not authorize repository-wide changes or a new commit schedule.
+
 ## Skill Types
 
 ### Technique

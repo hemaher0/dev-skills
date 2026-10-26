@@ -74,6 +74,15 @@ text are usually poor substitutes for behavior. Prefer real components and
 appropriate maintained fakes; use bounded mocks when needed for the checked
 contract or a difficult external/error boundary.
 
+Check a test's meaning against two plausible changes: would it detect a broken
+observable result or missing/duplicated effect, and would it survive a change
+to private structure that preserves the contract? Derive expected results from
+the requirement or an independent oracle, not the same implementation under
+test. External-call assertions can be behavioral when the call is the contract;
+pair absence assertions with a valid case showing the observation can detect
+the effect. Use inspection or a focused experiment as needed, not mandatory
+mutation testing or deliberate edits to otherwise correct code.
+
 ## Refactor While Preserving Behavior
 
 Identify the concrete structural problem to improve and the observable behavior

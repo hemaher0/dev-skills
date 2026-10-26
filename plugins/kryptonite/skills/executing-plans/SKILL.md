@@ -64,6 +64,16 @@ For each task:
    covers the task's criteria. Report gaps explicitly and continue dependent
    tasks only when their prerequisites are satisfied.
 
+For exploratory tasks in the plan, state the hypothesis and predicted
+observation, make the smallest useful change, and inspect the real result
+against the task's criterion. Keep a supported improvement, revise an
+unsupported approach, and preserve negative or inconclusive evidence. If a
+check passes implausibly easily, verify that it observed the intended work.
+Correct a defective check against the requirement rather than weakening the
+requirement to pass. Roll back only task-owned changes when appropriate and
+authorized; a failed hypothesis does not justify discarding unrelated work.
+Update the existing decision history as the result changes the next step.
+
 Follow actual project review gates and the user's instructions. Do not pause
 between tasks to request permission already covering the work. Stop dependent
 execution when a governing requirement is contradictory, a material question

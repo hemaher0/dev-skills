@@ -38,6 +38,13 @@ Before dispatch, check:
   state. Check Git index, HEAD and branch state, generated outputs, caches,
   databases, ports, and test services as well as source files.
 
+Before serializing a shared write target, ask whether the actors need the same
+mutable object. Independent facts can use separately owned files or keys and
+be combined at the read boundary; separate fields in one rewritten file still
+share mutation. When one canonical object is required, use an actual mechanism
+such as a single writer, a lock or atomic conditional update. A prose promise
+to avoid collisions does not enforce serialization.
+
 Read-only investigations may share stable inputs. For concurrent writers, use
 the applicable Git workspace workflow to assign isolated checkouts when Git
 state or outputs would conflict. Separate checkouts do not remove semantic

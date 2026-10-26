@@ -95,6 +95,16 @@ Reviewer assignment:
       risks. Test counts or producer success messages alone are not coverage.
     - Assess migrations, compatibility, and documentation where affected.
       Do not require unrelated production machinery or stylistic alternatives.
+    - Assess reader effort: unnecessary indirection, pass-through layers,
+      hidden mutable state, and invariants repeated across consumers. Recommend
+      a structural change only for a concrete comprehension or ownership cost;
+      line count and abstraction count alone are not quality measures.
+    - Review changed comments and docstrings for redundant narration, obsolete
+      claims and constraints that code or checks do not enforce. When
+      `reviewing-code-comments` is host-listed, use its exact installed
+      instructions; otherwise verify the claims, preserve required contracts
+      and rationale, and separate proposed code fixes from comment findings.
+      This remains a read-only review; do not delete comments or apply fixes.
 
     ## Findings and Verdicts
 

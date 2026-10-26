@@ -68,6 +68,18 @@ passing check or a previously checked different snapshot is not a substitute.
 A useful passing baseline does not need an artificial failure, and direct
 inspection does not need a new persistent test merely to qualify as evidence.
 
+For a multi-step or newly designed workflow, verify the integrated outcome
+against the original completion condition on the actual artifact or product.
+Passing each local gate does not prove that the gates collectively cover the
+user's goal. Keep supported, failed and inconclusive criteria distinct; an
+inconclusive result is not a pass. Investigate a check that never exercised the
+claimed behavior before relying on its verdict.
+
+For performance claims, use `benchmarking-performance` when host-listed at its
+exact installed location. Otherwise check actual completed work, valid outputs,
+comparable conditions and variability, and separate measured differences from
+causal explanations and end-to-end claims.
+
 ## Commit and Integration Candidates
 
 For commit-preparation routing, use `using-kryptonite` when it is host-listed.

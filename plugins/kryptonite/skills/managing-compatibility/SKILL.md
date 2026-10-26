@@ -36,6 +36,22 @@ retained data or independent consumers can exist before a public release.
 Investigate unclear usage or retention when it changes the decision. Ask only
 when a material fact or choice cannot be resolved from available project evidence.
 
+## Trace effects beyond direct callers
+
+Follow dependencies that a symbol search can miss: serialized values, other
+languages or services consuming them, generated registrations, feature flags,
+and lifecycle timing such as teardown or deferred execution. Inspect the
+actual pinned dependency and local patches when its behavior matters. Keep
+this investigation proportional to the changed contract.
+
+Identify the facts on which a safety conclusion depends, such as whether an
+operation can affect live entries or whether all readers tolerate a new value.
+Separate confirmed risks, cleared cases and unresolved assumptions. Cite the
+actual source or contract; do not invent consumers or infer their absence from
+an empty search. Where inspection cannot establish a material fact, use the
+smallest safe script, existing test or runtime observation that exercises the
+real implementation. Report what was observed and what remains unverified.
+
 ## Make the necessary transition work
 
 - **Existing usage still works:** Keep the one current implementation. Add no
