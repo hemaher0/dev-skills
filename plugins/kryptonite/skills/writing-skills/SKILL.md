@@ -12,14 +12,14 @@ Define the intended outcome, write focused guidance, and validate the changed
 meaning in proportion to its consequences.
 
 Native project skills are exposed as complete folders under
-`<project>/.agents/skills/`; native global skills are exposed under
-`$HOME/.agents/skills/`. A plugin package may keep its source under its own
-`skills/` directory. When authoring or validation depends on the current
+`<project>/.agents/skills/` for Codex and `<project>/.claude/skills/` for Claude
+Code; native global skills are exposed under `$HOME/.agents/skills/` and
+`~/.claude/skills/` respectively. A plugin package may keep its source under its
+own `skills/` directory. When authoring or validation depends on the current
 harness's tools or workspace, inspect the actual host tool descriptions,
-permissions, project instructions, and Git state directly. If
-`using-kryptonite` is host-listed, its installed tool reference can add
-host-specific guidance; do not read an adjacent vendor/cache copy merely
-because the file exists.
+permissions, project instructions, and Git state directly. If `using-kryptonite`
+is host-listed, its installed tool reference can add host-specific guidance; do
+not read an adjacent vendor/cache copy merely because the file exists.
 
 Use existing evidence when available. A baseline comparison can help diagnose
 a failure or evaluate a proposed instruction; a failing baseline is not a

@@ -2,9 +2,9 @@
 
 Version: **0.1.0**
 
-kryptonite is a Codex plugin for planning, implementation, debugging, testing,
-code review, and development delivery. It is based on
-[Superpowers v6.2.0](https://github.com/obra/superpowers/tree/v6.2.0).
+kryptonite is a skill collection for Codex and Claude Code covering planning,
+implementation, debugging, testing, code review, and development delivery. It is
+based on [Superpowers v6.2.0](https://github.com/obra/superpowers/tree/v6.2.0).
 Selected investigation, review and prevention workflows also adapt ideas from
 [pstack](https://github.com/cursor/plugins/tree/main/pstack); see the
 [attribution and license](THIRD_PARTY_NOTICES.md).
@@ -15,8 +15,10 @@ Source repository: [hemaher0/dev-skills](https://github.com/hemaher0/dev-skills)
 
 ```text
 .agents/plugins/marketplace.json
+.claude-plugin/marketplace.json
 plugins/kryptonite/
   .codex-plugin/plugin.json
+  .claude-plugin/plugin.json
   skills/<skill>/SKILL.md
 tests/
 ```
@@ -206,12 +208,66 @@ Check the selected links and start a new Codex session as described above.
 Plugin-managed caches are separate installations; these loops update only
 native skill links.
 
+## Use with Claude Code
+
+Claude Code discovers project skills in `.claude/skills/<name>/SKILL.md` and
+personal skills in `~/.claude/skills/<name>/SKILL.md`. The skill folders in
+this repository work there without conversion. Keep the source checkout
+described above and expose the selected skills from the project root, for
+example:
+
+```bash
+mkdir -p .claude/skills
+for skill in using-kryptonite systematic-debugging; do
+  destination=".claude/skills/$skill"
+  if [ -e "$destination" ] || [ -L "$destination" ]; then
+    printf 'Preserve existing path: %s\n' "$destination" >&2
+    continue
+  fi
+  ln -s "../../.agents/vendor/dev-skills/plugins/kryptonite/skills/$skill" "$destination"
+done
+```
+
+The link targets are relative to `.claude/skills`. For personal skills, run
+the same loop with `$HOME/.claude/skills` and the global source checkout under
+`$HOME/.agents/vendor`; the relative targets stay the same. Where symbolic
+links are unavailable, such as Windows without Developer Mode, copy each
+selected folder completely instead and copy it again after updating the source.
+
+Use a skill by its name, for example `/systematic-debugging`, or let Claude
+select it from its description. Confirm that the name appears in the session's
+skill list; start a new session if a newly added folder is not listed.
+
+Claude Code can also install this repository as a plugin marketplace:
+
+```bash
+claude plugin marketplace add hemaher0/dev-skills
+claude plugin install kryptonite@kryptonite-dev
+```
+
+Inside a session, `/plugin marketplace add hemaher0/dev-skills` and
+`/plugin install <plugin>@<marketplace>` do the same. Plugin skills are
+namespaced, for example `/kryptonite:systematic-debugging`. Plugin installation writes
+user-level configuration and a managed cache, separate from the folders above; a
+skill exposed both ways appears twice.
+
+Claude Code reads `CLAUDE.md`. It reads `AGENTS.md` only when no `CLAUDE.md`
+exists (Claude Code 2.1.277 or later) and does not read `AGENTS.local.md` by
+itself. When a project keeps shared instructions in `AGENTS.md` and also has a
+`CLAUDE.md`, add an `@AGENTS.md` line to `CLAUDE.md`. An instruction in
+`AGENTS.md` to read `AGENTS.local.md` keeps local configuration in effect.
+
+In Claude Code, `using-kryptonite` reads
+[claude-code-tools.md](plugins/kryptonite/skills/using-kryptonite/references/claude-code-tools.md)
+where Codex uses `codex-tools.md`.
+
 ## Optional plugin compatibility
 
-This repository also remains a Codex plugin package:
+This repository also remains a plugin package for Codex and Claude Code:
 
 - [Plugin manifest](plugins/kryptonite/.codex-plugin/plugin.json): `kryptonite`, version `0.1.0`.
 - [Repository marketplace](.agents/plugins/marketplace.json): `kryptonite-dev`.
+- [Claude Code plugin manifest](plugins/kryptonite/.claude-plugin/plugin.json) and [marketplace](.claude-plugin/marketplace.json): `kryptonite@kryptonite-dev`.
 - [Bootstrap skill](plugins/kryptonite/skills/using-kryptonite/SKILL.md): `using-kryptonite`.
 - Plugin-provided skills use the `kryptonite:` invocation namespace.
 

@@ -1,0 +1,22 @@
+{
+  "name": "kryptonite",
+  "version": "0.1.0",
+  "description": "An agentic skills framework & software development methodology that works: planning, TDD, debugging, and collaboration workflows.",
+  "author": {
+    "name": "hemaher0",
+    "url": "https://github.com/hemaher0"
+  },
+  "homepage": "https://github.com/hemaher0/dev-skills",
+  "repository": "https://github.com/hemaher0/dev-skills",
+  "license": "MIT",
+  "keywords": [
+    "brainstorming",
+    "subagent-driven-development",
+    "skills",
+    "planning",
+    "tdd",
+    "debugging",
+    "code-review",
+    "workflow"
+  ]
+}

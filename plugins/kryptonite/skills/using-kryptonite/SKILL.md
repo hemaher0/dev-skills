@@ -99,9 +99,12 @@ It does not need to rerun unrelated global planning or project finishing.
 The assigned scope still includes any explicitly required skills and relevant
 verification; being a worker does not waive those requirements.
 
-## Codex Tools
+## Host Tools
 
-Read [codex-tools.md](references/codex-tools.md) when the current task depends
-on command execution outside the sandbox, delegation tools, workspace
-detection, or Git operations in a managed environment. Use the actual harness
-capabilities and permissions.
+When the current task depends on command execution outside the sandbox or a
+permission boundary, delegation tools, workspace detection, or Git operations
+in a managed environment, read the reference for the current host:
+[Codex](references/codex-tools.md) or
+[Claude Code](references/claude-code-tools.md). On another host, inspect its
+actual tool descriptions and permissions. Use the actual harness capabilities
+and permissions.
