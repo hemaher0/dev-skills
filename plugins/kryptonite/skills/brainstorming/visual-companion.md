@@ -71,10 +71,10 @@ without repeating it.
 ```
 
 **Launching the server in Claude Code:** run the same command with the shell
-tool's background option. Where the script falls back to foreground mode
-(Windows Git Bash), an ordinary call would wait until the server exits. Read
-the startup JSON from the background command's output or from the session's
-`server-info` file.
+tool's background option. Where the script falls back to foreground mode (on
+MSYS, MinGW or Cygwin shells such as Git Bash), an ordinary call would wait
+until the server exits. Read the startup JSON from the background command's
+output or from the session's `server-info` file.
 
 If the URL is unreachable from your browser (common in remote/containerized setups), bind a non-loopback host:
 

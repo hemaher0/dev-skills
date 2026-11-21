@@ -31,10 +31,11 @@ tasks sequentially. A delegated agent starts without this conversation unless
 the host forks it, so give it the facts it needs. Treat its report as evidence
 to check, not as completed verification or as the user's approval.
 
-Use the host's task-tracking tool, when present, for the current plan instead
-of a second list in prose. Run long commands through the shell tool's
-background option instead of `&`, `nohup`, or polling loops, and read their
-output when the host reports completion.
+When the host provides a task-tracking tool, track the current steps with it
+as the host's instructions describe. Run a command that must keep running, or
+that may outlast the shell tool's timeout, with the shell tool's background
+option rather than `&` or `nohup`, and read its output when the host reports
+completion instead of polling.
 
 Configuration changes, hooks, permission rules, and plugin installation require
 their own task scope. Do not treat loading a skill as a request to change user
