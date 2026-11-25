@@ -4,6 +4,9 @@
     "name": "hemaher0",
     "url": "https://github.com/hemaher0"
   },
+  "metadata": {
+    "description": "Development workflow skills for planning, implementation, debugging, testing, review, and delivery."
+  },
   "plugins": [
     {
       "name": "kryptonite",

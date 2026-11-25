@@ -234,6 +234,29 @@ the same loop with `$HOME/.claude/skills` and the global source checkout under
 links are unavailable, such as Windows without Developer Mode, copy each
 selected folder completely instead and copy it again after updating the source.
 
+A project that already has a Codex installation under `.agents/skills` can
+expose the same kryptonite selection to Claude Code. The loop skips links that
+belong to other skill sources and preserves existing destinations:
+
+```bash
+mkdir -p .claude/skills
+for source in .agents/skills/*; do
+  [ -L "$source" ] || continue
+  skill="${source##*/}"
+  [ "$(readlink "$source")" = "../vendor/dev-skills/plugins/kryptonite/skills/$skill" ] || continue
+  destination=".claude/skills/$skill"
+  if [ -e "$destination" ] || [ -L "$destination" ]; then
+    printf 'Preserve existing path: %s\n' "$destination" >&2
+    continue
+  fi
+  ln -s "../../.agents/vendor/dev-skills/plugins/kryptonite/skills/$skill" "$destination"
+done
+```
+
+Both hosts then read the same source checkout, so
+`git -C .agents/vendor/dev-skills pull --ff-only` updates them together. Links
+for skills added later are created separately.
+
 Use a skill by its name, for example `/systematic-debugging`, or let Claude
 select it from its description. Confirm that the name appears in the session's
 skill list; start a new session if a newly added folder is not listed.
@@ -258,7 +281,9 @@ Claude Code reads `CLAUDE.md`. It reads `AGENTS.md` only when no `CLAUDE.md` or
 2.1.277 or later) and does not read `AGENTS.local.md` by itself. When a project
 keeps shared instructions in `AGENTS.md` and also has a `CLAUDE.md`, add an
 `@AGENTS.md` line to `CLAUDE.md`. An instruction in `AGENTS.md` to read
-`AGENTS.local.md` keeps local configuration in effect.
+`AGENTS.local.md` keeps local configuration in effect. `developing-with-specs`
+reads a local scratchpad setting from `AGENTS.local.md` or `CLAUDE.local.md`,
+which Claude Code loads by itself.
 
 In Claude Code, `using-kryptonite` reads
 [claude-code-tools.md](plugins/kryptonite/skills/using-kryptonite/references/claude-code-tools.md)

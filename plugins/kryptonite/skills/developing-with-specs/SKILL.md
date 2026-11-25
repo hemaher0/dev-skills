@@ -13,9 +13,11 @@ planning, implementation, and verification, rather than as a separate phase.
 ## One Working Spec Per Work
 
 Resolve `Scratchpad root` from effective project instructions or their existing
-configuration source. A selected personal/checkout path in root
-`AGENTS.local.md` overrides that location within project policy. An absent,
-empty, or placeholder value is unset; use the project setting, then
+configuration source. A selected personal/checkout path in the root local
+instruction file, `AGENTS.local.md` or Claude Code's `CLAUDE.local.md`,
+overrides that location within project policy. If both files select different
+paths, ask the user which one applies. An absent, empty, or placeholder value
+is unset; use the project setting, then
 `<project-root>/.kryptonite/scratchpad/` when neither supplies a path. Resolve
 relative paths from that project root and use absolute paths as configured.
 Installation follows the source README and its configuration template.
